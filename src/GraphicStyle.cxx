@@ -300,7 +300,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 	{
 		if (style["draw:shadow"])
 			element.insert("draw:shadow", style["draw:shadow"]->getStr());
-		else
+		else if (!isStyleNamed && !hasParent)
 			element.insert("draw:shadow", "hidden");
 		if (style["draw:shadow-offset-x"])
 			element.insert("draw:shadow-offset-x", style["draw:shadow-offset-x"]->getStr());
@@ -329,7 +329,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 			element.insert("draw:marker-start-center", style["draw:marker-start-center"]->getStr());
 		if (style["draw:marker-start-width"])
 			element.insert("draw:marker-start-width", style["draw:marker-start-width"]->getStr());
-		else
+		else if (!isStyleNamed && !hasParent)
 			element.insert("draw:marker-start-width", "0.118in");
 	}
 	if (style["draw:marker-end-path"])
@@ -344,7 +344,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 			element.insert("draw:marker-end-center", style["draw:marker-end-center"]->getStr());
 		if (style["draw:marker-end-width"])
 			element.insert("draw:marker-end-width", style["draw:marker-end-width"]->getStr());
-		else
+		else if (!isStyleNamed && !hasParent)
 			element.insert("draw:marker-end-width", "0.118in");
 	}
 	// other

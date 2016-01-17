@@ -77,26 +77,33 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 {
 	needCreateOpacityStyle=false;
 
+	bool checkEmpty=style["style:display-name"]!=0 || style["librevenge:parent-display-name"]!=0;
 	librevenge::RVNGPropertyList pList;
-	// default value
-	pList.insert("draw:style", "linear");
-	pList.insert("draw:border", "0%");
-	pList.insert("draw:start-intensity", "100%");
-	pList.insert("draw:end-intensity", "100%");
+	if (!checkEmpty)
+	{
+		// default value
+		pList.insert("draw:style", "linear");
+		pList.insert("draw:border", "0%");
+		pList.insert("draw:start-intensity", "100%");
+		pList.insert("draw:end-intensity", "100%");
+	}
 	// property rename
 	if (style["svg:cx"])
 		pList.insert("draw:cx", style["svg:cx"]->getStr());
 	if (style["svg:cy"])
 		pList.insert("draw:cy", style["svg:cy"]->getStr());
 	// prepare angle: ODG angle unit is 0.1 degree
-	double angle = style["draw:angle"] ? style["draw:angle"]->getDouble() : 0.0;
-	while (angle < 0)
-		angle += 360;
-	while (angle > 360)
-		angle -= 360;
-	librevenge::RVNGString sValue;
-	sValue.sprintf("%i", (unsigned)(angle*10));
-	pList.insert("draw:angle", sValue);
+	librevenge::RVNGString angleValue;
+	if (!checkEmpty || style["draw:angle"])
+	{
+		double angle = style["draw:angle"] ? style["draw:angle"]->getDouble() : 0.0;
+		while (angle < 0)
+			angle += 360;
+		while (angle > 360)
+			angle -= 360;
+		angleValue.sprintf("%i", (unsigned)(angle*10));
+		pList.insert("draw:angle", angleValue);
+	}
 	// gradient vector
 	const librevenge::RVNGPropertyListVector *gradient = style.child("svg:linearGradient");
 	if (!gradient)
@@ -112,6 +119,7 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 		if (style[wh[i]])
 			pList.insert(wh[i], style[wh[i]]->getStr());
 	}
+	if (pList.empty()) return "";
 	librevenge::RVNGString hashKey = pList.getPropString();
 	if (mGradientNameMap.find(hashKey) != mGradientNameMap.end())
 		return mGradientNameMap.find(hashKey)->second;
@@ -122,8 +130,10 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 
 	TagOpenElement *openElement = new TagOpenElement("draw:gradient");
 	openElement->addAttribute("draw:name", name);
-	openElement->addAttribute("draw:style", pList["draw:style"]->getStr());
-	openElement->addAttribute("draw:angle", sValue);
+	if (pList["draw:style"])
+		openElement->addAttribute("draw:style", pList["draw:style"]->getStr());
+	if (!angleValue.empty())
+		openElement->addAttribute("draw:angle", angleValue);
 	if (pList["draw:cx"])
 		openElement->addAttribute("draw:cx", pList["draw:cx"]->getStr());
 	if (pList["draw:cy"])
@@ -131,14 +141,15 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 
 	if (!gradient || !gradient->count())
 	{
-		if (pList["draw:start-color"])
-			openElement->addAttribute("draw:start-color", pList["draw:start-color"]->getStr());
-		if (pList["draw:end-color"])
-			openElement->addAttribute("draw:end-color", pList["draw:end-color"]->getStr());
-		openElement->addAttribute("draw:border", pList["draw:border"]->getStr());
-
-		openElement->addAttribute("draw:start-intensity", pList["draw:start-intensity"]->getStr());
-		openElement->addAttribute("draw:end-intensity", pList["draw:end-intensity"]->getStr());
+		char const *(attrib[]) =
+		{
+			"draw:start-color", "draw:end-color", "draw:border", "draw:start-intensity", "draw:end-intensity"
+		};
+		for (unsigned i=0; i<ODFGEN_N_ELEMENTS(attrib); ++i)
+		{
+			if (pList[attrib[i]])
+				openElement->addAttribute(attrib[i], pList[attrib[i]]->getStr());
+		}
 
 		// Work around a mess in LibreOffice where both opacities of 100% are interpreted as complete transparency
 		// Nevertheless, when one is different, immediately, they are interpreted correctly
@@ -177,7 +188,8 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 		if (style[wh[i]])
 			pList.insert(wh[i], style[wh[i]]->getStr());
 	}
-
+	if (pList.empty() && (style["style:display-name"] || style["librevenge:parent-display-name"]))
+		return "";
 	librevenge::RVNGString hashKey = pList.getPropString();
 	if (mHatchNameMap.find(hashKey) != mHatchNameMap.end())
 		return mHatchNameMap.find(hashKey)->second;
