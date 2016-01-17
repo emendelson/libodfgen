@@ -1163,6 +1163,8 @@ void OdfGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 void OdfGenerator::defineGraphicStyle(const librevenge::RVNGPropertyList &propList)
 {
 	mGraphicStyle=propList;
+	if (propList["style:display-name"]) // force the style to be defined
+		getCurrentGraphicStyleName();
 }
 
 librevenge::RVNGString OdfGenerator::getCurrentGraphicStyleName()
@@ -1204,6 +1206,12 @@ void OdfGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 	sValue = doubleToString(2 * ry);
 	sValue.append("in");
 	pDrawEllipseElement->addAttribute("svg:height", sValue);
+	for (int i=0; i<4; ++i)
+	{
+		char const *(wh[])= {"draw:kind", "draw:start-angle", "draw:end-angle", "draw:transform"};
+		if (propList[wh[i]])
+			pDrawEllipseElement->addAttribute(wh[i], propList[wh[i]]->getStr());
+	}
 	if (propList["librevenge:rotate"] &&
 	        (propList["librevenge:rotate"]->getDouble() < 0 || propList["librevenge:rotate"]->getDouble() > 0))
 	{
@@ -1362,6 +1370,8 @@ void OdfGenerator::drawRectangle(const librevenge::RVNGPropertyList &propList)
 		pDrawRectElement->addAttribute("draw:corner-radius", propList["svg:rx"]->getStr());
 	else
 		pDrawRectElement->addAttribute("draw:corner-radius", "0.0000in");
+	if (propList["draw:transform"])
+		pDrawRectElement->addAttribute("draw:transform", propList["draw:transform"]->getStr());
 	if (propList["draw:display"])
 		pDrawRectElement->addAttribute("draw:display", propList["draw:display"]->getStr());
 
