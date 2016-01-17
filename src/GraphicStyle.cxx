@@ -263,7 +263,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 			element.insert("draw:stroke", "dash");
 			element.insert("draw:stroke-dash", name);
 		}
-		else
+		else if (style["draw:stroke"] || (!isStyleNamed && !hasParent))
 			element.insert("draw:stroke", "solid");
 	}
 	if (!style["draw:stroke"] || style["draw:stroke"]->getStr() != "none" || isStyleNamed)

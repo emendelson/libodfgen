@@ -292,7 +292,7 @@ void FillManager::addProperties(librevenge::RVNGPropertyList const &style, libre
 		else
 			sendAll=true;
 	}
-	const librevenge::RVNGString &fill = sendAll ? "" : style["draw:fill"]->getStr();
+	const librevenge::RVNGString &fill = style["draw:fill"] ?  style["draw:fill"]->getStr() : "";
 	if (fill == "none")
 		element.insert("draw:fill", "none");
 	if (sendAll || (fill == "bitmap" && style["draw:fill-image"] && style["librevenge:mime-type"]))
