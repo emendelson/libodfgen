@@ -57,7 +57,8 @@ public:
 	explicit GraphicStyleManager(FillManager &fillManager)
 		: mFillManager(fillManager)
 		, mMarkerStyles(), mStrokeDashStyles(), mStyles()
-		, mMarkerNameMap(), mStrokeDashNameMap(), mStyleNameMap() {}
+		, mMarkerNameMap(), mStrokeDashNameMap(), mStyleNameMap()
+		, mDisplayNameMap() {}
 	virtual ~GraphicStyleManager()
 	{
 		clean();
@@ -75,6 +76,8 @@ public:
 
 	/** find a style ( or add it to the stored styles) and returns the style name */
 	librevenge::RVNGString findOrAdd(librevenge::RVNGPropertyList const &propList, Style::Zone zone=Style::Z_Unknown);
+	//! return the file name corresponding to a display name
+	librevenge::RVNGString getFinalDisplayName(const librevenge::RVNGString &displayName);
 
 	/** append the graphic in the element, ie. the stroke, pattern, bitmap, marker properties */
 	void addGraphicProperties(librevenge::RVNGPropertyList const &style, librevenge::RVNGPropertyList &element);
@@ -97,6 +100,8 @@ protected:
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mStrokeDashNameMap;
 	// style hash -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mStyleNameMap;
+	// display name -> style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayNameMap;
 };
 
 

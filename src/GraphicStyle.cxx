@@ -84,6 +84,8 @@ void GraphicStyleManager::clean()
 	mMarkerNameMap.clear();
 	mStrokeDashNameMap.clear();
 	mStyleNameMap.clear();
+
+	mDisplayNameMap.clear();
 }
 
 void GraphicStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
@@ -105,10 +107,11 @@ void GraphicStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) 
 librevenge::RVNGString GraphicStyleManager::findOrAdd(librevenge::RVNGPropertyList const &propList, Style::Zone zone)
 {
 	librevenge::RVNGPropertyList pList(propList);
-	if (zone==Style::Z_Unknown)
+	if (propList["style:display-name"])
+		zone=Style::Z_Style;
+	else if (zone==Style::Z_Unknown)
 		zone=Style::Z_ContentAutomatic;
 	pList.insert("librevenge:zone-style", int(zone));
-
 	librevenge::RVNGString hashKey = pList.getPropString();
 	if (mStyleNameMap.find(hashKey) != mStyleNameMap.end())
 		return mStyleNameMap.find(hashKey)->second;
@@ -122,11 +125,36 @@ librevenge::RVNGString GraphicStyleManager::findOrAdd(librevenge::RVNGPropertyLi
 		name.sprintf("gr_%i", (int) mStyleNameMap.size());
 
 	mStyleNameMap[hashKey]=name;
-	shared_ptr<GraphicStyle> style(new GraphicStyle(propList, name.cstr(), zone));
+
+	pList.remove("librevenge:zone-style");
+	if (pList["librevenge:parent-display-name"])
+	{
+		// replace "librevenge:parent-display-name" by the final "style:parent-style-name"
+		librevenge::RVNGString pName(pList["librevenge:parent-display-name"]->getStr());
+		pList.remove("librevenge:parent-display-name");
+		if (mDisplayNameMap.find(pName) != mDisplayNameMap.end())
+			pList.insert("style:parent-style-name", mDisplayNameMap.find(pName)->second);
+		else
+		{
+			ODFGEN_DEBUG_MSG(("GraphicStyleManager::findOrAdd: can not find any style with name %s\n", pName.cstr()));
+		}
+	}
+	shared_ptr<GraphicStyle> style(new GraphicStyle(pList, name.cstr(), zone));
 	mStyles.push_back(style);
 
+	if (propList["style:display-name"] && !propList["style:display-name"]->getStr().empty())
+		mDisplayNameMap[propList["style:display-name"]->getStr()]=name;
 	return name;
 }
+
+librevenge::RVNGString GraphicStyleManager::getFinalDisplayName(const librevenge::RVNGString &displayName)
+{
+	if (mDisplayNameMap.find(displayName) != mDisplayNameMap.end())
+		return mDisplayNameMap.find(displayName)->second;
+	ODFGEN_DEBUG_MSG(("GraphicStyleManager::getName: can not find style with display name: %s\n", displayName.cstr()));
+	return librevenge::RVNGString("");
+}
+
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
@@ -212,9 +240,33 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForStrokeDash(librevenge
 
 void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList const &style, librevenge::RVNGPropertyList &element)
 {
+	bool isStyleNamed=false, hasParent=false;
+	if (style["style:display-name"])
+	{
+		element.insert("style:display-name", style["style:display-name"]->getStr());
+		isStyleNamed=true;
+	}
+	if (style["librevenge:parent-display-name"])
+	{
+		hasParent=true;
+		element.insert("librevenge:parent-display-name", style["librevenge:parent-display-name"]->getStr());
+	}
 	if (style["draw:stroke"] && style["draw:stroke"]->getStr() == "none")
 		element.insert("draw:stroke", "none");
 	else
+	{
+		librevenge::RVNGString name("");
+		if (style["draw:stroke"] && style["draw:stroke"]->getStr() == "dash")
+			name=getStyleNameForStrokeDash(style);
+		if (!name.empty())
+		{
+			element.insert("draw:stroke", "dash");
+			element.insert("draw:stroke-dash", name);
+		}
+		else
+			element.insert("draw:stroke", "solid");
+	}
+	if (!style["draw:stroke"] || style["draw:stroke"]->getStr() != "none" || isStyleNamed)
 	{
 		if (style["svg:stroke-width"])
 			element.insert("svg:stroke-width", style["svg:stroke-width"]->getStr());
@@ -226,17 +278,6 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 			element.insert("draw:stroke-linejoin", style["svg:stroke-linejoin"]->getStr());
 		if (style["svg:stroke-linecap"])
 			element.insert("svg:stroke-linecap", style["svg:stroke-linecap"]->getStr());
-
-		librevenge::RVNGString name("");
-		if (style["draw:stroke"] && style["draw:stroke"]->getStr() == "dash")
-			name=getStyleNameForStrokeDash(style);
-		if (!name.empty())
-		{
-			element.insert("draw:stroke", "dash");
-			element.insert("draw:stroke-dash", name);
-		}
-		else
-			element.insert("draw:stroke", "solid");
 	}
 
 	if (style["draw:color-mode"] && style["draw:color-mode"]->getStr().len() > 0)
@@ -255,7 +296,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 		element.insert("draw:blue", style["draw:blue"]->getStr());
 
 	// only append shadow props if the shape is filled
-	if (!style["draw:fill"] || style["draw:fill"]->getStr() != "none")
+	if (!style["draw:fill"] || style["draw:fill"]->getStr() != "none" || isStyleNamed)
 	{
 		if (style["draw:shadow"])
 			element.insert("draw:shadow", style["draw:shadow"]->getStr());
@@ -280,29 +321,31 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 	{
 		librevenge::RVNGString marker=getStyleNameForMarker(style, true);
 		if (!marker.empty())
-		{
 			element.insert("draw:marker-start", marker);
-			if (style["draw:marker-start-center"])
-				element.insert("draw:marker-start-center", style["draw:marker-start-center"]->getStr());
-			if (style["draw:marker-start-width"])
-				element.insert("draw:marker-start-width", style["draw:marker-start-width"]->getStr());
-			else
-				element.insert("draw:marker-start-width", "0.118in");
-		}
+	}
+	if (style["draw:marker-start-path"] || isStyleNamed || hasParent)
+	{
+		if (style["draw:marker-start-center"])
+			element.insert("draw:marker-start-center", style["draw:marker-start-center"]->getStr());
+		if (style["draw:marker-start-width"])
+			element.insert("draw:marker-start-width", style["draw:marker-start-width"]->getStr());
+		else
+			element.insert("draw:marker-start-width", "0.118in");
 	}
 	if (style["draw:marker-end-path"])
 	{
 		librevenge::RVNGString marker=getStyleNameForMarker(style, false);
 		if (!marker.empty())
-		{
 			element.insert("draw:marker-end", marker);
-			if (style["draw:marker-end-center"])
-				element.insert("draw:marker-end-center", style["draw:marker-end-center"]->getStr());
-			if (style["draw:marker-end-width"])
-				element.insert("draw:marker-end-width", style["draw:marker-end-width"]->getStr());
-			else
-				element.insert("draw:marker-end-width", "0.118in");
-		}
+	}
+	if (style["draw:marker-end-path"] || isStyleNamed || hasParent)
+	{
+		if (style["draw:marker-end-center"])
+			element.insert("draw:marker-end-center", style["draw:marker-end-center"]->getStr());
+		if (style["draw:marker-end-width"])
+			element.insert("draw:marker-end-width", style["draw:marker-end-width"]->getStr());
+		else
+			element.insert("draw:marker-end-width", "0.118in");
 	}
 	// other
 	char const *(others[])=
