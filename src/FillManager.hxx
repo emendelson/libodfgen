@@ -36,7 +36,8 @@ class FillManager
 {
 public:
 	FillManager() : mBitmapStyles(), mGradientStyles(), mHatchStyles(), mOpacityStyles(),
-		mBitmapNameMap(), mGradientNameMap(), mHatchNameMap(), mOpacityNameMap()
+		mBitmapNameMap(), mGradientNameMap(), mDisplayGradientNameMap(),
+		mHatchNameMap(), mDisplayHatchNameMap(), mOpacityNameMap(), mDisplayOpacityNameMap()
 	{}
 
 	void clean();
@@ -66,10 +67,16 @@ private:
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mBitmapNameMap;
 	// gradient hash -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mGradientNameMap;
+	// display style name -> gradient style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayGradientNameMap;
 	// hatch hash -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mHatchNameMap;
+	// display style name -> hatch style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayHatchNameMap;
 	// opacity hash -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mOpacityNameMap;
+	// display style name -> opacity style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayOpacityNameMap;
 };
 
 #endif

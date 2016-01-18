@@ -35,8 +35,11 @@ void FillManager::clean()
 
 	mBitmapNameMap.clear();
 	mGradientNameMap.clear();
+	mDisplayGradientNameMap.clear();
 	mHatchNameMap.clear();
+	mDisplayHatchNameMap.clear();
 	mOpacityNameMap.clear();
+	mDisplayOpacityNameMap.clear();
 }
 
 void FillManager::write(OdfDocumentHandler *pHandler) const
@@ -77,7 +80,9 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 {
 	needCreateOpacityStyle=false;
 
-	bool checkEmpty=style["style:display-name"]!=0 || style["librevenge:parent-display-name"]!=0;
+	bool isStyle=style["style:display-name"]!=0;
+	bool hasParent=style["librevenge:parent-display-name"]!=0;
+	bool checkEmpty=isStyle || hasParent;
 	librevenge::RVNGPropertyList pList;
 	if (!checkEmpty)
 	{
@@ -119,7 +124,16 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 		if (style[wh[i]])
 			pList.insert(wh[i], style[wh[i]]->getStr());
 	}
-	if (pList.empty()) return "";
+	if (pList.empty())
+	{
+		if (isStyle && hasParent)
+		{
+			librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+			if (mDisplayGradientNameMap.find(pName)!=mDisplayGradientNameMap.end())
+				mDisplayGradientNameMap[style["style:display-name"]->getStr()]=mDisplayGradientNameMap.find(pName)->second;
+		}
+		return "";
+	}
 	librevenge::RVNGString hashKey = pList.getPropString();
 	if (mGradientNameMap.find(hashKey) != mGradientNameMap.end())
 		return mGradientNameMap.find(hashKey)->second;
@@ -127,9 +141,16 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 	librevenge::RVNGString name;
 	name.sprintf("Gradient_%i", (int) mGradientNameMap.size());
 	mGradientNameMap[hashKey]=name;
+	if (isStyle) mDisplayGradientNameMap[style["style:display-name"]->getStr()]=name;
 
 	TagOpenElement *openElement = new TagOpenElement("draw:gradient");
 	openElement->addAttribute("draw:name", name);
+	if (hasParent)
+	{
+		librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+		if (mDisplayGradientNameMap.find(pName)!=mDisplayGradientNameMap.end())
+			openElement->addAttribute("style:parent-style-name", mDisplayGradientNameMap.find(pName)->second);
+	}
 	if (pList["draw:style"])
 		openElement->addAttribute("draw:style", pList["draw:style"]->getStr());
 	if (!angleValue.empty())
@@ -181,6 +202,8 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropertyList const &style)
 {
 	librevenge::RVNGPropertyList pList;
+	bool isStyle=style["style:display-name"]!=0;
+	bool hasParent=style["librevenge:parent-display-name"]!=0;
 	// basic data
 	char const *wh[] = { "draw:color", "draw:distance", "draw:rotation", "draw:style" };
 	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
@@ -188,8 +211,16 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 		if (style[wh[i]])
 			pList.insert(wh[i], style[wh[i]]->getStr());
 	}
-	if (pList.empty() && (style["style:display-name"] || style["librevenge:parent-display-name"]))
+	if (pList.empty() && (isStyle || hasParent))
+	{
+		if (isStyle && hasParent)
+		{
+			librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+			if (mDisplayHatchNameMap.find(pName)!=mDisplayHatchNameMap.end())
+				mDisplayHatchNameMap[style["style:display-name"]->getStr()]=mDisplayHatchNameMap.find(pName)->second;
+		}
 		return "";
+	}
 	librevenge::RVNGString hashKey = pList.getPropString();
 	if (mHatchNameMap.find(hashKey) != mHatchNameMap.end())
 		return mHatchNameMap.find(hashKey)->second;
@@ -197,9 +228,16 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 	librevenge::RVNGString name;
 	name.sprintf("Hatch_%i", (int) mHatchNameMap.size());
 	mHatchNameMap[hashKey]=name;
+	if (isStyle) mDisplayHatchNameMap[style["style:display-name"]->getStr()]=name;
 
 	TagOpenElement *openElement = new TagOpenElement("draw:hatch");
 	openElement->addAttribute("draw:name", name);
+	if (hasParent)
+	{
+		librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+		if (mDisplayHatchNameMap.find(pName)!=mDisplayHatchNameMap.end())
+			openElement->addAttribute("style:parent-style-name", mDisplayHatchNameMap.find(pName)->second);
+	}
 	if (style["draw:color"])
 		openElement->addAttribute("draw:color", style["draw:color"]->getStr());
 	if (style["draw:distance"])
@@ -223,11 +261,18 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 
 librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPropertyList const &style)
 {
+	bool isStyle=style["style:display-name"]!=0;
+	bool hasParent=style["librevenge:parent-display-name"]!=0;
+	bool checkEmpty=isStyle || hasParent;
+
 	librevenge::RVNGPropertyList pList;
 	// default value
-	pList.insert("draw:border", "0%");
-	pList.insert("draw:start", "100%");
-	pList.insert("draw:end", "100%");
+	if (!checkEmpty)
+	{
+		pList.insert("draw:border", "0%");
+		pList.insert("draw:start", "100%");
+		pList.insert("draw:end", "100%");
+	}
 	// property rename
 	if (style["svg:cx"])
 		pList.insert("draw:cx", style["svg:cx"]->getStr());
@@ -249,14 +294,17 @@ librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPrope
 			pList.insert("draw:end", (*gradient)[0]["svg:stop-opacity"]->getStr());
 	}
 	// prepare angle: ODG angle unit is 0.1 degree
-	double angle = style["draw:angle"] ? style["draw:angle"]->getDouble() : 0.0;
-	while (angle < 0)
-		angle += 360;
-	while (angle > 360)
-		angle -= 360;
-	librevenge::RVNGString sValue;
-	sValue.sprintf("%i", (unsigned)(angle*10));
-	pList.insert("draw:angle", sValue);
+	librevenge::RVNGString angleValue;
+	if (!checkEmpty || style["draw:angle"])
+	{
+		double angle = style["draw:angle"] ? style["draw:angle"]->getDouble() : 0.0;
+		while (angle < 0)
+			angle += 360;
+		while (angle > 360)
+			angle -= 360;
+		angleValue.sprintf("%i", (unsigned)(angle*10));
+		pList.insert("draw:angle", angleValue);
+	}
 	// basic data
 	char const *(wh[]) = { "draw:border", "draw:cx", "draw:cy"	};
 	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
@@ -264,7 +312,16 @@ librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPrope
 		if (style[wh[i]])
 			pList.insert(wh[i], style[wh[i]]->getStr());
 	}
-
+	if (pList.empty())
+	{
+		if (isStyle && hasParent)
+		{
+			librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+			if (mDisplayOpacityNameMap.find(pName)!=mDisplayOpacityNameMap.end())
+				mDisplayOpacityNameMap[style["style:display-name"]->getStr()]=mDisplayOpacityNameMap.find(pName)->second;
+		}
+		return "";
+	}
 	librevenge::RVNGString hashKey = pList.getPropString();
 	if (mOpacityNameMap.find(hashKey) != mOpacityNameMap.end())
 		return mOpacityNameMap.find(hashKey)->second;
@@ -272,10 +329,18 @@ librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPrope
 	librevenge::RVNGString name;
 	name.sprintf("Transparency_%i", (int) mOpacityNameMap.size());
 	mOpacityNameMap[hashKey]=name;
+	if (isStyle) mDisplayOpacityNameMap[style["style:display-name"]->getStr()]=name;
 
 	TagOpenElement *openElement = new TagOpenElement("draw:opacity");
 	openElement->addAttribute("draw:name", name);
-	openElement->addAttribute("draw:angle", sValue);
+	if (hasParent)
+	{
+		librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+		if (mDisplayOpacityNameMap.find(pName)!=mDisplayOpacityNameMap.end())
+			openElement->addAttribute("style:parent-style-name", mDisplayOpacityNameMap.find(pName)->second);
+	}
+	if (!angleValue.empty())
+		openElement->addAttribute("draw:angle", angleValue);
 	if (pList["draw:border"])
 		openElement->addAttribute("draw:border", pList["draw:border"]->getStr());
 	if (pList["draw:cx"])
