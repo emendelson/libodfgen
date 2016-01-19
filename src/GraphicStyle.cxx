@@ -83,8 +83,8 @@ void GraphicStyleManager::clean()
 
 	mMarkerNameMap.clear();
 	mStrokeDashNameMap.clear();
+	mDisplayStrokeDashNameMap.clear();
 	mStyleNameMap.clear();
-
 	mDisplayNameMap.clear();
 }
 
@@ -197,10 +197,14 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForMarker(librevenge::RV
 
 librevenge::RVNGString GraphicStyleManager::getStyleNameForStrokeDash(librevenge::RVNGPropertyList const &style)
 {
+	bool isStyle=style["style:display-name"]!=0;
+	bool hasParent=style["librevenge:parent-display-name"]!=0;
+	bool checkEmpty=isStyle || hasParent;
+
 	librevenge::RVNGPropertyList pList;
 	if (style["svg:stroke-linecap"])
 		pList.insert("draw:style", style["svg:stroke-linecap"]->getStr());
-	else
+	else if (!checkEmpty)
 		pList.insert("draw:style", "rect");
 	if (style["draw:distance"])
 		pList.insert("draw:distance", style["draw:distance"]->getStr());
@@ -212,6 +216,17 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForStrokeDash(librevenge
 		pList.insert("draw:dots2", style["draw:dots2"]->getStr());
 	if (style["draw:dots2-length"])
 		pList.insert("draw:dots2-length", style["draw:dots2-length"]->getStr());
+	if (pList.empty())
+	{
+		if (isStyle && hasParent)
+		{
+			librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+			if (mDisplayStrokeDashNameMap.find(pName)!=mDisplayStrokeDashNameMap.end())
+				mDisplayStrokeDashNameMap[style["style:display-name"]->getStr()]=mDisplayStrokeDashNameMap.find(pName)->second;
+		}
+		return "";
+	}
+
 	librevenge::RVNGString hashKey = pList.getPropString();
 	if (mStrokeDashNameMap.find(hashKey) != mStrokeDashNameMap.end())
 		return mStrokeDashNameMap.find(hashKey)->second;
@@ -219,10 +234,18 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForStrokeDash(librevenge
 	librevenge::RVNGString name;
 	name.sprintf("Dash_%i", (int) mStrokeDashNameMap.size());
 	mStrokeDashNameMap[hashKey]=name;
+	if (isStyle) mDisplayStrokeDashNameMap[style["style:display-name"]->getStr()]=name;
 
 	TagOpenElement *openElement = new TagOpenElement("draw:stroke-dash");
 	openElement->addAttribute("draw:name", name);
-	openElement->addAttribute("draw:style", pList["draw:style"]->getStr());
+	if (hasParent)
+	{
+		librevenge::RVNGString pName=style["librevenge:parent-display-name"]->getStr();
+		if (mDisplayStrokeDashNameMap.find(pName)!=mDisplayStrokeDashNameMap.end())
+			openElement->addAttribute("style:parent-style-name", mDisplayStrokeDashNameMap.find(pName)->second);
+	}
+	if (pList["draw:style"])
+		openElement->addAttribute("draw:style", pList["draw:style"]->getStr());
 	if (pList["draw:distance"])
 		openElement->addAttribute("draw:distance", pList["draw:distance"]->getStr());
 	if (pList["draw:dots1"])

@@ -57,7 +57,7 @@ public:
 	explicit GraphicStyleManager(FillManager &fillManager)
 		: mFillManager(fillManager)
 		, mMarkerStyles(), mStrokeDashStyles(), mStyles()
-		, mMarkerNameMap(), mStrokeDashNameMap(), mStyleNameMap()
+		, mMarkerNameMap(), mStrokeDashNameMap(), mDisplayStrokeDashNameMap(), mStyleNameMap()
 		, mDisplayNameMap() {}
 	virtual ~GraphicStyleManager()
 	{
@@ -98,6 +98,8 @@ protected:
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mMarkerNameMap;
 	// stroke dash hash -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mStrokeDashNameMap;
+	// display style name -> stroke dash style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayStrokeDashNameMap;
 	// style hash -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mStyleNameMap;
 	// display name -> style name
