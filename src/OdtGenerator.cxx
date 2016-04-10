@@ -682,10 +682,21 @@ void OdtGenerator::closeUnorderedListLevel()
 
 void OdtGenerator::openListElement(const librevenge::RVNGPropertyList &propList)
 {
-	mpImpl->openListElement(propList);
-
-	if (mpImpl->getCurrentStorage() == &mpImpl->getBodyStorage())
-		mpImpl->getState().mbFirstParagraphInPageSpan = false;
+	librevenge::RVNGPropertyList finalPropList(propList);
+	if (mpImpl->getState().mbFirstParagraphInPageSpan && mpImpl->getCurrentStorage() == &mpImpl->getBodyStorage())
+	{
+		if (!mpImpl->mpCurrentPageSpan)
+		{
+			ODFGEN_DEBUG_MSG(("OdtGenerator::openParagraph: can not find the current page\n"));
+		}
+		else
+		{
+			finalPropList.insert("style:master-page-name", mpImpl->mpCurrentPageSpan->getMasterName());
+			mpImpl->getState().mbFirstElement = false;
+			mpImpl->getState().mbFirstParagraphInPageSpan = false;
+		}
+	}
+	mpImpl->openListElement(finalPropList);
 }
 
 void OdtGenerator::closeListElement()

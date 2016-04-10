@@ -872,7 +872,6 @@ void OdfGenerator::openListLevel(const librevenge::RVNGPropertyList &propList, b
 		if (state.mpCurrentListStyle)
 			pListLevelOpenElement->addAttribute("text:style-name", state.mpCurrentListStyle->getName());
 	}
-
 	if (ordered && state.mbListContinueNumbering)
 		pListLevelOpenElement->addAttribute("text:continue-numbering", "true");
 	mpCurrentStorage->push_back(pListLevelOpenElement);
@@ -926,6 +925,8 @@ void OdfGenerator::openListElement(const librevenge::RVNGPropertyList &propList)
 
 	TagOpenElement *pOpenListElementParagraph = new TagOpenElement("text:p");
 	pOpenListElementParagraph->addAttribute("text:style-name", paragName);
+	if (propList["style:master-page-name"])
+		pOpenListElementParagraph->addAttribute("style:master-page-name",propList["style:master-page-name"]->getStr());
 	mpCurrentStorage->push_back(pOpenListElementParagraph);
 
 	state.mbListElementOpened.top() = true;
@@ -1077,6 +1078,25 @@ void OdfGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 {
 	if (!propList["office:binary-data"] || !propList["librevenge:mime-type"])
 	{
+		// check for xlink
+		if (propList["librevenge:xlink"])
+		{
+			TagOpenElement *openElement = new TagOpenElement("draw:image");
+
+			openElement->addAttribute("xlink:href", propList["librevenge:xlink"]->getStr());
+			openElement->addAttribute("xlink:type", "simple");
+			openElement->addAttribute("xlink:show", "embed");
+
+			mpCurrentStorage->push_back(openElement);
+			mpCurrentStorage->push_back(new TagCloseElement("draw:image"));
+
+			librevenge::RVNGPropertyListVector const *replacements=propList.child("librevenge:replacement-objects");
+			if (!replacements)
+				return;
+			for (unsigned long c=0; c < replacements->count(); ++c)
+				insertBinaryObject((*replacements)[c]);
+			return;
+		}
 		ODFGEN_DEBUG_MSG(("OdfGenerator::addDocumentHandler: can not find data or mimetype\n"));
 		return;
 	}
