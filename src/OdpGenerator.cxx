@@ -159,6 +159,14 @@ void OdpGeneratorPrivate::updatePageSpanPropertiesToCreatePage(librevenge::RVNGP
 		pList.insert("draw:fill", "none");
 	librevenge::RVNGPropertyList drawingPageStyle;
 	mFillManager.addProperties(pList, drawingPageStyle);
+	if (pList["presentation:duration"])
+		drawingPageStyle.insert("presentation:duration", pList["presentation:duration"]->getStr());
+	else if (pList["presentation:transition-speed"])
+		drawingPageStyle.insert("presentation:transition-speed", pList["presentation:transition-speed"]->getStr());
+	if (pList["smil:type"])
+		drawingPageStyle.insert("smil:type", pList["smil:type"]->getStr());
+	if (pList["smil:subtype"])
+		drawingPageStyle.insert("smil:subtype", pList["smil:subtype"]->getStr());
 	librevenge::RVNGPropertyListVector drawingPageVector;
 	drawingPageVector.append(drawingPageStyle);
 	pList.insert("librevenge:drawing-page", drawingPageVector);
@@ -167,8 +175,8 @@ void OdpGeneratorPrivate::updatePageSpanPropertiesToCreatePage(librevenge::RVNGP
 	librevenge::RVNGPropertyList::Iter i(pList);
 	for (i.rewind(); i.next();)
 	{
-		if ((strncmp(i.key(), "draw:", 5) == 0) || (strncmp(i.key(), "presentation:", 13) == 0)
-		        || (strcmp(i.key(), "style:repeat") == 0))
+		if ((strncmp(i.key(), "draw:", 5) == 0) || (strncmp(i.key(), "smil:", 5) == 0) ||
+		        (strncmp(i.key(), "presentation:", 13) == 0) || (strcmp(i.key(), "style:repeat") == 0))
 			removedKeys.push_back(i.key());
 	}
 	for (std::deque<std::string>::const_iterator it = removedKeys.begin(); it != removedKeys.end(); ++it)
@@ -464,6 +472,8 @@ bool OdpGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 	// WARNING: this is not ODF!
 	docContentPropList.addAttribute("xmlns:ooo", "http://openoffice.org/2004/office");
 	docContentPropList.addAttribute("xmlns:officeooo", "http://openoffice.org/2009/office");
+	docContentPropList.addAttribute("xmlns:anim","urn:oasis:names:tc:opendocument:xmlns:animation:1.0");
+	docContentPropList.addAttribute("xmlns:smil","urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0");
 	docContentPropList.addAttribute("office:version", "1.0", true);
 	if (streamType == ODF_FLAT_XML)
 		docContentPropList.addAttribute("office:mimetype", "application/vnd.oasis.opendocument.presentation");
@@ -569,13 +579,6 @@ void OdpGenerator::startSlide(const ::librevenge::RVNGPropertyList &propList)
 	librevenge::RVNGPropertyList pList(propList);
 
 	mpImpl->mpCurrentPageSpan=0;
-	if (pList["librevenge:master-page-name"])
-	{
-		mpImpl->mpCurrentPageSpan=mpImpl->getPageSpanManager().get(pList["librevenge:master-page-name"]->getStr());
-		if (!mpImpl->mpCurrentPageSpan)
-			pList.remove("librevenge:master-page-name");
-	}
-
 	if (!mpImpl->mpCurrentPageSpan)
 	{
 		mpImpl->updatePageSpanPropertiesToCreatePage(pList);
@@ -702,6 +705,8 @@ void OdpGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propL
 		style.insert("style:mirror", "horizontal");
 	else
 		style.insert("style:mirror", "none");
+	if (propList["fo:clip"])
+		style.insert("fo:clip", propList["fo:clip"]->getStr());
 	if (propList["draw:color-mode"])
 		style.insert("draw:color-mode", propList["draw:color-mode"]->getStr());
 	if (propList["draw:luminance"])
