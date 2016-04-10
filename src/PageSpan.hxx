@@ -80,6 +80,11 @@ public:
 	PageSpan(librevenge::RVNGString const &masterName, librevenge::RVNGString const &masterDisplay="", bool isMasterPage=false);
 	virtual ~PageSpan();
 	void writeMasterPages(OdfDocumentHandler *pHandler) const;
+	//! returns true if this is a master page
+	bool isMasterPage() const
+	{
+		return mbIsMasterPage;
+	}
 	//! returns the display name of the span's master page
 	librevenge::RVNGString getDisplayMasterName() const
 	{

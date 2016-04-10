@@ -83,7 +83,7 @@ void PageLayoutStyle::resetPageSizeAndMargins(double width, double height)
 	mpPropList.insert("fo:margin-bottom", "0in");
 	mpPropList.insert("fo:margin-left", "0in");
 	mpPropList.insert("fo:margin-right", "0in");
-	mpPropList.insert("style:print-orientation", "portrait");
+	mpPropList.insert("style:print-orientation", (width > height) ? "landscape" : "portrait");
 }
 
 void PageLayoutStyle::write(OdfDocumentHandler *pHandler) const
@@ -110,9 +110,9 @@ void PageLayoutStyle::write(OdfDocumentHandler *pHandler) const
 
 	double width = mpPropList["svg:width"] ? mpPropList["svg:width"]->getDouble() : 0.0;
 	double height = mpPropList["svg:height"] ? mpPropList["svg:height"]->getDouble() : 0.0;
-	if (width > height)
+	if (width > height && width>0)
 		tempPropList.insert("style:print-orientation", "landscape");
-	else
+	else if (height>0)
 		tempPropList.insert("style:print-orientation", "portrait");
 
 	pHandler->startElement("style:page-layout-properties", tempPropList);
@@ -141,8 +141,9 @@ void PageLayoutStyle::write(OdfDocumentHandler *pHandler) const
 	pHandler->endElement("style:footnote-sep");
 	pHandler->endElement("style:page-layout-properties");
 
-	for (int j=0; j<2; ++j) {
-		char const *(wh[])={"librevenge:header", "librevenge:footer"};
+	for (int j=0; j<2; ++j)
+	{
+		char const *(wh[])= {"librevenge:header", "librevenge:footer"};
 		if (!mpPropList.child(wh[j]) || mpPropList.child(wh[j])->count()!=1)
 			continue;
 		pHandler->startElement(j==0 ? "style:header-style" : "style:footer-style", librevenge::RVNGPropertyList());
@@ -301,10 +302,11 @@ PageSpan *PageSpanManager::add(const librevenge::RVNGPropertyList &xPropList, bo
 {
 	librevenge::RVNGPropertyList propList(xPropList);
 	// first find the master-page name
-	librevenge::RVNGString displayName("");
+	librevenge::RVNGString displayName(""), master("");
 	if (xPropList["librevenge:master-page-name"])
 	{
-		displayName.appendEscapedXML(xPropList["librevenge:master-page-name"]->getStr());
+		master=xPropList["librevenge:master-page-name"]->getStr();
+		displayName.appendEscapedXML(master);
 		propList.remove("librevenge:master-page-name");
 	}
 	if (isMasterPage)
@@ -320,14 +322,23 @@ PageSpan *PageSpanManager::add(const librevenge::RVNGPropertyList &xPropList, bo
 			return 0;
 		}
 	}
-	librevenge::RVNGString masterName("");
-	masterName.sprintf("PM%i", (int) mpPageList.size());
 
-	shared_ptr<PageSpan> page(new PageSpan(masterName, displayName, isMasterPage));
+	librevenge::RVNGString masterName("");
+	if (!isMasterPage && !master.empty())
+	{
+		PageSpan *masterPage=get(master);
+		if (masterPage) masterName=masterPage->getMasterName();
+	}
+	bool createNewMaster=false;
+	if (masterName.empty())
+	{
+		createNewMaster=true;
+		masterName.sprintf("PM%i", (int) mpPageList.size());
+	}
+	shared_ptr<PageSpan> page(new PageSpan(masterName, displayName, createNewMaster));
 	mpPageList.push_back(page);
 	if (isMasterPage)
 		mpNameToMasterMap[displayName]=page;
-
 	// now find the layout page name
 	page->setLayoutName(findOrAddLayout(xPropList));
 	// now find the page drawing style (if needed)
@@ -400,8 +411,9 @@ librevenge::RVNGString PageSpanManager::findOrAddLayout(const librevenge::RVNGPr
 		        strncmp(i.key(), "librevenge:",11)==0) continue;
 		layoutList.insert(i.key(), i()->clone());
 	}
-	for (int j=0; j<3; ++j) {
-		char const *(wh[])={"librevenge:footnote", "librevenge:header", "librevenge:footer"};
+	for (int j=0; j<3; ++j)
+	{
+		char const *(wh[])= {"librevenge:footnote", "librevenge:header", "librevenge:footer"};
 		if (propList.child(wh[j]))
 			layoutList.insert(wh[j], *propList.child(wh[j]));
 	}
@@ -445,7 +457,7 @@ void PageSpanManager::writeMasterPages(OdfDocumentHandler *pHandler) const
 {
 	for (size_t i=0; i<mpPageList.size(); ++i)
 	{
-		if (!mpPageList[i]) continue;
+		if (!mpPageList[i] || !mpPageList[i]->isMasterPage()) continue;
 		mpPageList[i]->writeMasterPages(pHandler);
 	}
 }
