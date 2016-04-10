@@ -373,6 +373,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 	// other
 	char const *(others[])=
 	{
+		"draw:auto-grow-height",
 		"draw:ole-draw-aspect",
 		"draw:show-unit",
 		"fo:background-color",
