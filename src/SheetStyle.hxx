@@ -36,21 +36,9 @@
 #include "Style.hxx"
 
 class OdfDocumentHandler;
+class NumberingManager;
 class SheetManager;
 class SheetStyle;
-
-class SheetNumberingStyle : public Style
-{
-public:
-	SheetNumberingStyle(const librevenge::RVNGPropertyList &xPropList, const librevenge::RVNGString &psName);
-	virtual ~SheetNumberingStyle() {};
-	void writeStyle(OdfDocumentHandler *pHandler, SheetManager const &manager) const;
-
-private:
-	void writeCondition(librevenge::RVNGPropertyList const &propList, OdfDocumentHandler *pHandler, SheetManager const &manager) const;
-
-	librevenge::RVNGPropertyList mPropList;
-};
 
 class SheetCellStyle : public Style
 {
@@ -110,12 +98,12 @@ private:
 	SheetStyle &operator=(const SheetStyle &);
 };
 
-/** main class to create/store/write the sheet and the numbering styles */
+/** main class to create/store/write the sheet styles */
 class SheetManager
 {
 public:
 	//! constructor
-	SheetManager();
+	SheetManager(NumberingManager &numberingManager);
 	//! destructor
 	virtual ~SheetManager();
 	//! clean all data
@@ -143,23 +131,28 @@ public:
 	bool openSheet(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone);
 	//! close the last sheet
 	bool closeSheet();
-
-	//! create a new numbering style
-	void addNumberingStyle(const librevenge::RVNGPropertyList &xPropList);
-	//! return the style name corresponding to a local name
-	librevenge::RVNGString getNumberingStyleName(librevenge::RVNGString const &localName) const;
+	//! returns the numbering manager
+	NumberingManager &getNumberingManager()
+	{
+		return mpNumberingManager;
+	}
+	//! returns the numbering manager
+	const NumberingManager &getNumberingManager() const
+	{
+		return mpNumberingManager;
+	}
 
 	static librevenge::RVNGString convertFormula(const librevenge::RVNGPropertyListVector &formatsList);
 	static librevenge::RVNGString convertCellRange(const librevenge::RVNGPropertyList &cell);
 	static librevenge::RVNGString convertCellsRange(const librevenge::RVNGPropertyList &cells);
 
 private:
+	//! the numbering manager
+	NumberingManager &mpNumberingManager;
 	//! flag to know if the last sheet is opened or closed
 	bool mbSheetOpened;
 	//! the list of style
 	std::vector<shared_ptr<SheetStyle> > mSheetStyles;
-	//! style name -> NumberingStyle
-	std::map<librevenge::RVNGString, shared_ptr<SheetNumberingStyle> > mNumberingHash;
 };
 #endif
 

@@ -52,7 +52,7 @@ using namespace libodfgen;
 OdfGenerator::OdfGenerator() :
 	mpCurrentStorage(&mBodyStorage), mStorageStack(), mMetaDataStorage(), mBodyStorage(),
 	mPageSpanManager(), mFontManager(), mFillManager(), mGraphicManager(mFillManager), mSpanManager(),
-	mParagraphManager(), mListManager(), mTableManager(),
+	mParagraphManager(), mNumberingManager(), mListManager(), mTableManager(),
 	mbInHeaderFooter(false), mbInMasterPage(false),
 	mIdSpanMap(), mIdSpanNameMap(), mLastSpanName(""),
 	mIdParagraphMap(), mIdParagraphNameMap(), mLastParagraphName(""),
@@ -69,6 +69,7 @@ OdfGenerator::OdfGenerator() :
 
 OdfGenerator::~OdfGenerator()
 {
+	mNumberingManager.clean();
 	mParagraphManager.clean();
 	mSpanManager.clean();
 	mFontManager.clean();
@@ -681,7 +682,43 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	TagOpenElement *openElement = new TagOpenElement(type);
 	if (type == "text:page-number")
 		openElement->addAttribute("text:select-page", propList["text:select-page"] ? propList["text:select-page"]->getStr() : "current");
+	else if (type == "text:date" || type == "text:time")
+	{
+		// TODO: create a library function to avoid dupplicated code with OdsGenerator::openSheetCell
+		if (type == "text:date" && propList["librevenge:day"] && propList["librevenge:month"] && propList["librevenge:year"])
+		{
+			librevenge::RVNGString date;
+			if (propList["librevenge:hours"])
+			{
+				int minute=propList["librevenge:minutes"] ? propList["librevenge:minutes"]->getInt() : 0;
+				int second=propList["librevenge:seconds"] ? propList["librevenge:seconds"]->getInt() : 0;
+				date.sprintf("%04d-%02d-%02dT%02d:%02d:%02d", propList["librevenge:year"]->getInt(),
+				             propList["librevenge:month"]->getInt(),  propList["librevenge:day"]->getInt(),
+				             propList["librevenge:hours"]->getInt(), minute, second);
+			}
+			else
+				date.sprintf("%04d-%02d-%02d", propList["librevenge:year"]->getInt(),
+				             propList["librevenge:month"]->getInt(),  propList["librevenge:day"]->getInt());
+			openElement->addAttribute("text:date-value", date);
+		}
+		else if (type == "text:time" && propList["librevenge:hours"])
+		{
+			int minute=propList["librevenge:minutes"] ? propList["librevenge:minutes"]->getInt() : 0;
+			int second=propList["librevenge:seconds"] ? propList["librevenge:seconds"]->getInt() : 0;
+			librevenge::RVNGString time;
+			time.sprintf("PT%02dH%02dM%02dS", propList["librevenge:hours"]->getInt(), minute, second);
+			openElement->addAttribute("office:time-value", time);
+		}
 
+		if (propList["librevenge:value-type"])
+		{
+			librevenge::RVNGString numberingName=mNumberingManager.findOrAdd(propList);
+			if (!numberingName.empty())
+				openElement->addAttribute("style:data-style-name", numberingName.cstr());
+		}
+		if (propList["text:fixed"])
+			openElement->addAttribute("text:fixed", propList["text:fixed"]->getStr());
+	}
 	if (propList["style:num-format"])
 		openElement->addAttribute("style:num-format", propList["style:num-format"]->getStr());
 

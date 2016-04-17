@@ -31,207 +31,10 @@
 
 #include "DocumentElement.hxx"
 #include "FilterInternal.hxx"
+#include "NumberingStyle.hxx"
 #include "TextRunStyle.hxx"
 
 #include "SheetStyle.hxx"
-
-SheetNumberingStyle::SheetNumberingStyle(const librevenge::RVNGPropertyList &xPropList, const librevenge::RVNGString &psName)
-	: Style(psName), mPropList(xPropList)
-{
-}
-
-void SheetNumberingStyle::writeCondition(librevenge::RVNGPropertyList const &propList, OdfDocumentHandler *pHandler, SheetManager const &manager) const
-{
-	librevenge::RVNGString applyName("");
-	librevenge::RVNGPropertyListVector const *formula=propList.child("librevenge:formula");
-	librevenge::RVNGString formulaString("");
-	if (!formula||!propList["librevenge:name"]||
-	        (applyName=manager.getNumberingStyleName(propList["librevenge:name"]->getStr())).empty() ||
-	        (formulaString=SheetManager::convertFormula(*formula)).empty())
-	{
-		ODFGEN_DEBUG_MSG(("SheetNumberingStyle::writeCondition: can not find condition data\n"));
-		return;
-	}
-	TagOpenElement mapOpen("style:map");
-	mapOpen.addAttribute("style:condition",formulaString);
-	mapOpen.addAttribute("style:apply-style-name",applyName);
-	mapOpen.write(pHandler);
-	TagCloseElement("style:map").write(pHandler);
-}
-
-void SheetNumberingStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const &manager) const
-{
-	if (!mPropList["librevenge:value-type"])
-	{
-		ODFGEN_DEBUG_MSG(("SheetNumberingStyle::writeStyle: can not find value type\n"));
-		return;
-	}
-	std::string type(mPropList["librevenge:value-type"]->getStr().cstr());
-	librevenge::RVNGString what("");
-	if (type.substr(0,7)=="number:") type=type.substr(7);
-	size_t len=type.length();
-	if (len>5 && type.substr(len-5)=="-type") type=type.substr(0,len-5);
-	if (type=="float" || type=="double") type="number";
-	else if (type=="percent") type="percentage";
-	else if (type=="bool") type="boolean";
-	if (type=="number" || type=="fraction" || type=="percentage" || type=="scientific")
-	{
-		what.sprintf("number:%s-style", type=="percentage" ? "percentage" : "number");
-		TagOpenElement styleOpen(what);
-		styleOpen.addAttribute("style:name", getName());
-		styleOpen.write(pHandler);
-		librevenge::RVNGString subWhat;
-		subWhat.sprintf("number:%s", type=="percentage" ? "number" : type=="scientific" ? "scientific-number" : type.c_str());
-		TagOpenElement number(subWhat);
-		if (mPropList["number:decimal-places"])
-			number.addAttribute("number:decimal-places", mPropList["number:decimal-places"]->getStr());
-		if (mPropList["number:min-integer-digits"])
-			number.addAttribute("number:min-integer-digits", mPropList["number:min-integer-digits"]->getStr());
-		else
-			number.addAttribute("number:min-integer-digits", "1");
-		if (mPropList["number:grouping"])
-			number.addAttribute("number:grouping", mPropList["number:grouping"]->getStr());
-		if (type=="scientific")
-		{
-			if (mPropList["number:min-exponent-digits"])
-				number.addAttribute("number:min-exponent-digits", mPropList["number:min-exponent-digits"]->getStr());
-			else
-				number.addAttribute("number:min-exponent-digits", "2");
-		}
-		else if (type=="fraction")
-		{
-			if (mPropList["number:min-numerator-digits"])
-				number.addAttribute("number:min-numerator-digits", mPropList["number:min-numerator-digits"]->getStr());
-			if (mPropList["number:min-denominator-digits"])
-				number.addAttribute("number:min-denominator-digits", mPropList["number:min-denominator-digits"]->getStr());
-		}
-		number.write(pHandler);
-		TagCloseElement(subWhat).write(pHandler);
-		if (type=="percentage")
-		{
-			TagOpenElement("number:text").write(pHandler);
-			pHandler->characters("%");
-			TagCloseElement("number:text").write(pHandler);
-		}
-	}
-	else if (type=="boolean")
-	{
-		what="number:boolean-style";
-		TagOpenElement styleOpen(what);
-		styleOpen.addAttribute("style:name", getName());
-		styleOpen.write(pHandler);
-		TagOpenElement("number:boolean").write(pHandler);
-		TagCloseElement("number:boolean").write(pHandler);
-	}
-	else if (type=="time" || type=="date")
-	{
-		what.sprintf("number:%s-style", type.c_str());
-		TagOpenElement styleOpen(what);
-		styleOpen.addAttribute("style:name", getName());
-		if (mPropList["number:language"])
-			styleOpen.addAttribute("number:language", mPropList["number:language"]->getStr());
-		if (mPropList["number:country"])
-			styleOpen.addAttribute("number:country", mPropList["number:country"]->getStr());
-		if (type=="date" && mPropList["number:automatic-order"])
-			styleOpen.addAttribute("number:automatic-order", mPropList["number:automatic-order"]->getStr());
-		styleOpen.write(pHandler);
-	}
-	else if (type=="currency")
-	{
-		what = "number:currency-style";
-		TagOpenElement styleOpen(what);
-		styleOpen.addAttribute("style:name", getName());
-		styleOpen.write(pHandler);
-	}
-	else
-	{
-		ODFGEN_DEBUG_MSG(("SheetNumberingStyle::writeStyle: unexpected value type %s\n", type.c_str()));
-		return;
-	}
-	librevenge::RVNGPropertyListVector const *format=mPropList.child("librevenge:format");
-	// now read the potential formats sub list
-	for (unsigned long f=0; format && f < format->count(); ++f)
-	{
-		librevenge::RVNGPropertyList const &prop=(*format)[f];
-		if (!prop["librevenge:value-type"])
-		{
-			ODFGEN_DEBUG_MSG(("SheetNumberingStyle::writeStyle: can not find format type[%d]\n", int(f)));
-			continue;
-		}
-		std::string wh=prop["librevenge:value-type"]->getStr().cstr();
-		if (wh.substr(0,7)=="number:") wh=wh.substr(7);
-
-		if (wh=="number")
-		{
-			TagOpenElement formatOpen("number:number");
-			if (prop["number:decimal-places"])
-				formatOpen.addAttribute("number:decimal-places", prop["number:decimal-places"]->getStr());
-			if (prop["number:min-integer-digits"])
-				formatOpen.addAttribute("number:min-integer-digits", prop["number:min-integer-digits"]->getStr());
-			else
-				formatOpen.addAttribute("number:min-integer-digits", "1");
-			if (prop["number:grouping"])
-				formatOpen.addAttribute("number:grouping", prop["number:grouping"]->getStr());
-			formatOpen.write(pHandler);
-			TagCloseElement("number:number").write(pHandler);
-		}
-		else if (wh=="year" || wh=="month" || wh=="day" || wh=="day-of-week" || wh=="quarter" || wh=="week-of-year" ||
-		         wh=="hours" || wh=="minutes" || wh=="seconds" || wh=="am-pm" || wh=="era")
-		{
-			librevenge::RVNGString subWhat;
-			subWhat.sprintf("number:%s", wh.c_str());
-			TagOpenElement formatOpen(subWhat);
-			if (prop["number:style"])
-				formatOpen.addAttribute("number:style", prop["number:style"]->getStr());
-			if (prop["number:textual"])
-				formatOpen.addAttribute("number:textual", prop["number:textual"]->getStr());
-			if (wh=="seconds" && prop["number:decimal-places"])
-				formatOpen.addAttribute("number:decimal-places", prop["number:decimal-places"]->getStr());
-			formatOpen.write(pHandler);
-			TagCloseElement(subWhat).write(pHandler);
-		}
-		else if (wh=="text")
-		{
-			if (prop["librevenge:text"])
-			{
-				TagOpenElement("number:text").write(pHandler);
-				pHandler->characters(prop["librevenge:text"]->getStr());
-				TagCloseElement("number:text").write(pHandler);
-			}
-			else
-			{
-				ODFGEN_DEBUG_MSG(("SheetNumberingStyle::writeStyle: can not find text data\n"));
-			}
-		}
-		else if (wh=="currency-symbol")
-		{
-			if (prop["librevenge:currency"])
-			{
-				TagOpenElement currency("number:currency-symbol");
-				if (prop["number:language"])
-					currency.addAttribute("number:language", prop["number:language"]->getStr());
-				if (prop["number:country"])
-					currency.addAttribute("number:country", prop["number:country"]->getStr());
-				currency.write(pHandler);
-				pHandler->characters(prop["librevenge:currency"]->getStr());
-				TagCloseElement("number:currency-symbol").write(pHandler);
-			}
-			else
-			{
-				ODFGEN_DEBUG_MSG(("SheetNumberingStyle::writeStyle: can not find currency data\n"));
-			}
-		}
-		else
-		{
-			ODFGEN_DEBUG_MSG(("SheetNumberingStyle::writeStyle: find unexpected format type:%s\n", wh.c_str()));
-		}
-	}
-
-	librevenge::RVNGPropertyListVector const *conditions=mPropList.child("librevenge::conditions");
-	for (unsigned long c=0; c < (conditions ? conditions->count() : 0); ++c)
-		writeCondition((*conditions)[c], pHandler, manager);
-	TagCloseElement(what).write(pHandler);
-}
 
 SheetCellStyle::SheetCellStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName) :
 	Style(psName),
@@ -249,7 +52,7 @@ void SheetCellStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const
 	if (mPropList["librevenge:numbering-name"])
 	{
 		librevenge::RVNGString numberingName=
-		    manager.getNumberingStyleName(mPropList["librevenge:numbering-name"]->getStr());
+		    manager.getNumberingManager().getStyleName(mPropList["librevenge:numbering-name"]->getStr());
 		if (numberingName.empty())
 		{
 			ODFGEN_DEBUG_MSG(("SheetCellStyle::writeStyle can not find numbering style %s\n", mPropList["librevenge:numbering-name"]->getStr().cstr()));
@@ -519,7 +322,8 @@ librevenge::RVNGString SheetStyle::addCell(const librevenge::RVNGPropertyList &p
 	return name;
 }
 
-SheetManager::SheetManager() : mbSheetOpened(false), mSheetStyles(), mNumberingHash()
+SheetManager::SheetManager(NumberingManager &numberingManager) :
+	mpNumberingManager(numberingManager), mbSheetOpened(false), mSheetStyles()
 {
 }
 
@@ -562,36 +366,6 @@ bool SheetManager::closeSheet()
 	}
 	mbSheetOpened=false;
 	return true;
-}
-
-librevenge::RVNGString SheetManager::getNumberingStyleName(librevenge::RVNGString const &localName) const
-{
-	std::map<librevenge::RVNGString, shared_ptr<SheetNumberingStyle> >::const_iterator it=
-	    mNumberingHash.find(localName);
-	if (it==mNumberingHash.end() || !it->second)
-	{
-		ODFGEN_DEBUG_MSG(("SheetManager::getNumberingStyleName: can not find %s\n", localName.cstr()));
-		return librevenge::RVNGString("");
-	}
-	return it->second->getName();
-}
-
-void SheetManager::addNumberingStyle(const librevenge::RVNGPropertyList &xPropList)
-{
-	if (!xPropList["librevenge:name"] || xPropList["librevenge:name"]->getStr().len()==0)
-	{
-		ODFGEN_DEBUG_MSG(("SheetManager::addNumberingStyle: can not find the style name\n"));
-		return;
-	}
-	librevenge::RVNGString name(xPropList["librevenge:name"]->getStr());
-	librevenge::RVNGString finalName;
-	if (mNumberingHash.find(name)!=mNumberingHash.end() && mNumberingHash.find(name)->second)
-		finalName=mNumberingHash.find(name)->second->getName();
-	else
-		finalName.sprintf("Numbering_num%i", (int) mNumberingHash.size());
-
-	shared_ptr<SheetNumberingStyle> style(new SheetNumberingStyle(xPropList, finalName));
-	mNumberingHash[name]=style;
 }
 
 librevenge::RVNGString SheetManager::convertFormula(const librevenge::RVNGPropertyListVector &formula)
@@ -753,16 +527,6 @@ librevenge::RVNGString SheetManager::convertCellsRange(const librevenge::RVNGPro
 
 void SheetManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
-	if (zone==Style::Z_ContentAutomatic)
-	{
-		std::map<librevenge::RVNGString, shared_ptr<SheetNumberingStyle> >::const_iterator nIt;
-		for (nIt=mNumberingHash.begin(); nIt!=mNumberingHash.end(); ++nIt)
-		{
-			if (!nIt->second) continue;
-			nIt->second->writeStyle(pHandler, *this);
-		}
-	}
-
 	for (size_t i=0; i < mSheetStyles.size(); ++i)
 	{
 		if (mSheetStyles[i] && mSheetStyles[i]->getZone()==zone)

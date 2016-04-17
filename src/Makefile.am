@@ -29,6 +29,8 @@ libodfgen_@LIBODFGEN_MAJOR_VERSION@_@LIBODFGEN_MINOR_VERSION@_la_SOURCES = \
 	InternalHandler.hxx \
 	ListStyle.cxx \
 	ListStyle.hxx \
+	NumberingStyle.cxx \
+	NumberingStyle.hxx \
 	PageSpan.cxx \
 	PageSpan.hxx \
 	SectionStyle.cxx \

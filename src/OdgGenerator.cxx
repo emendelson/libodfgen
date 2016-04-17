@@ -243,6 +243,7 @@ void OdgGeneratorPrivate::_writeAutomaticStyles(OdfDocumentHandler *pHandler, Od
 		mParagraphManager.write(pHandler, Style::Z_StyleAutomatic);
 		mListManager.write(pHandler, Style::Z_StyleAutomatic);
 		mGraphicManager.write(pHandler, Style::Z_StyleAutomatic);
+		mNumberingManager.write(pHandler, Style::Z_StyleAutomatic);
 		mTableManager.write(pHandler, Style::Z_StyleAutomatic, true);
 	}
 	if ((streamType == ODF_FLAT_XML) || (streamType == ODF_CONTENT_XML))
@@ -253,6 +254,7 @@ void OdgGeneratorPrivate::_writeAutomaticStyles(OdfDocumentHandler *pHandler, Od
 		mParagraphManager.write(pHandler, Style::Z_ContentAutomatic);
 		mListManager.write(pHandler, Style::Z_ContentAutomatic);
 		mGraphicManager.write(pHandler, Style::Z_ContentAutomatic);
+		mNumberingManager.write(pHandler, Style::Z_ContentAutomatic);
 		mTableManager.write(pHandler, Style::Z_ContentAutomatic, true);
 	}
 

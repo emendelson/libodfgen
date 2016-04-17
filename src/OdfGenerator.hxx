@@ -41,6 +41,7 @@
 #include "FontStyle.hxx"
 #include "GraphicStyle.hxx"
 #include "InternalHandler.hxx"
+#include "NumberingStyle.hxx"
 #include "PageSpan.hxx"
 #include "TableStyle.hxx"
 #include "TextRunStyle.hxx"
@@ -209,6 +210,11 @@ public:
 	{
 		return mFontManager;
 	}
+	//! return the numbering manager
+	NumberingManager &getNumberingManager()
+	{
+		return mNumberingManager;
+	}
 
 	//! define a character style
 	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList);
@@ -363,6 +369,8 @@ protected:
 	SpanStyleManager mSpanManager;
 	// paragraph manager
 	ParagraphStyleManager mParagraphManager;
+	// numbering manager
+	NumberingManager mNumberingManager;
 	// list manager
 	ListManager mListManager;
 	// table manager

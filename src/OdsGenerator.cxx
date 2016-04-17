@@ -372,7 +372,7 @@ OdsGeneratorPrivate::OdsGeneratorPrivate() : OdfGenerator(),
 	mCommandStack(),
 	mStateStack(),
 	mAuxiliarOdcState(), mAuxiliarOdtState(),
-	mSheetManager(),
+	mSheetManager(mNumberingManager),
 	mpCurrentPageSpan(0)
 {
 	mStateStack.push(State());
@@ -485,6 +485,7 @@ void OdsGeneratorPrivate::_writeAutomaticStyles(OdfDocumentHandler *pHandler, Od
 		mParagraphManager.write(pHandler, Style::Z_StyleAutomatic);
 		mListManager.write(pHandler, Style::Z_StyleAutomatic);
 		mGraphicManager.write(pHandler, Style::Z_StyleAutomatic);
+		mNumberingManager.write(pHandler, Style::Z_StyleAutomatic);
 		mSheetManager.write(pHandler, Style::Z_StyleAutomatic);
 	}
 
@@ -495,6 +496,7 @@ void OdsGeneratorPrivate::_writeAutomaticStyles(OdfDocumentHandler *pHandler, Od
 		mParagraphManager.write(pHandler, Style::Z_ContentAutomatic);
 		mListManager.write(pHandler, Style::Z_ContentAutomatic);
 		mGraphicManager.write(pHandler, Style::Z_ContentAutomatic);
+		mNumberingManager.write(pHandler, Style::Z_ContentAutomatic);
 		mSheetManager.write(pHandler, Style::Z_ContentAutomatic);
 	}
 
@@ -753,7 +755,7 @@ void OdsGenerator::closePageSpan()
 
 void OdsGenerator::defineSheetNumberingStyle(const librevenge::RVNGPropertyList &propList)
 {
-	mpImpl->mSheetManager.addNumberingStyle(propList);
+	mpImpl->getNumberingManager().addStyle(propList);
 }
 
 void OdsGenerator::openSheet(const librevenge::RVNGPropertyList &propList)
