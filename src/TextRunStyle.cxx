@@ -133,7 +133,18 @@ void ParagraphStyle::write(OdfDocumentHandler *pHandler) const
 		}
 		pHandler->endElement("style:tab-stops");
 	}
-
+	const librevenge::RVNGPropertyListVector *pDropCap = mpPropList.child("style:drop-cap");
+	if (pDropCap && pDropCap->count())
+	{
+		TagOpenElement dropCapOpen("style:drop-cap");
+		librevenge::RVNGPropertyList::Iter j((*pDropCap)[0]);
+		for (j.rewind(); j.next();)
+		{
+			dropCapOpen.addAttribute(j.key(), j()->getStr().cstr());
+		}
+		dropCapOpen.write(pHandler);
+		pHandler->endElement("style:drop-cap");
+	}
 	pHandler->endElement("style:paragraph-properties");
 	pHandler->endElement("style:style");
 }
