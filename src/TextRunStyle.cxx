@@ -285,54 +285,66 @@ void SpanStyleManager::addSpanProperties(librevenge::RVNGPropertyList const &sty
 		switch (i.key()[0])
 		{
 		case 'f':
+			if (strncmp(i.key(), "fo:", 3)!=0)
+				break;
 			if (!strcmp(i.key(), "fo:font-size"))
 			{
 				if (style["fo:font-size"]->getDouble() > 0.0)
 				{
 					element.insert("fo:font-size", style["fo:font-size"]->clone());
-					element.insert("style:font-size-asian", style["fo:font-size"]->clone());
-					element.insert("style:font-size-complex", style["fo:font-size"]->clone());
+					if (!element["style:font-size-asian"])
+						element.insert("style:font-size-asian", style["fo:font-size"]->clone());
+					if (!element["style:font-size-complex"])
+						element.insert("style:font-size-complex", style["fo:font-size"]->clone());
 				}
 				break;
 			}
 			if (!strcmp(i.key(), "fo:font-weight"))
 			{
 				element.insert("fo:font-weight", style["fo:font-weight"]->clone());
-				element.insert("style:font-weight-asian", style["fo:font-weight"]->clone());
-				element.insert("style:font-weight-complex", style["fo:font-weight"]->clone());
+				if (!element["style:font-weight-asian"])
+					element.insert("style:font-weight-asian", style["fo:font-weight"]->clone());
+				if (!element["style:font-weight-complex"])
+					element.insert("style:font-weight-complex", style["fo:font-weight"]->clone());
 				break;
 			}
 			if (!strcmp(i.key(), "fo:font-style"))
 			{
 				element.insert("fo:font-style", style["fo:font-style"]->clone());
-				element.insert("style:font-style-asian", style["fo:font-style"]->clone());
-				element.insert("style:font-style-complex", style["fo:font-style"]->clone());
+				if (!element["style:font-style-asian"])
+					element.insert("style:font-style-asian", style["fo:font-style"]->clone());
+				if (!element["style:font-style-complex"])
+					element.insert("style:font-style-complex", style["fo:font-style"]->clone());
 				break;
 			}
 			if (!strcmp(i.key(), "fo:background-color") || !strcmp(i.key(), "fo:color") ||
 			        !strcmp(i.key(), "fo:country") || !strncmp(i.key(), "fo:font", 7) ||
-			        !strncmp(i.key(), "fo:hyphen", 9) || !strncmp(i.key(), "fo:text", 7) ||
-			        !strcmp(i.key(), "fo:language") || !strcmp(i.key(), "fo:letter-spacing") ||
-			        !strcmp(i.key(), "fo:script"))
+			        !strncmp(i.key(), "fo:hyphen", 9) || !strcmp(i.key(), "fo:language") ||
+			        !strcmp(i.key(), "fo:letter-spacing") || !strcmp(i.key(), "fo:script")  ||
+			        !strncmp(i.key(), "fo:text", 7))
 				element.insert(i.key(),i()->clone());
 			break;
 		case 's':
+			if (strncmp(i.key(), "style:", 6)!=0)
+				break;
 			if (!strcmp(i.key(), "style:font-name"))
 			{
 				element.insert("style:font-name", style["style:font-name"]->clone());
-				element.insert("style:font-name-asian", style["style:font-name"]->clone());
-				element.insert("style:font-name-complex", style["style:font-name"]->clone());
+				if (!element["style:font-name-asian"])
+					element.insert("style:font-name-asian", style["style:font-name"]->clone());
+				if (!element["style:font-name-complex"])
+					element.insert("style:font-name-complex", style["style:font-name"]->clone());
 				break;
 			}
 			if (!strncmp(i.key(), "style:country", 13) || !strncmp(i.key(), "style:font", 10) ||
 			        !strncmp(i.key(), "style:language", 14) || !strncmp(i.key(), "style:letter", 12) ||
 			        !strncmp(i.key(), "style:rfc-", 10) || !strncmp(i.key(), "style:script", 12) ||
-			        !strncmp(i.key(), "style:text", 10))
+			        !strncmp(i.key(), "style:text", 10) || !strcmp(i.key(), "style:use-window-font-color"))
 				element.insert(i.key(),i()->clone());
 			// style:writing-mode is ignored
 			break;
 		case 't':
-			if (!strcmp(i.key(), "text:display"))
+			if (!strcmp(i.key(), "text:condition") || !strcmp(i.key(), "text:display"))
 				element.insert(i.key(),i()->clone());
 			break;
 		default:
