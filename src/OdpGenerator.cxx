@@ -692,10 +692,13 @@ void OdpGenerator::drawPath(const librevenge::RVNGPropertyList &propList)
 
 void OdpGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propList)
 {
-	if (!propList["librevenge:mime-type"] || propList["librevenge:mime-type"]->getStr().len() <= 0)
-		return;
-	if (!propList["office:binary-data"])
-		return;
+	if (!propList["librevenge:xlink"] || propList["librevenge:xlink"]->getStr().empty())
+	{
+		if (!propList["librevenge:mime-type"] || propList["librevenge:mime-type"]->getStr().len() <= 0)
+			return;
+		if (!propList["office:binary-data"])
+			return;
+	}
 	if (!propList["svg:x"] || !propList["svg:y"] || !propList["svg:width"] || !propList["svg:height"])
 		return;
 
