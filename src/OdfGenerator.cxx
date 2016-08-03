@@ -682,6 +682,24 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	TagOpenElement *openElement = new TagOpenElement(type);
 	if (type == "text:page-number")
 		openElement->addAttribute("text:select-page", propList["text:select-page"] ? propList["text:select-page"]->getStr() : "current");
+	else if (type == "text:chapter")
+	{
+		for (int i=0; i<2; ++i)
+		{
+			char const *(wh[])= {"text:display", "text:outline-level"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], propList[wh[i]]->getStr());
+		}
+	}
+	else if (type == "text:conditional-text")
+	{
+		for (int i=0; i<4; ++i)
+		{
+			char const *(wh[])= {"text:condition", "text:current-value", "text:string-value-if-false", "text:string-value-if-true"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
 	else if (type == "text:date" || type == "text:time")
 	{
 		// TODO: create a library function to avoid dupplicated code with OdsGenerator::openSheetCell
@@ -719,10 +737,126 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 		if (propList["text:fixed"])
 			openElement->addAttribute("text:fixed", propList["text:fixed"]->getStr());
 	}
+	else if (type == "text:file-name" || type=="text:template-name")
+	{
+		if (propList["text:display"])
+			openElement->addAttribute("text:display", propList["text:display"]->getStr());
+	}
+	else if (type == "text:hidden-paragraph")
+	{
+		for (int i=0; i<2; ++i)
+		{
+			char const *(wh[])= {"text:condition", "text:is-hidden"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:placeholder")
+	{
+		for (int i=0; i<2; ++i)
+		{
+			char const *(wh[])= {"text:description", "text:placeholder-type"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:reference-mark" || type == "text:reference-mark-start" || type == "text:reference-mark-end")
+	{
+		for (int i=0; i<1; ++i)
+		{
+			char const *(wh[])= {"text:name"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:reference-ref")
+	{
+		for (int i=0; i<2; ++i)
+		{
+			char const *(wh[])= {"text:reference-format", "text:ref-name"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:sequence")
+	{
+		for (int i=0; i<3; ++i)
+		{
+			char const *(wh[])= {"text:formula", "text:name", "text:ref-name"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:text-input")
+	{
+		for (int i=0; i<1; ++i)
+		{
+			char const *(wh[])= {"text:description"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:user-defined")
+	{
+		for (int i=0; i<3; ++i)
+		{
+			char const *(wh[])= {"office:string-value", "office:value", "text:name"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:variable-get")
+	{
+		for (int i=0; i<2; ++i)
+		{
+			char const *(wh[])= {"text:display", "text:name"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:variable-set" || type == "text:expression")
+	{
+		for (int i=0; i<5; ++i)
+		{
+			char const *(wh[])= {"text:formula", "text:name", "office:string-value", "office:value", "office:value-type"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	// the database field
+	else if (type == "text:database-display")
+	{
+		for (int i=0; i<4; ++i)
+		{
+			char const *(wh[])= {"text:column-name", "text:database-name", "text:table-name", "text:table-type"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:database-name")
+	{
+		for (int i=0; i<3; ++i)
+		{
+			char const *(wh[])= {"text:database-name", "text:table-name", "text:table-type"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
+	else if (type == "text:database-row-select")
+	{
+		for (int i=0; i<5; ++i)
+		{
+			char const *(wh[])= {"text:condition", "text:database-name", "text:row-number", "text:table-name", "text:table-type"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
 	if (propList["style:num-format"])
 		openElement->addAttribute("style:num-format", propList["style:num-format"]->getStr());
 
 	mpCurrentStorage->push_back(openElement);
+	if (propList["librevenge:field-content"])
+		mpCurrentStorage->push_back(new CharDataElement(propList["librevenge:field-content"]->getStr()));
 	mpCurrentStorage->push_back(new TagCloseElement(type));
 }
 
