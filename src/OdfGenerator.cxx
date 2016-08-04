@@ -63,7 +63,7 @@ OdfGenerator::OdfGenerator() :
 	mDocumentStreamHandlers(),
 	miObjectNumber(1), mNameObjectMap(),
 	mImageHandlers(), mObjectHandlers(),
-	mCurrentParaIsHeading(false)
+	mParagraphHeadingStack()
 {
 }
 
@@ -664,6 +664,7 @@ void OdfGenerator::insertLineBreak(bool forceParaClose)
 	if (!mLastParagraphName.empty())
 		pParagraphOpenElement->addAttribute("text:style-name", mLastParagraphName.cstr());
 	mpCurrentStorage->push_back(pParagraphOpenElement);
+	mParagraphHeadingStack.push(false);
 
 	TagOpenElement *pSpanOpenElement = new TagOpenElement("text:span");
 	if (!mLastSpanName.empty())
@@ -984,12 +985,13 @@ void OdfGenerator::openParagraph(const librevenge::RVNGPropertyList &propList)
 
 	if (propList["text:outline-level"])
 	{
-		mCurrentParaIsHeading = true;
+		mParagraphHeadingStack.push(true);
 		pParagraphOpenElement = new TagOpenElement("text:h");
 		pParagraphOpenElement->addAttribute("text:outline-level", propList["text:outline-level"]->getStr());
 	}
 	else
 	{
+		mParagraphHeadingStack.push(false);
 		pParagraphOpenElement = new TagOpenElement("text:p");
 	}
 	pParagraphOpenElement->addAttribute("text:style-name", paragraphName);
@@ -999,8 +1001,13 @@ void OdfGenerator::openParagraph(const librevenge::RVNGPropertyList &propList)
 
 void OdfGenerator::closeParagraph()
 {
-	mpCurrentStorage->push_back(mCurrentParaIsHeading ? new TagCloseElement("text:h") : new TagCloseElement("text:p"));
-	mCurrentParaIsHeading = false;
+	if (mParagraphHeadingStack.empty())
+	{
+		ODFGEN_DEBUG_MSG(("OdfGenerator::closeParagraph: can not find any opened paragraph\n"));
+		return;
+	}
+	mpCurrentStorage->push_back(mParagraphHeadingStack.top() ? new TagCloseElement("text:h") : new TagCloseElement("text:p"));
+	mParagraphHeadingStack.pop();
 }
 
 ////////////////////////////////////////////////////////////
@@ -1099,6 +1106,7 @@ void OdfGenerator::openListElement(const librevenge::RVNGPropertyList &propList)
 	if (propList["style:master-page-name"])
 		pOpenListElementParagraph->addAttribute("style:master-page-name",propList["style:master-page-name"]->getStr());
 	mpCurrentStorage->push_back(pOpenListElementParagraph);
+	mParagraphHeadingStack.push(false);
 
 	state.mbListElementOpened.top() = true;
 	state.mbListElementParagraphOpened = true;

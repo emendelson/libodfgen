@@ -433,7 +433,8 @@ protected:
 	// embedded object handlers
 	std::map<librevenge::RVNGString, OdfEmbeddedObject > mObjectHandlers;
 
-	bool mCurrentParaIsHeading;
+	/// stack of bool to know if we close a single paragraph or a heading paragraph
+	std::stack<bool> mParagraphHeadingStack;
 
 private:
 	// copy constructor (unimplemented)
