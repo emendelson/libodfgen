@@ -38,6 +38,11 @@ void OrderedListLevelStyle::write(OdfDocumentHandler *pHandler, int iLevel) cons
 
 	TagOpenElement listLevelStyleOpen("text:list-level-style-number");
 	listLevelStyleOpen.addAttribute("text:level", sLevel);
+	/* TOADD if we allow redefining the main style
+	if (mPropList["text:style-name"])
+		listLevelStyleOpen.addAttribute("text:style-name", mPropList["text:style-name"]->getStr());
+	else
+	*/
 	listLevelStyleOpen.addAttribute("text:style-name", "Numbering_Symbols");
 	if (mPropList["style:num-prefix"])
 	{
@@ -74,6 +79,8 @@ void OrderedListLevelStyle::write(OdfDocumentHandler *pHandler, int iLevel) cons
 		stylePropertiesOpen.addAttribute("text:min-label-distance", mPropList["text:min-label-distance"]->getStr());
 	if (mPropList["fo:text-align"])
 		stylePropertiesOpen.addAttribute("fo:text-align", mPropList["fo:text-align"]->getStr());
+	if (mPropList["style:font-name"])
+		stylePropertiesOpen.addAttribute("style:font-name", mPropList["style:font-name"]->getStr());
 	stylePropertiesOpen.write(pHandler);
 
 	pHandler->endElement("style:list-level-properties");
@@ -101,6 +108,11 @@ void UnorderedListLevelStyle::write(OdfDocumentHandler *pHandler, int iLevel) co
 	sLevel.sprintf("%i", (iLevel+1));
 	TagOpenElement listLevelStyleOpen("text:list-level-style-bullet");
 	listLevelStyleOpen.addAttribute("text:level", sLevel);
+	/* TOADD if we allow redefining the main style
+	if (mPropList["text:style-name"])
+		listLevelStyleOpen.addAttribute("text:style-name", mPropList["text:style-name"]->getStr());
+	else
+	*/
 	listLevelStyleOpen.addAttribute("text:style-name", "Bullet_Symbols");
 	if (mPropList["text:bullet-char"] && (mPropList["text:bullet-char"]->getStr().len()))
 	{
@@ -124,7 +136,10 @@ void UnorderedListLevelStyle::write(OdfDocumentHandler *pHandler, int iLevel) co
 		stylePropertiesOpen.addAttribute("text:min-label-distance", mPropList["text:min-label-distance"]->getStr());
 	if (mPropList["fo:text-align"])
 		stylePropertiesOpen.addAttribute("fo:text-align", mPropList["fo:text-align"]->getStr());
-	stylePropertiesOpen.addAttribute("style:font-name", "OpenSymbol");
+	if (mPropList["style:font-name"])
+		stylePropertiesOpen.addAttribute("style:font-name", mPropList["style:font-name"]->getStr());
+	else
+		stylePropertiesOpen.addAttribute("style:font-name", "OpenSymbol");
 	stylePropertiesOpen.write(pHandler);
 
 	pHandler->endElement("style:list-level-properties");

@@ -1034,6 +1034,8 @@ void OdfGenerator::openListLevel(const librevenge::RVNGPropertyList &propList, b
 	librevenge::RVNGPropertyList pList(propList);
 	if (!pList["librevenge:level"])
 		pList.insert("librevenge:level", int(state.mbListElementOpened.size())+1);
+	if (pList["style:font-name"])
+		mFontManager.findOrAdd(pList["style:font-name"]->getStr().cstr());
 	mListManager.defineLevel(pList, ordered, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_Unknown);
 
 	TagOpenElement *pListLevelOpenElement = new TagOpenElement("text:list");
