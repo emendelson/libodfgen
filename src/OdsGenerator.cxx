@@ -26,6 +26,8 @@
 
 #include <librevenge/librevenge.h>
 
+#include <iomanip>
+#include <locale>
 #include <map>
 #include <stack>
 #include <sstream>
@@ -45,6 +47,19 @@
 
 #include "OdcGenerator.hxx"
 #include "OdfGenerator.hxx"
+
+namespace
+{
+
+librevenge::RVNGString makePreciseStr(const double value)
+{
+	std::ostringstream os;
+	os.imbue(std::locale::classic());
+	os << std::fixed << std::setprecision(8) << value;
+	return os.str().c_str();
+}
+
+}
 
 class OdsGeneratorPrivate : public OdfGenerator
 {
@@ -968,10 +983,10 @@ void OdsGenerator::openSheetCell(const librevenge::RVNGPropertyList &propList)
 					// we need the maximum precision here, so we must avoid getStr() when possible
 					librevenge::RVNGString value;
 					if (propList["librevenge:value"]->getUnit()==librevenge::RVNG_GENERIC)
-						value.sprintf("%.8f", propList["librevenge:value"]->getDouble());
+						value = makePreciseStr(propList["librevenge:value"]->getDouble());
 					else if (propList["librevenge:value"]->getUnit()==librevenge::RVNG_PERCENT)
 					{
-						value.sprintf("%.8f", propList["librevenge:value"]->getDouble()*100.);
+						value = makePreciseStr(propList["librevenge:value"]->getDouble()*100.);
 						value.append('%');
 					}
 					else
