@@ -90,6 +90,8 @@ void OrderedListLevelStyle::write(OdfDocumentHandler *pHandler, int iLevel) cons
 		textPropertiesOpen.addAttribute("fo:font-family", mPropList["fo:font-family"]->getStr());
 	if (mPropList["fo:font-size"])
 		textPropertiesOpen.addAttribute("fo:font-size", mPropList["fo:font-size"]->getStr());
+	if (mPropList["fo:color"])
+		textPropertiesOpen.addAttribute("fo:color", mPropList["fo:color"]->getStr());
 	textPropertiesOpen.write(pHandler);
 
 	pHandler->endElement("style:text-properties");
@@ -149,6 +151,8 @@ void UnorderedListLevelStyle::write(OdfDocumentHandler *pHandler, int iLevel) co
 		textPropertiesOpen.addAttribute("fo:font-family", mPropList["fo:font-family"]->getStr());
 	if (mPropList["fo:font-size"])
 		textPropertiesOpen.addAttribute("fo:font-size", mPropList["fo:font-size"]->getStr());
+	if (mPropList["fo:color"])
+		textPropertiesOpen.addAttribute("fo:color", mPropList["fo:color"]->getStr());
 	textPropertiesOpen.write(pHandler);
 
 	pHandler->endElement("style:text-properties");
