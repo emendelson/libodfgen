@@ -72,9 +72,9 @@ void SheetCellStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const
 	// WLACH_REFACTORING: Only temporary.. a much better solution is to
 	// generalize this sort of thing into the "Style" superclass
 	librevenge::RVNGPropertyList stylePropList;
+	librevenge::RVNGPropertyList paragPropList;
 	librevenge::RVNGPropertyList::Iter i(mPropList);
 	bool paddingSet=false;
-	bool hasTextAlign=false;
 	for (i.rewind(); i.next();)
 	{
 		int len = (int) strlen(i.key());
@@ -83,7 +83,13 @@ void SheetCellStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const
 		if (len > 3 && strncmp(i.key(), "fo:", 3)==0)
 		{
 			if (len==13 && !strcmp(i.key(), "fo:text-align"))
-				hasTextAlign=true;
+			{
+				paragPropList.insert("fo:text-align", mPropList["fo:text-align"]->clone());
+				if (!mPropList["fo:margin-left"])
+					paragPropList.insert("fo:margin-left", "0cm");
+			}
+			else if (len==14 && !strcmp(i.key(), "fo:margin-left"))
+				paragPropList.insert("fo:margin-left", mPropList["fo:margin-left"]->clone());
 			else
 			{
 				if (len>=9 && strncmp(i.key(), "fo:padding", 9)==0)
@@ -128,11 +134,8 @@ void SheetCellStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const
 		stylePropList.insert("fo:padding", "0.0382in");
 	pHandler->startElement("style:table-cell-properties", stylePropList);
 	pHandler->endElement("style:table-cell-properties");
-	if (hasTextAlign)
+	if (!paragPropList.empty())
 	{
-		librevenge::RVNGPropertyList paragPropList;
-		paragPropList.insert("fo:margin-left", "0cm");
-		paragPropList.insert("fo:text-align", mPropList["fo:text-align"]->clone());
 		pHandler->startElement("style:paragraph-properties", paragPropList);
 		pHandler->endElement("style:paragraph-properties");
 	}
