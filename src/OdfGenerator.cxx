@@ -111,6 +111,7 @@ void OdfGenerator::setDocumentMetaData(const librevenge::RVNGPropertyList &propL
 	librevenge::RVNGPropertyList::Iter i(propList);
 	for (i.rewind(); i.next();)
 	{
+		if (i()->getStr().empty()) continue;
 		// filter out librevenge elements
 		if (strncmp(i.key(), "librevenge:", 11) && strncmp(i.key(), "dcterms:", 8))
 		{
@@ -1372,6 +1373,8 @@ librevenge::RVNGString OdfGenerator::getCurrentGraphicStyleName()
 {
 	librevenge::RVNGPropertyList styleList;
 	mGraphicManager.addGraphicProperties(mGraphicStyle,styleList);
+	if (mGraphicStyle["style:display-name"])
+		mGraphicManager.addFrameProperties(mGraphicStyle,styleList);
 	return mGraphicManager.findOrAdd(styleList, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic);
 }
 
@@ -1379,6 +1382,13 @@ librevenge::RVNGString OdfGenerator::getCurrentGraphicStyleName(const librevenge
 {
 	librevenge::RVNGPropertyList styleList;
 	mGraphicManager.addGraphicProperties(shapeList,styleList);
+	// check that no default are set, there will can be set with mGraphicStyle, if needed
+	for (int i=0; i<3; ++i)
+	{
+		char const *(wh[])= {"draw:fill","draw:shadow","draw:stroke"};
+		if (!shapeList[wh[i]] && styleList[wh[i]])
+			styleList.remove(wh[i]);
+	}
 	mGraphicManager.addGraphicProperties(mGraphicStyle,styleList);
 	return mGraphicManager.findOrAdd(styleList, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic);
 }
