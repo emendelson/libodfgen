@@ -471,6 +471,7 @@ bool OdpGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 	docContentPropList.addAttribute("xmlns:config", "urn:oasis:names:tc:opendocument:xmlns:config:1.0");
 	docContentPropList.addAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 	docContentPropList.addAttribute("xmlns:meta", "urn:oasis:names:tc:opendocument:xmlns:meta:1.0");
+	docContentPropList.addAttribute("xmlns:number", "urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0");
 	// WARNING: this is not ODF!
 	docContentPropList.addAttribute("xmlns:ooo", "http://openoffice.org/2004/office");
 	docContentPropList.addAttribute("xmlns:officeooo", "http://openoffice.org/2009/office");
