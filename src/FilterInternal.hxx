@@ -25,6 +25,7 @@
 #include <assert.h> // for assert
 #include <string.h> // for strcmp
 
+#include <memory>
 #include <vector>
 
 #include <librevenge/librevenge.h>
@@ -46,16 +47,7 @@
 #define ODFGEN_DEBUG_MSG(M)
 #endif
 
-#if defined(SHAREDPTR_TR1)
-#include <tr1/memory>
-using std::tr1::shared_ptr;
-#elif defined(SHAREDPTR_STD)
-#include <memory>
 using std::shared_ptr;
-#else
-#include <boost/shared_ptr.hpp>
-using boost::shared_ptr;
-#endif
 
 #define ODFGEN_N_ELEMENTS(m) sizeof(m)/sizeof(m[0])
 
