@@ -41,7 +41,6 @@
 #endif
 
 #ifdef DEBUG
-#include <stdio.h>
 #define ODFGEN_DEBUG_MSG(M) libodfgen::debugPrint M
 #else
 #define ODFGEN_DEBUG_MSG(M)
