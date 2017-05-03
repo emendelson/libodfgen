@@ -21,3 +21,4 @@ libodfgen.spec
 libodfgen-zip
 libodfgen-*.pc
 *.out
+tags
