@@ -34,6 +34,7 @@ AC_CANONICAL_HOST
 PKG_PROG_PKG_CONFIG([0.20])
 
 AX_CXX_COMPILE_STDCXX_11
+AX_GCC_FUNC_ATTRIBUTE([format])
 
 # ====================
 # Find additional apps

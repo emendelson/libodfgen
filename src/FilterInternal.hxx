@@ -34,8 +34,8 @@
 #include <config.h>
 #endif
 
-#if defined(__clang__) || defined(__GNUC__)
-#  define ODFGEN_ATTRIBUTE_PRINTF(fmt, arg) __attribute__((__format__(__printf__, fmt, arg)))
+#if defined(HAVE_GCC_ATTRIBUTE_FORMAT)
+#  define ODFGEN_ATTRIBUTE_PRINTF(fmt, arg) __attribute__((format(printf, fmt, arg)))
 #else
 #  define ODFGEN_ATTRIBUTE_PRINTF(fmt, arg)
 #endif
