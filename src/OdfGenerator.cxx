@@ -379,7 +379,7 @@ void OdfGenerator::registerEmbeddedImageHandler(const librevenge::RVNGString &mi
 ////////////////////////////////////////////////////////////
 // page function
 ////////////////////////////////////////////////////////////
-void OdfGenerator::startHeaderFooter(bool , const librevenge::RVNGPropertyList &)
+void OdfGenerator::startHeaderFooter(bool, const librevenge::RVNGPropertyList &)
 {
 	if (mbInHeaderFooter)
 	{
