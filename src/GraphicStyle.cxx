@@ -185,13 +185,13 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForMarker(librevenge::RV
 	name.sprintf("Marker_%i", (int) mMarkerNameMap.size());
 	mMarkerNameMap[hashKey]=name;
 
-	TagOpenElement *openElement = new TagOpenElement("draw:marker");
+	auto openElement = std::make_shared<TagOpenElement>("draw:marker");
 	openElement->addAttribute("draw:name", name);
 	if (pList["svg:viewBox"])
 		openElement->addAttribute("svg:viewBox", pList["svg:viewBox"]->getStr());
 	openElement->addAttribute("svg:d", pList["svg:d"]->getStr());
 	mMarkerStyles.push_back(openElement);
-	mMarkerStyles.push_back(new TagCloseElement("draw:marker"));
+	mMarkerStyles.push_back(std::make_shared<TagCloseElement>("draw:marker"));
 	return name;
 }
 
@@ -236,7 +236,7 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForStrokeDash(librevenge
 	mStrokeDashNameMap[hashKey]=name;
 	if (isStyle) mDisplayStrokeDashNameMap[style["style:display-name"]->getStr()]=name;
 
-	TagOpenElement *openElement = new TagOpenElement("draw:stroke-dash");
+	auto openElement = std::make_shared<TagOpenElement>("draw:stroke-dash");
 	openElement->addAttribute("draw:name", name);
 	if (hasParent)
 	{
@@ -257,7 +257,7 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForStrokeDash(librevenge
 	if (pList["draw:dots2-length"])
 		openElement->addAttribute("draw:dots2-length", pList["draw:dots2-length"]->getStr());
 	mStrokeDashStyles.push_back(openElement);
-	mStrokeDashStyles.push_back(new TagCloseElement("draw:stroke-dash"));
+	mStrokeDashStyles.push_back(std::make_shared<TagCloseElement>("draw:stroke-dash"));
 	return name;
 }
 

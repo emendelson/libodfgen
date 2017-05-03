@@ -188,7 +188,7 @@ void SheetStyle::addColumnDefinitions(libodfgen::DocumentElementVector &storage)
 	librevenge::RVNGPropertyListVector::Iter j(*mColumns);
 	for (j.rewind(); j.next(); ++col)
 	{
-		TagOpenElement *pTableColumnOpenElement = new TagOpenElement("table:table-column");
+		auto pTableColumnOpenElement = std::make_shared<TagOpenElement>("table:table-column");
 		librevenge::RVNGString sColumnStyleName;
 		sColumnStyleName.sprintf("%s_col%i", getName().cstr(), col);
 		pTableColumnOpenElement->addAttribute("table:style-name", sColumnStyleName);
@@ -198,7 +198,7 @@ void SheetStyle::addColumnDefinitions(libodfgen::DocumentElementVector &storage)
 
 		storage.push_back(pTableColumnOpenElement);
 
-		storage.push_back(new TagCloseElement("table:table-column"));
+		storage.push_back(std::make_shared<TagCloseElement>("table:table-column"));
 	}
 }
 

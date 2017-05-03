@@ -65,13 +65,13 @@ librevenge::RVNGString FillManager::getStyleNameForBitmap(librevenge::RVNGString
 	name.sprintf("Bitmap_%i", (int) mBitmapNameMap.size());
 	mBitmapNameMap[bitmap]=name;
 
-	TagOpenElement *openElement = new TagOpenElement("draw:fill-image");
+	auto openElement = std::make_shared<TagOpenElement>("draw:fill-image");
 	openElement->addAttribute("draw:name", name);
 	mBitmapStyles.push_back(openElement);
-	mBitmapStyles.push_back(new TagOpenElement("office:binary-data"));
-	mBitmapStyles.push_back(new CharDataElement(bitmap));
-	mBitmapStyles.push_back(new TagCloseElement("office:binary-data"));
-	mBitmapStyles.push_back(new TagCloseElement("draw:fill-image"));
+	mBitmapStyles.push_back(std::make_shared<TagOpenElement>("office:binary-data"));
+	mBitmapStyles.push_back(std::make_shared<CharDataElement>(bitmap));
+	mBitmapStyles.push_back(std::make_shared<TagCloseElement>("office:binary-data"));
+	mBitmapStyles.push_back(std::make_shared<TagCloseElement>("draw:fill-image"));
 	return name;
 }
 
@@ -143,7 +143,7 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 	mGradientNameMap[hashKey]=name;
 	if (isStyle) mDisplayGradientNameMap[style["style:display-name"]->getStr()]=name;
 
-	std::shared_ptr<TagOpenElement> openElement(new TagOpenElement("draw:gradient"));
+	std::shared_ptr<TagOpenElement> openElement(std::make_shared<TagOpenElement>("draw:gradient"));
 	openElement->addAttribute("draw:name", name);
 	if (hasParent)
 	{
@@ -194,7 +194,7 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 	}
 
 	mGradientStyles.push_back(openElement);
-	mGradientStyles.push_back(new TagCloseElement("draw:gradient"));
+	mGradientStyles.push_back(std::make_shared<TagCloseElement>("draw:gradient"));
 	return name;
 }
 
@@ -229,7 +229,7 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 	mHatchNameMap[hashKey]=name;
 	if (isStyle) mDisplayHatchNameMap[style["style:display-name"]->getStr()]=name;
 
-	TagOpenElement *openElement = new TagOpenElement("draw:hatch");
+	auto openElement = std::make_shared<TagOpenElement>("draw:hatch");
 	openElement->addAttribute("draw:name", name);
 	if (hasParent)
 	{
@@ -254,7 +254,7 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 	openElement->addAttribute("draw:rotation", sValue);
 
 	mHatchStyles.push_back(openElement);
-	mHatchStyles.push_back(new TagCloseElement("draw:hatch"));
+	mHatchStyles.push_back(std::make_shared<TagCloseElement>("draw:hatch"));
 	return name;
 }
 
@@ -330,7 +330,7 @@ librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPrope
 	mOpacityNameMap[hashKey]=name;
 	if (isStyle) mDisplayOpacityNameMap[style["style:display-name"]->getStr()]=name;
 
-	TagOpenElement *openElement = new TagOpenElement("draw:opacity");
+	auto openElement = std::make_shared<TagOpenElement>("draw:opacity");
 	openElement->addAttribute("draw:name", name);
 	if (hasParent)
 	{
@@ -352,7 +352,7 @@ librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPrope
 		openElement->addAttribute("draw:end", pList["draw:end"]->getStr());
 
 	mOpacityStyles.push_back(openElement);
-	mOpacityStyles.push_back(new TagCloseElement("draw:opacity"));
+	mOpacityStyles.push_back(std::make_shared<TagCloseElement>("draw:opacity"));
 	return name;
 }
 

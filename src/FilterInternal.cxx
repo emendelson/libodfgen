@@ -60,30 +60,6 @@ bool libodfgen::getInchValue(librevenge::RVNGProperty const &prop, double &value
 
 namespace libodfgen
 {
-DocumentElementVector::~DocumentElementVector()
-{
-}
-
-void DocumentElementVector::resize(size_t newSize)
-{
-	mpElements.resize(newSize);
-}
-
-void DocumentElementVector::push_back(shared_ptr<DocumentElement> elt)
-{
-	mpElements.push_back(elt);
-}
-
-void DocumentElementVector::push_back(DocumentElement *elt)
-{
-	mpElements.push_back(shared_ptr<DocumentElement>(elt));
-}
-
-void DocumentElementVector::appendTo(DocumentElementVector &res)
-{
-	for (size_t i=0; i<mpElements.size(); ++i)
-		res.mpElements.push_back(mpElements[i]);
-}
 
 void debugPrint(const char *format, ...)
 {

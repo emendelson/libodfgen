@@ -225,7 +225,7 @@ public:
 		}
 		if (add && !state.mbInSheetShapes)
 		{
-			getCurrentStorage()->push_back(new TagOpenElement("table:shapes"));
+			getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("table:shapes"));
 			state.mbInSheetShapes=true;
 		}
 		return true;
@@ -280,7 +280,7 @@ public:
 			ODFGEN_DEBUG_MSG(("OdsGeneratorPrivate::sendAuxiliarOdcGenerator: data seems bad\n"));
 			return false;
 		}
-		TagOpenElement *object=new TagOpenElement("draw:object");
+		auto object=std::make_shared<TagOpenElement>("draw:object");
 		if (!mAuxiliarOdcState->mDir.empty())
 		{
 			object->addAttribute("xlink:href",mAuxiliarOdcState->mDir.cstr());
@@ -289,9 +289,9 @@ public:
 			object->addAttribute("xlink:actuate","onLoad");
 		}
 		getCurrentStorage()->push_back(object);
-		mAuxiliarOdcState->mContentElements.appendTo(*getCurrentStorage());
+		getCurrentStorage()->insert(getCurrentStorage()->end(), mAuxiliarOdcState->mContentElements.begin(), mAuxiliarOdcState->mContentElements.end());
 		mAuxiliarOdcState->mContentElements.resize(0);
-		getCurrentStorage()->push_back(new TagCloseElement("draw:object"));
+		getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:object"));
 		return true;
 	}
 	void resetAuxiliarOdcGenerator()
@@ -339,10 +339,10 @@ public:
 			ODFGEN_DEBUG_MSG(("OdsGeneratorPrivate::sendAuxiliarOdtGenerator: data seems bad\n"));
 			return false;
 		}
-		getCurrentStorage()->push_back(new TagOpenElement("draw:object"));
-		mAuxiliarOdtState->mContentElements.appendTo(*getCurrentStorage());
+		getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("draw:object"));
+		getCurrentStorage()->insert(getCurrentStorage()->end(), mAuxiliarOdtState->mContentElements.begin(), mAuxiliarOdtState->mContentElements.end());
 		mAuxiliarOdtState->mContentElements.resize(0);
-		getCurrentStorage()->push_back(new TagCloseElement("draw:object"));
+		getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:object"));
 		return true;
 	}
 	void resetAuxiliarOdtGenerator()
@@ -805,7 +805,7 @@ void OdsGenerator::openSheet(const librevenge::RVNGPropertyList &propList)
 	SheetStyle *style=mpImpl->mSheetManager.actualSheet();
 	if (!style) return;
 	librevenge::RVNGString sTableName(style->getName());
-	TagOpenElement *pTableOpenElement = new TagOpenElement("table:table");
+	auto pTableOpenElement = std::make_shared<TagOpenElement>("table:table");
 	if (propList["librevenge:sheet-name"])
 		pTableOpenElement->addAttribute("table:name", propList["librevenge:sheet-name"]->getStr());
 	else
@@ -828,11 +828,11 @@ void OdsGenerator::closeSheet()
 	if (mpImpl->mAuxiliarOdcState || mpImpl->mAuxiliarOdtState || !state.mbInSheet) return;
 	if (state.mbInSheetShapes)
 	{
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:shapes"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:shapes"));
 		mpImpl->getState().mbInSheetShapes=false;
 	}
 	mpImpl->mSheetManager.closeSheet();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:table"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:table"));
 }
 
 void OdsGenerator::openSheetRow(const librevenge::RVNGPropertyList &propList)
@@ -849,7 +849,7 @@ void OdsGenerator::openSheetRow(const librevenge::RVNGPropertyList &propList)
 	}
 	if (state.mbInSheetShapes)
 	{
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:shapes"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:shapes"));
 		mpImpl->getState().mbInSheetShapes=false;
 	}
 
@@ -859,16 +859,16 @@ void OdsGenerator::openSheetRow(const librevenge::RVNGPropertyList &propList)
 	{
 		librevenge::RVNGString sEmptyRowStyleName=style->addRow(librevenge::RVNGPropertyList());
 
-		TagOpenElement *pEmptyRowOpenElement = new TagOpenElement("table:table-row");
+		auto pEmptyRowOpenElement = std::make_shared<TagOpenElement>("table:table-row");
 		pEmptyRowOpenElement->addAttribute("table:style-name", sEmptyRowStyleName);
 		librevenge::RVNGString numEmpty;
 		numEmpty.sprintf("%d", row-state.miLastSheetRow);
 		pEmptyRowOpenElement->addAttribute("table:number-rows-repeated", numEmpty);
 
 		mpImpl->getCurrentStorage()->push_back(pEmptyRowOpenElement);
-		mpImpl->getCurrentStorage()->push_back(new TagOpenElement("table:table-cell"));
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:table-cell"));
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:table-row"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("table:table-cell"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:table-cell"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:table-row"));
 	}
 	else
 		row=state.miLastSheetRow;
@@ -882,7 +882,7 @@ void OdsGenerator::openSheetRow(const librevenge::RVNGPropertyList &propList)
 	mpImpl->pushState(state);
 
 	librevenge::RVNGString sSheetRowStyleName=style->addRow(propList);
-	TagOpenElement *pSheetRowOpenElement = new TagOpenElement("table:table-row");
+	auto pSheetRowOpenElement = std::make_shared<TagOpenElement>("table:table-row");
 	pSheetRowOpenElement->addAttribute("table:style-name", sSheetRowStyleName);
 	if (numRows>1)
 		pSheetRowOpenElement->addAttribute("table:number-rows-repeated", propList["table:number-rows-repeated"]->getStr());
@@ -896,13 +896,13 @@ void OdsGenerator::closeSheetRow()
 	if (!state.mbInSheetRow) return;
 	if (state.mbFirstInSheetRow)
 	{
-		TagOpenElement *pSheetCellOpenElement = new TagOpenElement("table:table-cell");
+		auto pSheetCellOpenElement = std::make_shared<TagOpenElement>("table:table-cell");
 		pSheetCellOpenElement->addAttribute("table:number-columns-repeated","1");
 		mpImpl->getCurrentStorage()->push_back(pSheetCellOpenElement);
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:table-cell"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:table-cell"));
 	}
 	mpImpl->popState();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:table-row"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:table-row"));
 }
 
 void OdsGenerator::openSheetCell(const librevenge::RVNGPropertyList &propList)
@@ -922,12 +922,12 @@ void OdsGenerator::openSheetCell(const librevenge::RVNGPropertyList &propList)
 	int col = propList["librevenge:column"] ? propList["librevenge:column"]->getInt() : -1;
 	if (col > state.miLastSheetColumn)
 	{
-		TagOpenElement *pEmptyElement = new TagOpenElement("table:table-cell");
+		auto pEmptyElement = std::make_shared<TagOpenElement>("table:table-cell");
 		librevenge::RVNGString numEmpty;
 		numEmpty.sprintf("%d", col-state.miLastSheetColumn);
 		pEmptyElement->addAttribute("table:number-columns-repeated", numEmpty);
 		mpImpl->getCurrentStorage()->push_back(pEmptyElement);
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:table-cell"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:table-cell"));
 	}
 	else
 		col=state.miLastSheetColumn;
@@ -943,7 +943,7 @@ void OdsGenerator::openSheetCell(const librevenge::RVNGPropertyList &propList)
 		mpImpl->getFontManager().findOrAdd(propList["style:font-name"]->getStr().cstr());
 	librevenge::RVNGString sSheetCellStyleName=style->addCell(propList);
 
-	TagOpenElement *pSheetCellOpenElement = new TagOpenElement("table:table-cell");
+	auto pSheetCellOpenElement = std::make_shared<TagOpenElement>("table:table-cell");
 	pSheetCellOpenElement->addAttribute("table:style-name", sSheetCellStyleName);
 	if (propList["table:number-columns-spanned"] && propList["table:number-columns-spanned"]->getInt()>1)
 		pSheetCellOpenElement->addAttribute("table:number-columns-spanned",
@@ -1063,7 +1063,7 @@ void OdsGenerator::closeSheetCell()
 	if (!mpImpl->getState().mbInSheetCell) return;
 
 	mpImpl->popState();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("table:table-cell"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("table:table-cell"));
 }
 
 void OdsGenerator::defineChartStyle(const librevenge::RVNGPropertyList &propList)
@@ -1503,7 +1503,7 @@ void OdsGenerator::openComment(const librevenge::RVNGPropertyList &propList)
 	mpImpl->getState().mbInComment=true;
 	mpImpl->pushListState();
 
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("office:annotation"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("office:annotation"));
 }
 
 void OdsGenerator::closeComment()
@@ -1517,7 +1517,7 @@ void OdsGenerator::closeComment()
 
 	if (mpImpl->mAuxiliarOdcState || !state.mbInComment) return;
 	mpImpl->popListState();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("office:annotation"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("office:annotation"));
 }
 
 void OdsGenerator::openTable(const librevenge::RVNGPropertyList &propList)
@@ -1671,7 +1671,7 @@ void OdsGenerator::openFrame(const librevenge::RVNGPropertyList &propList)
 
 	if (!state.mbInSheetRow && !state.mbInSheetShapes)
 	{
-		mpImpl->getCurrentStorage()->push_back(new TagOpenElement("table:shapes"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("table:shapes"));
 		mpImpl->getState().mbInSheetShapes=prevState.mbInSheetShapes=true;
 	}
 
@@ -1731,7 +1731,7 @@ void OdsGenerator::openTextBox(const librevenge::RVNGPropertyList &propList)
 	if (!mpImpl->checkOutsideOdc("openTextBox"))
 		return;
 
-	TagOpenElement *textBoxOpenElement = new TagOpenElement("draw:text-box");
+	auto textBoxOpenElement = std::make_shared<TagOpenElement>("draw:text-box");
 	if (propList["librevenge:next-frame-name"])
 	{
 		librevenge::RVNGString frameName;
@@ -1755,7 +1755,7 @@ void OdsGenerator::closeTextBox()
 		return mpImpl->mAuxiliarOdtState->get().closeTextBox();
 	if (mpImpl->mAuxiliarOdcState || !state.mbInTextBox)
 		return;
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:text-box"));
 }
 
 void OdsGenerator::startDocument(const librevenge::RVNGPropertyList &)

@@ -198,7 +198,7 @@ void OdpGeneratorPrivate::openTextBoxFrame(const ::librevenge::RVNGPropertyList 
 	librevenge::RVNGString sValue=mGraphicManager.findOrAdd
 	                              (graphicStyle, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic);
 
-	TagOpenElement *pDrawFrameOpenElement = new TagOpenElement("draw:frame");
+	auto pDrawFrameOpenElement = std::make_shared<TagOpenElement>("draw:frame");
 	pDrawFrameOpenElement->addAttribute("draw:style-name", sValue);
 	pDrawFrameOpenElement->addAttribute("draw:layer", "layout");
 
@@ -279,7 +279,7 @@ void OdpGeneratorPrivate::openTextBoxFrame(const ::librevenge::RVNGPropertyList 
 
 void OdpGeneratorPrivate::closeTextBoxFrame()
 {
-	getCurrentStorage()->push_back(new TagCloseElement("draw:frame"));
+	getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
 void OdpGeneratorPrivate::writeNotesStyles(OdfDocumentHandler *pHandler)
@@ -593,7 +593,7 @@ void OdpGenerator::startSlide(const ::librevenge::RVNGPropertyList &propList)
 		pageName.appendEscapedXML(propList["draw:name"]->getStr());
 	else
 		pageName.sprintf("page%i", mpImpl->miPageIndex);
-	TagOpenElement *pDrawPageOpenElement = new TagOpenElement("draw:page");
+	auto pDrawPageOpenElement = std::make_shared<TagOpenElement>("draw:page");
 	pDrawPageOpenElement->addAttribute("draw:name", pageName);
 	pDrawPageOpenElement->addAttribute("draw:style-name", mpImpl->mpCurrentPageSpan->getDrawingName());
 	pDrawPageOpenElement->addAttribute("draw:master-page-name", mpImpl->mpCurrentPageSpan->getMasterName());
@@ -602,7 +602,7 @@ void OdpGenerator::startSlide(const ::librevenge::RVNGPropertyList &propList)
 
 void OdpGenerator::endSlide()
 {
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:page"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:page"));
 }
 
 void OdpGenerator::startMasterSlide(const ::librevenge::RVNGPropertyList &propList)
@@ -759,7 +759,7 @@ void OdpGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propL
 	framePropList.insert("svg:height", height);
 	framePropList.insert("svg:width", width);
 
-	TagOpenElement *pDrawFrameElement = new TagOpenElement("draw:frame");
+	auto pDrawFrameElement = std::make_shared<TagOpenElement>("draw:frame");
 
 	librevenge::RVNGPropertyList finalStyle;
 	mpImpl->getGraphicManager().addGraphicProperties(style, finalStyle);
@@ -789,7 +789,7 @@ void OdpGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propL
 
 	mpImpl->insertBinaryObject(propList);
 
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:frame"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
 void OdpGenerator::drawConnector(const ::librevenge::RVNGPropertyList &propList)
@@ -818,7 +818,7 @@ void OdpGenerator::closeGroup()
 void OdpGenerator::startTextObject(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->openTextBoxFrame(propList);
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("draw:text-box"));
 	mpImpl->mState.mbIsTextBox = true;
 	mpImpl->pushListState();
 }
@@ -830,7 +830,7 @@ void OdpGenerator::endTextObject()
 
 	mpImpl->popListState();
 	mpImpl->mState.mbIsTextBox = false;
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:text-box"));
 	mpImpl->closeTextBoxFrame();
 }
 
@@ -936,7 +936,7 @@ void OdpGenerator::startTableObject(const ::librevenge::RVNGPropertyList &propLi
 	mpImpl->pushListState();
 
 	// table must be inside a frame
-	TagOpenElement *pFrameOpenElement = new TagOpenElement("draw:frame");
+	auto pFrameOpenElement = std::make_shared<TagOpenElement>("draw:frame");
 
 	pFrameOpenElement->addAttribute("draw:style-name", "standard");
 	if (propList["svg:x"])
@@ -957,7 +957,7 @@ void OdpGenerator::endTableObject()
 	if (mpImpl->mState.mInComment)
 		return;
 	mpImpl->closeTable();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:frame"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 	mpImpl->popListState();
 }
 
@@ -1034,7 +1034,7 @@ void OdpGenerator::startComment(const ::librevenge::RVNGPropertyList &propList)
 	mpImpl->pushListState();
 	mpImpl->mState.mInComment = true;
 
-	TagOpenElement *const commentElement = new TagOpenElement("officeooo:annotation");
+	auto const commentElement = std::make_shared<TagOpenElement>("officeooo:annotation");
 
 	// position & size
 	double val;
@@ -1059,7 +1059,7 @@ void OdpGenerator::endComment()
 	}
 	mpImpl->popListState();
 	mpImpl->mState.mInComment = false;
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("officeooo:annotation"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("officeooo:annotation"));
 }
 
 void OdpGenerator::startNotes(const ::librevenge::RVNGPropertyList &/*propList*/)
@@ -1071,12 +1071,12 @@ void OdpGenerator::startNotes(const ::librevenge::RVNGPropertyList &/*propList*/
 	}
 
 	mpImpl->pushListState();
-	TagOpenElement *const notesElement = new TagOpenElement("presentation:notes");
+	auto const notesElement = std::make_shared<TagOpenElement>("presentation:notes");
 	notesElement->addAttribute("draw:style-name", "PresentationNotesPage");
 
 	mpImpl->getCurrentStorage()->push_back(notesElement);
 
-	TagOpenElement *const thumbnailElement = new TagOpenElement("draw:page-thumbnail");
+	auto const thumbnailElement = std::make_shared<TagOpenElement>("draw:page-thumbnail");
 	thumbnailElement->addAttribute("draw:layer", "layout");
 	thumbnailElement->addAttribute("presentation:class", "page");
 	// TODO: should the dimensions be hardcoded? If not, where
@@ -1090,9 +1090,9 @@ void OdpGenerator::startNotes(const ::librevenge::RVNGPropertyList &/*propList*/
 	thumbnailElement->addAttribute("draw:page-number", pageNumber);
 
 	mpImpl->getCurrentStorage()->push_back(thumbnailElement);
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:page-thumbnail"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:page-thumbnail"));
 
-	TagOpenElement *const frameElement = new TagOpenElement("draw:frame");
+	auto const frameElement = std::make_shared<TagOpenElement>("draw:frame");
 	frameElement->addAttribute("presentation:style-name", "PresentationNotesFrame");
 	frameElement->addAttribute("draw:layer", "layout");
 	frameElement->addAttribute("presentation:class", "notes");
@@ -1103,7 +1103,7 @@ void OdpGenerator::startNotes(const ::librevenge::RVNGPropertyList &/*propList*/
 
 	mpImpl->getCurrentStorage()->push_back(frameElement);
 
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("draw:text-box"));
 
 	mpImpl->mState.mInNotes = true;
 }
@@ -1118,9 +1118,9 @@ void OdpGenerator::endNotes()
 	mpImpl->popListState();
 	mpImpl->mState.mInNotes = false;
 
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:text-box"));
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:frame"));
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("presentation:notes"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("presentation:notes"));
 }
 
 void OdpGenerator::defineChartStyle(const ::librevenge::RVNGPropertyList &)

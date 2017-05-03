@@ -561,7 +561,7 @@ void OdcGenerator::openChart(const librevenge::RVNGPropertyList &propList)
 	mpImpl->mChartDocumentStates.push(ChartDocumentState());
 	mpImpl->mChartDocumentStates.top().mbChartOpened=true;
 
-	TagOpenElement *openElement = new TagOpenElement("chart:chart");
+	auto openElement = std::make_shared<TagOpenElement>("chart:chart");
 	for (int i=0; i<8; ++i)
 	{
 		static char const *(wh[8]) =
@@ -588,7 +588,7 @@ void OdcGenerator::closeChart()
 	if (!mpImpl->mChartDocumentStates.top().mbChartOpened)
 		return;
 	mpImpl->mChartDocumentStates.pop();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:chart"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:chart"));
 }
 
 void OdcGenerator::openChartTextObject(const librevenge::RVNGPropertyList &propList)
@@ -614,7 +614,7 @@ void OdcGenerator::openChartTextObject(const librevenge::RVNGPropertyList &propL
 	state.mCharTextObjectType=what;
 	mpImpl->mChartDocumentStates.push(state);
 
-	TagOpenElement *openElement = new TagOpenElement(what.c_str());
+	auto openElement = std::make_shared<TagOpenElement>(what.c_str());
 	for (int i=0; i<2; ++i)
 	{
 		static char const *(wh[2]) =
@@ -659,7 +659,7 @@ void OdcGenerator::closeChartTextObject()
 		return;
 	std::string wh = mpImpl->mChartDocumentStates.top().mCharTextObjectType;
 	mpImpl->mChartDocumentStates.pop();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement(wh.c_str()));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>(wh.c_str()));
 }
 
 void OdcGenerator::openChartPlotArea(const librevenge::RVNGPropertyList &propList)
@@ -673,7 +673,7 @@ void OdcGenerator::openChartPlotArea(const librevenge::RVNGPropertyList &propLis
 	state.mbChartPlotAreaOpened=true;
 	mpImpl->mChartDocumentStates.push(state);
 
-	TagOpenElement *openElement = new TagOpenElement("chart:plot-area");
+	auto openElement = std::make_shared<TagOpenElement>("chart:plot-area");
 	for (int i=0; i<17; ++i)
 	{
 		static char const *(wh[17]) =
@@ -709,22 +709,22 @@ void OdcGenerator::openChartPlotArea(const librevenge::RVNGPropertyList &propLis
 		if (type=="stock-gain-marker" || type=="stock-loss-marker" || type=="stock-range-line")
 		{
 			std::string what="chart:"+type;
-			TagOpenElement *childElement = new TagOpenElement(what.c_str());
+			auto childElement = std::make_shared<TagOpenElement>(what.c_str());
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:categories"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:categories"));
 		}
 		else if (type=="floor" || type=="wall")
 		{
 			std::string what="chart:"+type;
-			TagOpenElement *childElement = new TagOpenElement(what.c_str());
+			auto childElement = std::make_shared<TagOpenElement>(what.c_str());
 			if (child["svg:width"])
 				childElement->addAttribute("svg:width",child["svg:width"]->getStr());
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement(what.c_str()));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>(what.c_str()));
 		}
 		else
 		{
@@ -738,7 +738,7 @@ void OdcGenerator::closeChartPlotArea()
 	if (!mpImpl->mChartDocumentStates.top().mbChartPlotAreaOpened)
 		return;
 	mpImpl->mChartDocumentStates.pop();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:plot-area"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:plot-area"));
 }
 
 void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
@@ -749,7 +749,7 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 		ODFGEN_DEBUG_MSG(("OdcGenerator::insertChartAxis: can not insert axis outside the plot area\n"));
 		return;
 	}
-	TagOpenElement *openElement = new TagOpenElement("chart:axis");
+	auto openElement = std::make_shared<TagOpenElement>("chart:axis");
 	for (int i=0; i<2; ++i)
 	{
 		static char const *(wh[2]) =
@@ -771,7 +771,7 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 			type=child["librevenge:type"]->getStr().cstr();
 		if (type=="categories")
 		{
-			TagOpenElement *childElement = new TagOpenElement("chart:categories");
+			auto childElement = std::make_shared<TagOpenElement>("chart:categories");
 			if (child.child("table:cell-range"))
 			{
 				librevenge::RVNGString range=
@@ -780,21 +780,21 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 					childElement->addAttribute("table:cell-range", range);
 			}
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:categories"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:categories"));
 		}
 		else if (type=="grid")
 		{
-			TagOpenElement *childElement = new TagOpenElement("chart:grid");
+			auto childElement = std::make_shared<TagOpenElement>("chart:grid");
 			if (child["chart:class"])
 				childElement->addAttribute("chart:class",child["chart:class"]->getStr());
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:grid"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:grid"));
 		}
 		else if (type=="title")
 		{
-			TagOpenElement *childElement = new TagOpenElement("chart:title");
+			auto childElement = std::make_shared<TagOpenElement>("chart:title");
 			for (int i=0; i<2; ++i)
 			{
 				static char const *(wh[2]) =
@@ -807,14 +807,14 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:title"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:title"));
 		}
 		else
 		{
 			ODFGEN_DEBUG_MSG(("OdcGenerator::insertChartAxis: can not find type of child %d\n", int(c)));
 		}
 	}
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:axis"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:axis"));
 }
 
 void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
@@ -826,7 +826,7 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 		return;
 	}
 	state.mbChartSerieOpened=true;
-	TagOpenElement *openElement = new TagOpenElement("chart:series");
+	auto openElement = std::make_shared<TagOpenElement>("chart:series");
 	for (int i=0; i<3; ++i)
 	{
 		static char const *(wh[3]) =
@@ -862,7 +862,7 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 			type=child["librevenge:type"]->getStr().cstr();
 		if (type=="data-point")
 		{
-			TagOpenElement *childElement = new TagOpenElement("chart:data-point");
+			auto childElement = std::make_shared<TagOpenElement>("chart:data-point");
 			for (int i=0; i<2; ++i)
 			{
 				static char const *(wh[2]) =
@@ -875,11 +875,11 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:data-point"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:data-point"));
 		}
 		else if (type=="domain")
 		{
-			TagOpenElement *childElement = new TagOpenElement("chart:domain");
+			auto childElement = std::make_shared<TagOpenElement>("chart:domain");
 			if (child.child("table:cell-range"))
 			{
 				librevenge::RVNGString range=
@@ -888,25 +888,25 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 					childElement->addAttribute("table:cell-range", range);
 			}
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:domain"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:domain"));
 		}
 		else if (type=="error-indicator")
 		{
-			TagOpenElement *childElement = new TagOpenElement("chart:error-indicator");
+			auto childElement = std::make_shared<TagOpenElement>("chart:error-indicator");
 			if (child["chart:dimension"])
 				childElement->addAttribute("chart:dimension", child["chart:dimension"]->getStr());
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:error-indicator"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:error-indicator"));
 		}
 		else if (type=="mean-value")
 		{
-			TagOpenElement *childElement = new TagOpenElement("chart:mean-value");
+			auto childElement = std::make_shared<TagOpenElement>("chart:mean-value");
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:mean-value"));
+			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:mean-value"));
 		}
 		else
 		{
@@ -921,7 +921,7 @@ void OdcGenerator::closeChartSerie()
 	if (!state.mbChartSerieOpened)
 		return;
 	state.mbChartSerieOpened=false;
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("chart:series"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:series"));
 }
 
 // -------------------------------

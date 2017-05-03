@@ -430,7 +430,7 @@ void OdgGenerator::startPage(const ::librevenge::RVNGPropertyList &propList)
 		pageName.appendEscapedXML(propList["draw:name"]->getStr());
 	else
 		pageName.sprintf("page%i", mpImpl->miPageIndex);
-	TagOpenElement *pDrawPageOpenElement = new TagOpenElement("draw:page");
+	auto pDrawPageOpenElement = std::make_shared<TagOpenElement>("draw:page");
 	pDrawPageOpenElement->addAttribute("draw:name", pageName);
 	pDrawPageOpenElement->addAttribute("draw:style-name", mpImpl->mpCurrentPageSpan->getDrawingName());
 	pDrawPageOpenElement->addAttribute("draw:master-page-name", mpImpl->mpCurrentPageSpan->getMasterName());
@@ -439,7 +439,7 @@ void OdgGenerator::startPage(const ::librevenge::RVNGPropertyList &propList)
 
 void OdgGenerator::endPage()
 {
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:page"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:page"));
 }
 
 void OdgGenerator::startMasterPage(const ::librevenge::RVNGPropertyList &propList)
@@ -506,7 +506,7 @@ void OdgGenerator::startLayer(const ::librevenge::RVNGPropertyList &propList)
 	else
 	{
 		mpImpl->getState().mbInFalseLayerGroup=true;
-		mpImpl->getCurrentStorage()->push_back(new TagOpenElement("draw:g"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("draw:g"));
 	}
 }
 
@@ -516,7 +516,7 @@ void OdgGenerator::endLayer()
 		return;
 
 	if (mpImpl->getState().mbInFalseLayerGroup)
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:g"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:g"));
 	else
 		mpImpl->closeLayer();
 	mpImpl->popState();
@@ -524,12 +524,12 @@ void OdgGenerator::endLayer()
 
 void OdgGenerator::openGroup(const ::librevenge::RVNGPropertyList & /* propList */)
 {
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("draw:g"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("draw:g"));
 }
 
 void OdgGenerator::closeGroup()
 {
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:g"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:g"));
 }
 
 void OdgGenerator::drawRectangle(const ::librevenge::RVNGPropertyList &propList)
@@ -623,7 +623,7 @@ void OdgGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propL
 	framePropList.insert("svg:height", height);
 	framePropList.insert("svg:width", width);
 
-	TagOpenElement *pDrawFrameElement = new TagOpenElement("draw:frame");
+	auto pDrawFrameElement = std::make_shared<TagOpenElement>("draw:frame");
 
 	librevenge::RVNGPropertyList finalStyle;
 	mpImpl->getGraphicManager().addGraphicProperties(style, finalStyle);
@@ -658,7 +658,7 @@ void OdgGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propL
 
 	mpImpl->insertBinaryObject(propList);
 
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:frame"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
 void OdgGenerator::drawConnector(const ::librevenge::RVNGPropertyList &propList)
@@ -693,7 +693,7 @@ void OdgGenerator::startTextObject(const librevenge::RVNGPropertyList &propList)
 	librevenge::RVNGString sValue=mpImpl->getGraphicManager().findOrAdd
 	                              (graphicStyle, mpImpl->useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic);
 
-	TagOpenElement *pDrawFrameOpenElement = new TagOpenElement("draw:frame");
+	auto pDrawFrameOpenElement = std::make_shared<TagOpenElement>("draw:frame");
 	pDrawFrameOpenElement->addAttribute("draw:style-name", sValue);
 	pDrawFrameOpenElement->addAttribute("draw:layer", mpImpl->getLayerName(propList));
 
@@ -774,7 +774,7 @@ void OdgGenerator::startTextObject(const librevenge::RVNGPropertyList &propList)
 		pDrawFrameOpenElement->addAttribute("draw:display", propList["draw:display"]->getStr());
 
 	mpImpl->getCurrentStorage()->push_back(pDrawFrameOpenElement);
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("draw:text-box"));
 
 	// push the different states
 	mpImpl->pushState();
@@ -796,14 +796,14 @@ void OdgGenerator::endTextObject()
 	mpImpl->popListState();
 	mpImpl->popState();
 
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:text-box"));
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:frame"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
 void OdgGenerator::startTableObject(const ::librevenge::RVNGPropertyList &propList)
 {
 	// table must be inside a frame
-	TagOpenElement *pFrameOpenElement = new TagOpenElement("draw:frame");
+	auto pFrameOpenElement = std::make_shared<TagOpenElement>("draw:frame");
 
 	pFrameOpenElement->addAttribute("draw:style-name", "standard");
 	pFrameOpenElement->addAttribute("draw:layer", mpImpl->getLayerName(propList));
@@ -830,7 +830,7 @@ void OdgGenerator::endTableObject()
 	mpImpl->popListState();
 
 	mpImpl->closeTable();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:frame"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
 void OdgGenerator::openTableRow(const ::librevenge::RVNGPropertyList &propList)

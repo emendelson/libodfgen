@@ -584,7 +584,7 @@ void OdtGenerator::openSection(const librevenge::RVNGPropertyList &propList)
 	{
 		librevenge::RVNGString sSectionName=
 		    mpImpl->mSectionManager.add(propList, mpImpl->useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_Unknown);
-		TagOpenElement *pSectionOpenElement = new TagOpenElement("text:section");
+		auto pSectionOpenElement = std::make_shared<TagOpenElement>("text:section");
 		pSectionOpenElement->addAttribute("text:style-name", sSectionName);
 		pSectionOpenElement->addAttribute("text:name", sSectionName);
 		mpImpl->getCurrentStorage()->push_back(pSectionOpenElement);
@@ -596,7 +596,7 @@ void OdtGenerator::openSection(const librevenge::RVNGPropertyList &propList)
 void OdtGenerator::closeSection()
 {
 	if (!mpImpl->getState().mbInFakeSection)
-		mpImpl->getCurrentStorage()->push_back(new TagCloseElement("text:section"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:section"));
 	else
 		mpImpl->getState().mbInFakeSection = false;
 }
@@ -709,7 +709,7 @@ void OdtGenerator::closeListElement()
 void OdtGenerator::openFootnote(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->pushListState();
-	TagOpenElement *pOpenFootNote = new TagOpenElement("text:note");
+	auto pOpenFootNote = std::make_shared<TagOpenElement>("text:note");
 	pOpenFootNote->addAttribute("text:note-class", "footnote");
 	if (propList["librevenge:number"])
 	{
@@ -719,7 +719,7 @@ void OdtGenerator::openFootnote(const librevenge::RVNGPropertyList &propList)
 	}
 	mpImpl->getCurrentStorage()->push_back(pOpenFootNote);
 
-	TagOpenElement *pOpenFootCitation = new TagOpenElement("text:note-citation");
+	auto pOpenFootCitation = std::make_shared<TagOpenElement>("text:note-citation");
 	if (propList["text:label"])
 	{
 		librevenge::RVNGString tmpString;
@@ -729,12 +729,12 @@ void OdtGenerator::openFootnote(const librevenge::RVNGPropertyList &propList)
 	mpImpl->getCurrentStorage()->push_back(pOpenFootCitation);
 
 	if (propList["text:label"])
-		mpImpl->getCurrentStorage()->push_back(new CharDataElement(propList["text:label"]->getStr().cstr()));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<CharDataElement>(propList["text:label"]->getStr().cstr()));
 	else if (propList["librevenge:number"])
-		mpImpl->getCurrentStorage()->push_back(new CharDataElement(propList["librevenge:number"]->getStr().cstr()));
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("text:note-citation"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<CharDataElement>(propList["librevenge:number"]->getStr().cstr()));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:note-citation"));
 
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("text:note-body"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("text:note-body"));
 
 	mpImpl->getState().mbInNote = true;
 }
@@ -744,14 +744,14 @@ void OdtGenerator::closeFootnote()
 	mpImpl->getState().mbInNote = false;
 	mpImpl->popListState();
 
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("text:note-body"));
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("text:note"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:note-body"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:note"));
 }
 
 void OdtGenerator::openEndnote(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->pushListState();
-	TagOpenElement *pOpenEndNote = new TagOpenElement("text:note");
+	auto pOpenEndNote = std::make_shared<TagOpenElement>("text:note");
 	pOpenEndNote->addAttribute("text:note-class", "endnote");
 	if (propList["librevenge:number"])
 	{
@@ -761,7 +761,7 @@ void OdtGenerator::openEndnote(const librevenge::RVNGPropertyList &propList)
 	}
 	mpImpl->getCurrentStorage()->push_back(pOpenEndNote);
 
-	TagOpenElement *pOpenEndCitation = new TagOpenElement("text:note-citation");
+	auto pOpenEndCitation = std::make_shared<TagOpenElement>("text:note-citation");
 	if (propList["text:label"])
 	{
 		librevenge::RVNGString tmpString;
@@ -771,12 +771,12 @@ void OdtGenerator::openEndnote(const librevenge::RVNGPropertyList &propList)
 	mpImpl->getCurrentStorage()->push_back(pOpenEndCitation);
 
 	if (propList["text:label"])
-		mpImpl->getCurrentStorage()->push_back(new CharDataElement(propList["text:label"]->getStr().cstr()));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<CharDataElement>(propList["text:label"]->getStr().cstr()));
 	else if (propList["librevenge:number"])
-		mpImpl->getCurrentStorage()->push_back(new CharDataElement(propList["librevenge:number"]->getStr().cstr()));
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("text:note-citation"));
+		mpImpl->getCurrentStorage()->push_back(std::make_shared<CharDataElement>(propList["librevenge:number"]->getStr().cstr()));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:note-citation"));
 
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("text:note-body"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("text:note-body"));
 
 	mpImpl->getState().mbInNote = true;
 }
@@ -785,14 +785,14 @@ void OdtGenerator::closeEndnote()
 {
 	mpImpl->getState().mbInNote = false;
 	mpImpl->popListState();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("text:note-body"));
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("text:note"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:note-body"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:note"));
 }
 
 void OdtGenerator::openComment(const librevenge::RVNGPropertyList &)
 {
 	mpImpl->pushListState();
-	mpImpl->getCurrentStorage()->push_back(new TagOpenElement("office:annotation"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("office:annotation"));
 
 	mpImpl->getState().mbInNote = true;
 }
@@ -801,7 +801,7 @@ void OdtGenerator::closeComment()
 {
 	mpImpl->getState().mbInNote = false;
 	mpImpl->popListState();
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("office:annotation"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("office:annotation"));
 }
 
 void OdtGenerator::openTable(const librevenge::RVNGPropertyList &propList)
@@ -975,7 +975,7 @@ void OdtGenerator::openTextBox(const librevenge::RVNGPropertyList &propList)
 		return;
 	mpImpl->pushListState();
 	mpImpl->pushState();
-	TagOpenElement *textBoxOpenElement = new TagOpenElement("draw:text-box");
+	auto textBoxOpenElement = std::make_shared<TagOpenElement>("draw:text-box");
 	if (propList["librevenge:next-frame-name"])
 	{
 		librevenge::RVNGString frameName;
@@ -995,7 +995,7 @@ void OdtGenerator::closeTextBox()
 	mpImpl->popListState();
 	mpImpl->popState();
 
-	mpImpl->getCurrentStorage()->push_back(new TagCloseElement("draw:text-box"));
+	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:text-box"));
 }
 
 void OdtGenerator::defineSectionStyle(librevenge::RVNGPropertyList const &)

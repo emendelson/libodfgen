@@ -117,9 +117,9 @@ void OdfGenerator::setDocumentMetaData(const librevenge::RVNGPropertyList &propL
 		{
 			if (strncmp(i.key(), "meta:generator", 14))
 			{
-				mMetaDataStorage.push_back(new TagOpenElement(i.key()));
-				mMetaDataStorage.push_back(new CharDataElement(i()->getStr().cstr()));
-				mMetaDataStorage.push_back(new TagCloseElement(i.key()));
+				mMetaDataStorage.push_back(std::make_shared<TagOpenElement>(i.key()));
+				mMetaDataStorage.push_back(std::make_shared<CharDataElement>(i()->getStr().cstr()));
+				mMetaDataStorage.push_back(std::make_shared<TagCloseElement>(i.key()));
 			}
 			else
 			{
@@ -129,27 +129,27 @@ void OdfGenerator::setDocumentMetaData(const librevenge::RVNGPropertyList &propL
 		else if (strncmp(i.key(), "librevenge:template", 19) == 0)
 		{
 			librevenge::RVNGString elementName = "meta:template";
-			TagOpenElement *element = new TagOpenElement(elementName);
+			auto element = std::make_shared<TagOpenElement>(elementName);
 			element->addAttribute("xlink:type", "simple");
 			element->addAttribute("xlink:actuate", "onRequest");
 			element->addAttribute("xlink:title", i()->getStr().cstr());
 			element->addAttribute("xlink:href", "");
 			mMetaDataStorage.push_back(element);
-			mMetaDataStorage.push_back(new TagCloseElement(elementName));
+			mMetaDataStorage.push_back(std::make_shared<TagCloseElement>(elementName));
 		}
 		else if (strncmp(i.key(), "librevenge:", 11) == 0)
 		{
 			// convert to <meta:user-defined meta:name="some_metadata">
 			librevenge::RVNGString elementName = "meta:user-defined";
-			TagOpenElement *element = new TagOpenElement(elementName);
+			auto element = std::make_shared<TagOpenElement>(elementName);
 			std::string user_defined(i.key());
 			size_t found = user_defined.find_last_of(":");
 			if (found != std::string::npos)
 				user_defined = user_defined.substr(found+1);
 			element->addAttribute("meta:name", user_defined.c_str());
 			mMetaDataStorage.push_back(element);
-			mMetaDataStorage.push_back(new CharDataElement(i()->getStr().cstr()));
-			mMetaDataStorage.push_back(new TagCloseElement(elementName));
+			mMetaDataStorage.push_back(std::make_shared<CharDataElement>(i()->getStr().cstr()));
+			mMetaDataStorage.push_back(std::make_shared<TagCloseElement>(elementName));
 		}
 	}
 
@@ -169,9 +169,9 @@ void OdfGenerator::setDocumentMetaData(const librevenge::RVNGPropertyList &propL
 		generator += ")";
 	}
 
-	mMetaDataStorage.push_back(new TagOpenElement("meta:generator"));
-	mMetaDataStorage.push_back(new CharDataElement(generator.c_str()));
-	mMetaDataStorage.push_back(new TagCloseElement("meta:generator"));
+	mMetaDataStorage.push_back(std::make_shared<TagOpenElement>("meta:generator"));
+	mMetaDataStorage.push_back(std::make_shared<CharDataElement>(generator.c_str()));
+	mMetaDataStorage.push_back(std::make_shared<TagCloseElement>("meta:generator"));
 }
 
 void OdfGenerator::writeDocumentMetaData(OdfDocumentHandler *pHandler)
@@ -461,7 +461,7 @@ void OdfGenerator::openFrame(const librevenge::RVNGPropertyList &propList)
 		objectId= getFrameId(propList["librevenge:frame-name"]->getStr());
 	else
 		objectId= getFrameId("");
-	TagOpenElement *drawFrameOpenElement = new TagOpenElement("draw:frame");
+	auto drawFrameOpenElement = std::make_shared<TagOpenElement>("draw:frame");
 	drawFrameOpenElement->addAttribute("draw:style-name", frameAutomaticStyleName);
 	librevenge::RVNGString objectName;
 	objectName.sprintf("Object%i", objectId);
@@ -476,7 +476,7 @@ void OdfGenerator::openFrame(const librevenge::RVNGPropertyList &propList)
 
 void OdfGenerator::closeFrame()
 {
-	mpCurrentStorage->push_back(new TagCloseElement("draw:frame"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
 void OdfGenerator::addFrameProperties(const librevenge::RVNGPropertyList &propList, TagOpenElement &element) const
@@ -519,14 +519,14 @@ unsigned OdfGenerator::getFrameId(librevenge::RVNGString val)
 
 void OdfGenerator::openGroup(const librevenge::RVNGPropertyList &propList)
 {
-	TagOpenElement *groupElement=new TagOpenElement("draw:g");
+	auto groupElement=std::make_shared<TagOpenElement>("draw:g");
 	addFrameProperties(propList, *groupElement);
 	mpCurrentStorage->push_back(groupElement);
 }
 
 void OdfGenerator::closeGroup()
 {
-	mpCurrentStorage->push_back(new TagCloseElement("draw:g"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:g"));
 }
 
 librevenge::RVNGString OdfGenerator::getLayerName(const librevenge::RVNGPropertyList &propList) const
@@ -640,34 +640,34 @@ void OdfGenerator::appendLayersMasterStyles(OdfDocumentHandler *pHandler)
 ////////////////////////////////////////////////////////////
 void OdfGenerator::insertTab()
 {
-	mpCurrentStorage->push_back(new TagOpenElement("text:tab"));
-	mpCurrentStorage->push_back(new TagCloseElement("text:tab"));
+	mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("text:tab"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:tab"));
 }
 
 void OdfGenerator::insertSpace()
 {
-	mpCurrentStorage->push_back(new TagOpenElement("text:s"));
-	mpCurrentStorage->push_back(new TagCloseElement("text:s"));
+	mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("text:s"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:s"));
 }
 
 void OdfGenerator::insertLineBreak(bool forceParaClose)
 {
 	if (!forceParaClose)
 	{
-		mpCurrentStorage->push_back(new TagOpenElement("text:line-break"));
-		mpCurrentStorage->push_back(new TagCloseElement("text:line-break"));
+		mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("text:line-break"));
+		mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:line-break"));
 		return;
 	}
 	closeSpan();
 	closeParagraph();
 
-	TagOpenElement *pParagraphOpenElement = new TagOpenElement("text:p");
+	auto pParagraphOpenElement = std::make_shared<TagOpenElement>("text:p");
 	if (!mLastParagraphName.empty())
 		pParagraphOpenElement->addAttribute("text:style-name", mLastParagraphName.cstr());
 	mpCurrentStorage->push_back(pParagraphOpenElement);
 	mParagraphHeadingStack.push(false);
 
-	TagOpenElement *pSpanOpenElement = new TagOpenElement("text:span");
+	auto pSpanOpenElement = std::make_shared<TagOpenElement>("text:span");
 	if (!mLastSpanName.empty())
 		pSpanOpenElement->addAttribute("text:style-name", mLastSpanName.cstr());
 	mpCurrentStorage->push_back(pSpanOpenElement);
@@ -681,7 +681,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 
 	const librevenge::RVNGString &type = propList["librevenge:field-type"]->getStr();
 
-	TagOpenElement *openElement = new TagOpenElement(type);
+	auto openElement = std::make_shared<TagOpenElement>(type);
 	if (type == "text:page-number")
 		openElement->addAttribute("text:select-page", propList["text:select-page"] ? propList["text:select-page"]->getStr() : "current");
 	else if (type == "text:chapter")
@@ -858,14 +858,14 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 
 	mpCurrentStorage->push_back(openElement);
 	if (propList["librevenge:field-content"])
-		mpCurrentStorage->push_back(new CharDataElement(propList["librevenge:field-content"]->getStr()));
-	mpCurrentStorage->push_back(new TagCloseElement(type));
+		mpCurrentStorage->push_back(std::make_shared<CharDataElement>(propList["librevenge:field-content"]->getStr()));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>(type));
 }
 
 void OdfGenerator::insertText(const librevenge::RVNGString &text)
 {
 	if (!text.empty())
-		mpCurrentStorage->push_back(new TextElement(text));
+		mpCurrentStorage->push_back(std::make_shared<TextElement>(text));
 }
 
 void OdfGenerator::defineCharacterStyle(const librevenge::RVNGPropertyList &propList)
@@ -904,7 +904,7 @@ void OdfGenerator::openSpan(const librevenge::RVNGPropertyList &propList)
 		if (pList["librevenge:span-id"])
 			mIdSpanNameMap[pList["librevenge:span-id"]->getInt()]=sName;
 	}
-	TagOpenElement *pSpanOpenElement = new TagOpenElement("text:span");
+	auto pSpanOpenElement = std::make_shared<TagOpenElement>("text:span");
 	pSpanOpenElement->addAttribute("text:style-name", sName.cstr());
 	mpCurrentStorage->push_back(pSpanOpenElement);
 	mLastSpanName=sName;
@@ -912,7 +912,7 @@ void OdfGenerator::openSpan(const librevenge::RVNGPropertyList &propList)
 
 void OdfGenerator::closeSpan()
 {
-	mpCurrentStorage->push_back(new TagCloseElement("text:span"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:span"));
 }
 
 void OdfGenerator::openLink(const librevenge::RVNGPropertyList &propList)
@@ -921,7 +921,7 @@ void OdfGenerator::openLink(const librevenge::RVNGPropertyList &propList)
 	{
 		ODFGEN_DEBUG_MSG(("OdfGenerator::openLink: linked type is not defined, assume link\n"));
 	}
-	TagOpenElement *pLinkOpenElement = new TagOpenElement("text:a");
+	auto pLinkOpenElement = std::make_shared<TagOpenElement>("text:a");
 	librevenge::RVNGPropertyList::Iter i(propList);
 	for (i.rewind(); i.next();)
 	{
@@ -935,7 +935,7 @@ void OdfGenerator::openLink(const librevenge::RVNGPropertyList &propList)
 
 void OdfGenerator::closeLink()
 {
-	mpCurrentStorage->push_back(new TagCloseElement("text:a"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:a"));
 }
 
 void OdfGenerator::defineParagraphStyle(const librevenge::RVNGPropertyList &propList)
@@ -982,18 +982,18 @@ void OdfGenerator::openParagraph(const librevenge::RVNGPropertyList &propList)
 	}
 
 	// create a document element corresponding to the paragraph, and append it to our list of document elements
-	TagOpenElement *pParagraphOpenElement = 0;
+	std::shared_ptr<TagOpenElement> pParagraphOpenElement;
 
 	if (propList["text:outline-level"])
 	{
 		mParagraphHeadingStack.push(true);
-		pParagraphOpenElement = new TagOpenElement("text:h");
+		pParagraphOpenElement = std::make_shared<TagOpenElement>("text:h");
 		pParagraphOpenElement->addAttribute("text:outline-level", propList["text:outline-level"]->getStr());
 	}
 	else
 	{
 		mParagraphHeadingStack.push(false);
-		pParagraphOpenElement = new TagOpenElement("text:p");
+		pParagraphOpenElement = std::make_shared<TagOpenElement>("text:p");
 	}
 	pParagraphOpenElement->addAttribute("text:style-name", paragraphName);
 	mpCurrentStorage->push_back(pParagraphOpenElement);
@@ -1007,7 +1007,7 @@ void OdfGenerator::closeParagraph()
 		ODFGEN_DEBUG_MSG(("OdfGenerator::closeParagraph: can not find any opened paragraph\n"));
 		return;
 	}
-	mpCurrentStorage->push_back(mParagraphHeadingStack.top() ? new TagCloseElement("text:h") : new TagCloseElement("text:p"));
+	mpCurrentStorage->push_back(mParagraphHeadingStack.top() ? std::make_shared<TagCloseElement>("text:h") : std::make_shared<TagCloseElement>("text:p"));
 	mParagraphHeadingStack.pop();
 }
 
@@ -1039,10 +1039,10 @@ void OdfGenerator::openListLevel(const librevenge::RVNGPropertyList &propList, b
 		mFontManager.findOrAdd(pList["style:font-name"]->getStr().cstr());
 	mListManager.defineLevel(pList, ordered, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_Unknown);
 
-	TagOpenElement *pListLevelOpenElement = new TagOpenElement("text:list");
+	auto pListLevelOpenElement = std::make_shared<TagOpenElement>("text:list");
 	if (!state.mbListElementOpened.empty() && !state.mbListElementOpened.top())
 	{
-		mpCurrentStorage->push_back(new TagOpenElement("text:list-item"));
+		mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("text:list-item"));
 		state.mbListElementOpened.top() = true;
 	}
 
@@ -1069,11 +1069,11 @@ void OdfGenerator::closeListLevel()
 	}
 	if (state.mbListElementOpened.top())
 	{
-		mpCurrentStorage->push_back(new TagCloseElement("text:list-item"));
+		mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:list-item"));
 		state.mbListElementOpened.top() = false;
 	}
 
-	mpCurrentStorage->push_back(new TagCloseElement("text:list"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:list"));
 	state.mbListElementOpened.pop();
 }
 
@@ -1086,7 +1086,7 @@ void OdfGenerator::openListElement(const librevenge::RVNGPropertyList &propList)
 
 	if (state.mbListElementOpened.top())
 	{
-		mpCurrentStorage->push_back(new TagCloseElement("text:list-item"));
+		mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("text:list-item"));
 		state.mbListElementOpened.top() = false;
 	}
 
@@ -1099,12 +1099,12 @@ void OdfGenerator::openListElement(const librevenge::RVNGPropertyList &propList)
 	finalPropList.insert("style:parent-style-name", "Standard");
 	librevenge::RVNGString paragName =mParagraphManager.findOrAdd(finalPropList, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_Unknown);
 
-	TagOpenElement *pOpenListItem = new TagOpenElement("text:list-item");
+	auto pOpenListItem = std::make_shared<TagOpenElement>("text:list-item");
 	if (propList["text:start-value"] && propList["text:start-value"]->getInt() > 0)
 		pOpenListItem->addAttribute("text:start-value", propList["text:start-value"]->getStr());
 	mpCurrentStorage->push_back(pOpenListItem);
 
-	TagOpenElement *pOpenListElementParagraph = new TagOpenElement("text:p");
+	auto pOpenListElementParagraph = std::make_shared<TagOpenElement>("text:p");
 	pOpenListElementParagraph->addAttribute("text:style-name", paragName);
 	if (propList["style:master-page-name"])
 		pOpenListElementParagraph->addAttribute("style:master-page-name",propList["style:master-page-name"]->getStr());
@@ -1144,20 +1144,20 @@ void OdfGenerator::openTable(const librevenge::RVNGPropertyList &propList)
 	}
 	librevenge::RVNGString tableName=table->getName();
 
-	TagOpenElement *pTableOpenElement = new TagOpenElement("table:table");
+	auto pTableOpenElement = std::make_shared<TagOpenElement>("table:table");
 	pTableOpenElement->addAttribute("table:name", tableName.cstr());
 	pTableOpenElement->addAttribute("table:style-name", tableName.cstr());
 	mpCurrentStorage->push_back(pTableOpenElement);
 
 	for (int i=0; i<table->getNumColumns(); ++i)
 	{
-		TagOpenElement *pTableColumnOpenElement = new TagOpenElement("table:table-column");
+		auto pTableColumnOpenElement = std::make_shared<TagOpenElement>("table:table-column");
 		librevenge::RVNGString sColumnStyleName;
 		sColumnStyleName.sprintf("%s.Column%i", tableName.cstr(), (i+1));
 		pTableColumnOpenElement->addAttribute("table:style-name", sColumnStyleName.cstr());
 		mpCurrentStorage->push_back(pTableColumnOpenElement);
 
-		TagCloseElement *pTableColumnCloseElement = new TagCloseElement("table:table-column");
+		auto pTableColumnCloseElement = std::make_shared<TagCloseElement>("table:table-column");
 		mpCurrentStorage->push_back(pTableColumnCloseElement);
 	}
 }
@@ -1167,7 +1167,7 @@ void OdfGenerator::closeTable()
 	if (!mTableManager.getActualTable())
 		return;
 	mTableManager.closeTable();
-	mpCurrentStorage->push_back(new TagCloseElement("table:table"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("table:table"));
 }
 
 bool OdfGenerator::openTableRow(const librevenge::RVNGPropertyList &propList)
@@ -1183,9 +1183,9 @@ bool OdfGenerator::openTableRow(const librevenge::RVNGPropertyList &propList)
 		return false;
 	bool inHeader=false;
 	if (table->isRowOpened(inHeader) && inHeader)
-		mpCurrentStorage->push_back(new TagOpenElement("table:table-header-rows"));
+		mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("table:table-header-rows"));
 
-	TagOpenElement *pTableRowOpenElement = new TagOpenElement("table:table-row");
+	auto pTableRowOpenElement = std::make_shared<TagOpenElement>("table:table-row");
 	pTableRowOpenElement->addAttribute("table:style-name", rowName);
 	mpCurrentStorage->push_back(pTableRowOpenElement);
 	return true;
@@ -1197,9 +1197,9 @@ void OdfGenerator::closeTableRow()
 	if (!table) return;
 	bool inHeader=false;
 	if (!table->isRowOpened(inHeader) || !table->closeRow()) return;
-	mpCurrentStorage->push_back(new TagCloseElement("table:table-row"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("table:table-row"));
 	if (inHeader)
-		mpCurrentStorage->push_back(new TagCloseElement("table:table-header-rows"));
+		mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("table:table-header-rows"));
 }
 
 bool OdfGenerator::isInTableRow(bool &inHeaderRow) const
@@ -1222,7 +1222,7 @@ bool OdfGenerator::openTableCell(const librevenge::RVNGPropertyList &propList)
 	if (cellName.empty())
 		return false;
 
-	TagOpenElement *pTableCellOpenElement = new TagOpenElement("table:table-cell");
+	auto pTableCellOpenElement = std::make_shared<TagOpenElement>("table:table-cell");
 	pTableCellOpenElement->addAttribute("table:style-name", cellName);
 	if (propList["table:number-columns-spanned"])
 		pTableCellOpenElement->addAttribute("table:number-columns-spanned",
@@ -1240,7 +1240,7 @@ void OdfGenerator::closeTableCell()
 	if (!mTableManager.getActualTable() || !mTableManager.getActualTable()->closeCell())
 		return;
 
-	mpCurrentStorage->push_back(new TagCloseElement("table:table-cell"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("table:table-cell"));
 }
 
 void OdfGenerator::insertCoveredTableCell(const librevenge::RVNGPropertyList &propList)
@@ -1249,8 +1249,8 @@ void OdfGenerator::insertCoveredTableCell(const librevenge::RVNGPropertyList &pr
 	        !mTableManager.getActualTable()->insertCoveredCell(propList))
 		return;
 
-	mpCurrentStorage->push_back(new TagOpenElement("table:covered-table-cell"));
-	mpCurrentStorage->push_back(new TagCloseElement("table:covered-table-cell"));
+	mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("table:covered-table-cell"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("table:covered-table-cell"));
 }
 
 ////////////////////////////////////////////////////////////
@@ -1263,14 +1263,14 @@ void OdfGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 		// check for xlink
 		if (propList["librevenge:xlink"])
 		{
-			TagOpenElement *openElement = new TagOpenElement("draw:image");
+			auto openElement = std::make_shared<TagOpenElement>("draw:image");
 
 			openElement->addAttribute("xlink:href", propList["librevenge:xlink"]->getStr());
 			openElement->addAttribute("xlink:type", "simple");
 			openElement->addAttribute("xlink:show", "embed");
 
 			mpCurrentStorage->push_back(openElement);
-			mpCurrentStorage->push_back(new TagCloseElement("draw:image"));
+			mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:image"));
 
 			librevenge::RVNGPropertyListVector const *replacements=propList.child("librevenge:replacement-objects");
 			if (!replacements)
@@ -1299,9 +1299,9 @@ void OdfGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 
 				if (tmpObjectHandler(data, &tmpHandler, ODF_FLAT_XML) && !tmpContentElements.empty())
 				{
-					mpCurrentStorage->push_back(new TagOpenElement("draw:object"));
-					tmpContentElements.appendTo(*mpCurrentStorage);
-					mpCurrentStorage->push_back(new TagCloseElement("draw:object"));
+					mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("draw:object"));
+					mpCurrentStorage->insert(mpCurrentStorage->end(), tmpContentElements.begin(), tmpContentElements.end());
+					mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:object"));
 				}
 			}
 			if (tmpImageHandler)
@@ -1309,16 +1309,16 @@ void OdfGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 				librevenge::RVNGBinaryData output;
 				if (tmpImageHandler(data, output))
 				{
-					mpCurrentStorage->push_back(new TagOpenElement("draw:image"));
+					mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("draw:image"));
 
-					mpCurrentStorage->push_back(new TagOpenElement("office:binary-data"));
+					mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("office:binary-data"));
 					librevenge::RVNGString binaryBase64Data = output.getBase64Data();
 
-					mpCurrentStorage->push_back(new CharDataElement(binaryBase64Data.cstr()));
+					mpCurrentStorage->push_back(std::make_shared<CharDataElement>(binaryBase64Data.cstr()));
 
-					mpCurrentStorage->push_back(new TagCloseElement("office:binary-data"));
+					mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("office:binary-data"));
 
-					mpCurrentStorage->push_back(new TagCloseElement("draw:image"));
+					mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:image"));
 				}
 			}
 		}
@@ -1331,25 +1331,25 @@ void OdfGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 		// assuming we have a binary image or a object_ole that we can just insert as it is
 	{
 		if (propList["librevenge:mime-type"]->getStr() == "object/ole")
-			mpCurrentStorage->push_back(new TagOpenElement("draw:object-ole"));
+			mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("draw:object-ole"));
 		else
-			mpCurrentStorage->push_back(new TagOpenElement("draw:image"));
+			mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("draw:image"));
 
-		mpCurrentStorage->push_back(new TagOpenElement("office:binary-data"));
+		mpCurrentStorage->push_back(std::make_shared<TagOpenElement>("office:binary-data"));
 		try
 		{
-			mpCurrentStorage->push_back(new CharDataElement(propList["office:binary-data"]->getStr().cstr()));
+			mpCurrentStorage->push_back(std::make_shared<CharDataElement>(propList["office:binary-data"]->getStr().cstr()));
 		}
 		catch (...)
 		{
 			ODFGEN_DEBUG_MSG(("OdfGenerator::insertBinaryObject: ARGHH, catch an exception when decoding picture!!!\n"));
 		}
-		mpCurrentStorage->push_back(new TagCloseElement("office:binary-data"));
+		mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("office:binary-data"));
 
 		if (propList["librevenge:mime-type"]->getStr() == "object/ole")
-			mpCurrentStorage->push_back(new TagCloseElement("draw:object-ole"));
+			mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:object-ole"));
 		else
-			mpCurrentStorage->push_back(new TagCloseElement("draw:image"));
+			mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:image"));
 	}
 
 	librevenge::RVNGPropertyListVector const *replacements=propList.child("librevenge:replacement-objects");
@@ -1408,7 +1408,7 @@ void OdfGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 		return;
 	}
 	librevenge::RVNGString sValue=getCurrentGraphicStyleName(propList);
-	TagOpenElement *pDrawEllipseElement = new TagOpenElement("draw:ellipse");
+	auto pDrawEllipseElement = std::make_shared<TagOpenElement>("draw:ellipse");
 	pDrawEllipseElement->addAttribute("draw:style-name", sValue);
 	addFrameProperties(propList, *pDrawEllipseElement);
 	sValue = doubleToString(2 * rx);
@@ -1458,7 +1458,7 @@ void OdfGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 		pDrawEllipseElement->addAttribute("draw:display", propList["draw:display"]->getStr());
 
 	mpCurrentStorage->push_back(pDrawEllipseElement);
-	mpCurrentStorage->push_back(new TagCloseElement("draw:ellipse"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:ellipse"));
 }
 
 void OdfGenerator::drawPath(const librevenge::RVNGPropertyList &propList)
@@ -1478,7 +1478,7 @@ void OdfGenerator::drawPath(const librevenge::RVNGPropertyListVector &path, cons
 		return;
 
 	librevenge::RVNGString sValue=getCurrentGraphicStyleName(propList);
-	TagOpenElement *pDrawPathElement = new TagOpenElement("draw:path");
+	auto pDrawPathElement = std::make_shared<TagOpenElement>("draw:path");
 	pDrawPathElement->addAttribute("draw:style-name", sValue);
 	addFrameProperties(propList, *pDrawPathElement);
 	sValue = doubleToString(px);
@@ -1501,7 +1501,7 @@ void OdfGenerator::drawPath(const librevenge::RVNGPropertyListVector &path, cons
 
 	pDrawPathElement->addAttribute("svg:d", libodfgen::convertPath(path, px, py));
 	mpCurrentStorage->push_back(pDrawPathElement);
-	mpCurrentStorage->push_back(new TagCloseElement("draw:path"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:path"));
 }
 
 void OdfGenerator::drawPolySomething(const librevenge::RVNGPropertyList &propList, bool isClosed)
@@ -1521,7 +1521,7 @@ void OdfGenerator::drawPolySomething(const librevenge::RVNGPropertyList &propLis
 		bool isMeasure=(propList["draw:show-unit"] && propList["draw:show-unit"]->getStr()=="true");
 		librevenge::RVNGString what= isMeasure ? "draw:measure" : "draw:line";
 
-		TagOpenElement *pDrawLineElement = new TagOpenElement(what);
+		auto pDrawLineElement = std::make_shared<TagOpenElement>(what);
 		addFrameProperties(propList, *pDrawLineElement);
 		pDrawLineElement->addAttribute("draw:style-name", sValue);
 		pDrawLineElement->addAttribute("svg:x1", (*vertices)[0]["svg:x"]->getStr());
@@ -1531,7 +1531,7 @@ void OdfGenerator::drawPolySomething(const librevenge::RVNGPropertyList &propLis
 		if (propList["draw:display"])
 			pDrawLineElement->addAttribute("draw:display", propList["draw:display"]->getStr());
 		mpCurrentStorage->push_back(pDrawLineElement);
-		mpCurrentStorage->push_back(new TagCloseElement(what));
+		mpCurrentStorage->push_back(std::make_shared<TagCloseElement>(what));
 	}
 	else
 	{
@@ -1569,7 +1569,7 @@ void OdfGenerator::drawRectangle(const librevenge::RVNGPropertyList &propList)
 	librevenge::RVNGPropertyList frame(propList);
 	frame.remove("svg:height");
 	frame.remove("svg:width");
-	TagOpenElement *pDrawRectElement = new TagOpenElement("draw:rect");
+	auto pDrawRectElement = std::make_shared<TagOpenElement>("draw:rect");
 	addFrameProperties(frame, *pDrawRectElement);
 	pDrawRectElement->addAttribute("draw:style-name", sValue);
 	pDrawRectElement->addAttribute("svg:x", propList["svg:x"]->getStr());
@@ -1587,7 +1587,7 @@ void OdfGenerator::drawRectangle(const librevenge::RVNGPropertyList &propList)
 		pDrawRectElement->addAttribute("draw:display", propList["draw:display"]->getStr());
 
 	mpCurrentStorage->push_back(pDrawRectElement);
-	mpCurrentStorage->push_back(new TagCloseElement("draw:rect"));
+	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("draw:rect"));
 }
 
 void OdfGenerator::drawConnector(const librevenge::RVNGPropertyList &propList)

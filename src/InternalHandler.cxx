@@ -29,7 +29,7 @@
 
 void InternalHandler::startElement(const char *psName, const librevenge::RVNGPropertyList &xPropList)
 {
-	TagOpenElement *element = new TagOpenElement(psName);
+	auto element = std::make_shared<TagOpenElement>(psName);
 	librevenge::RVNGPropertyList::Iter i(xPropList);
 	for (i.rewind(); i.next();)
 	{
@@ -42,12 +42,12 @@ void InternalHandler::startElement(const char *psName, const librevenge::RVNGPro
 
 void InternalHandler::endElement(const char *psName)
 {
-	mpElements->push_back(new TagCloseElement(psName));
+	mpElements->push_back(std::make_shared<TagCloseElement>(psName));
 }
 
 void InternalHandler::characters(const librevenge::RVNGString &sCharacters)
 {
-	mpElements->push_back(new CharDataElement(sCharacters.cstr()));
+	mpElements->push_back(std::make_shared<CharDataElement>(sCharacters.cstr()));
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 noexpandtab: */
