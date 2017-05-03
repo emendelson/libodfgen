@@ -23,9 +23,8 @@
 
 librevenge::RVNGString libodfgen::doubleToString(const double value)
 {
-	librevenge::RVNGProperty *prop = librevenge::RVNGPropertyFactory::newDoubleProp(value);
+	std::unique_ptr<librevenge::RVNGProperty> prop(librevenge::RVNGPropertyFactory::newDoubleProp(value));
 	librevenge::RVNGString retVal = prop->getStr();
-	delete prop;
 	return retVal;
 }
 

@@ -143,7 +143,7 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 	mGradientNameMap[hashKey]=name;
 	if (isStyle) mDisplayGradientNameMap[style["style:display-name"]->getStr()]=name;
 
-	TagOpenElement *openElement = new TagOpenElement("draw:gradient");
+	std::shared_ptr<TagOpenElement> openElement(new TagOpenElement("draw:gradient"));
 	openElement->addAttribute("draw:name", name);
 	if (hasParent)
 	{
@@ -190,7 +190,6 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 	}
 	else
 	{
-		delete openElement;
 		return "";
 	}
 
