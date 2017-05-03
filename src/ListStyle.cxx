@@ -174,7 +174,7 @@ ListStyle::~ListStyle()
 	        iter != mxListLevels.end(); ++iter)
 	{
 		if (iter->second)
-			delete(iter->second);
+			delete iter->second;
 	}
 
 }
@@ -283,7 +283,7 @@ ListManager::~ListManager()
 {
 	for (std::vector<ListStyle *>::iterator iterListStyles = mListStylesVector.begin();
 	        iterListStyles != mListStylesVector.end(); ++iterListStyles)
-		delete(*iterListStyles);
+		delete *iterListStyles;
 }
 
 void ListManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
