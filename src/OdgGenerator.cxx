@@ -407,7 +407,7 @@ void OdgGenerator::defineEmbeddedFont(const librevenge::RVNGPropertyList &propLi
 	mpImpl->defineEmbeddedFont(propList);
 }
 
-void OdgGenerator::startPage(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::startPage(const librevenge::RVNGPropertyList &propList)
 {
 	librevenge::RVNGPropertyList pList(propList);
 
@@ -442,7 +442,7 @@ void OdgGenerator::endPage()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:page"));
 }
 
-void OdgGenerator::startMasterPage(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::startMasterPage(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->inMasterPage())
 	{
@@ -487,12 +487,12 @@ void OdgGenerator::endMasterPage()
 	mpImpl->mDummyMasterSlideStorage.clear();
 }
 
-void OdgGenerator::setStyle(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::setStyle(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->defineGraphicStyle(propList);
 }
 
-void OdgGenerator::startLayer(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::startLayer(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->inMasterPage())
 	{
@@ -522,7 +522,7 @@ void OdgGenerator::endLayer()
 	mpImpl->popState();
 }
 
-void OdgGenerator::openGroup(const ::librevenge::RVNGPropertyList & /* propList */)
+void OdgGenerator::openGroup(const librevenge::RVNGPropertyList & /* propList */)
 {
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("draw:g"));
 }
@@ -532,22 +532,22 @@ void OdgGenerator::closeGroup()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:g"));
 }
 
-void OdgGenerator::drawRectangle(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::drawRectangle(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawRectangle(propList);
 }
 
-void OdgGenerator::drawEllipse(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawEllipse(propList);
 }
 
-void OdgGenerator::drawPolyline(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::drawPolyline(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawPolySomething(propList, false);
 }
 
-void OdgGenerator::drawPolygon(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::drawPolygon(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawPolySomething(propList, true);
 }
@@ -557,7 +557,7 @@ void OdgGenerator::drawPath(const librevenge::RVNGPropertyList &propList)
 	mpImpl->drawPath(propList);
 }
 
-void OdgGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::drawGraphicObject(const librevenge::RVNGPropertyList &propList)
 {
 	if (!propList["librevenge:xlink"] || propList["librevenge:xlink"]->getStr().empty())
 	{
@@ -661,7 +661,7 @@ void OdgGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propL
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
-void OdgGenerator::drawConnector(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::drawConnector(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawConnector(propList);
 }
@@ -800,7 +800,7 @@ void OdgGenerator::endTextObject()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
-void OdgGenerator::startTableObject(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::startTableObject(const librevenge::RVNGPropertyList &propList)
 {
 	// table must be inside a frame
 	auto pFrameOpenElement = std::make_shared<TagOpenElement>("draw:frame");
@@ -833,7 +833,7 @@ void OdgGenerator::endTableObject()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
-void OdgGenerator::openTableRow(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::openTableRow(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->openTableRow(propList);
 }
@@ -843,7 +843,7 @@ void OdgGenerator::closeTableRow()
 	mpImpl->closeTableRow();
 }
 
-void OdgGenerator::openTableCell(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::openTableCell(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->getState().mbInTableCell)
 	{
@@ -873,7 +873,7 @@ void OdgGenerator::closeTableCell()
 	mpImpl->getState().mbInTableCell = false;
 }
 
-void OdgGenerator::insertCoveredTableCell(const ::librevenge::RVNGPropertyList &propList)
+void OdgGenerator::insertCoveredTableCell(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->insertCoveredTableCell(propList);
 }

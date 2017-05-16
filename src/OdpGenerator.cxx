@@ -90,7 +90,7 @@ public:
 	OdpGeneratorPrivate();
 	~OdpGeneratorPrivate();
 
-	void openTextBoxFrame(const ::librevenge::RVNGPropertyList &propList);
+	void openTextBoxFrame(const librevenge::RVNGPropertyList &propList);
 	void closeTextBoxFrame();
 
 	GraphicStyleManager &getGraphicManager()
@@ -186,7 +186,7 @@ void OdpGeneratorPrivate::updatePageSpanPropertiesToCreatePage(librevenge::RVNGP
 	pList.insert("librevenge:footnote", librevenge::RVNGPropertyListVector());
 }
 
-void OdpGeneratorPrivate::openTextBoxFrame(const ::librevenge::RVNGPropertyList &propList)
+void OdpGeneratorPrivate::openTextBoxFrame(const librevenge::RVNGPropertyList &propList)
 {
 	librevenge::RVNGPropertyList tmpList(propList), graphicStyle;
 	if (!propList["draw:stroke"])
@@ -553,7 +553,7 @@ bool OdpGenerator::getObjectContent(librevenge::RVNGString const &objectName, Od
 	return mpImpl->getObjectContent(objectName, pHandler);
 }
 
-void OdpGenerator::startDocument(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::startDocument(const librevenge::RVNGPropertyList &/*propList*/)
 {
 }
 
@@ -567,7 +567,7 @@ void OdpGenerator::endDocument()
 	mpImpl->writeTargetDocuments();
 }
 
-void OdpGenerator::setDocumentMetaData(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::setDocumentMetaData(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->setDocumentMetaData(propList);
 }
@@ -577,7 +577,7 @@ void OdpGenerator::defineEmbeddedFont(const librevenge::RVNGPropertyList &propLi
 	mpImpl->defineEmbeddedFont(propList);
 }
 
-void OdpGenerator::startSlide(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::startSlide(const librevenge::RVNGPropertyList &propList)
 {
 	librevenge::RVNGPropertyList pList(propList);
 
@@ -605,7 +605,7 @@ void OdpGenerator::endSlide()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:page"));
 }
 
-void OdpGenerator::startMasterSlide(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::startMasterSlide(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->inMasterPage())
 	{
@@ -648,17 +648,17 @@ void OdpGenerator::endMasterSlide()
 	mpImpl->mDummyMasterSlideStorage.clear();
 }
 
-void OdpGenerator::setStyle(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::setStyle(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->defineGraphicStyle(propList);
 }
 
-void OdpGenerator::setSlideTransition(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::setSlideTransition(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }
 
-void OdpGenerator::startLayer(const ::librevenge::RVNGPropertyList & /* propList */)
+void OdpGenerator::startLayer(const librevenge::RVNGPropertyList & /* propList */)
 {
 }
 
@@ -666,22 +666,22 @@ void OdpGenerator::endLayer()
 {
 }
 
-void OdpGenerator::drawRectangle(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::drawRectangle(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawRectangle(propList);
 }
 
-void OdpGenerator::drawEllipse(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawEllipse(propList);
 }
 
-void OdpGenerator::drawPolyline(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::drawPolyline(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawPolySomething(propList, false);
 }
 
-void OdpGenerator::drawPolygon(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::drawPolygon(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawPolySomething(propList, true);
 }
@@ -691,7 +691,7 @@ void OdpGenerator::drawPath(const librevenge::RVNGPropertyList &propList)
 	mpImpl->drawPath(propList);
 }
 
-void OdpGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::drawGraphicObject(const librevenge::RVNGPropertyList &propList)
 {
 	if (!propList["librevenge:xlink"] || propList["librevenge:xlink"]->getStr().empty())
 	{
@@ -792,7 +792,7 @@ void OdpGenerator::drawGraphicObject(const ::librevenge::RVNGPropertyList &propL
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:frame"));
 }
 
-void OdpGenerator::drawConnector(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::drawConnector(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawConnector(propList);
 }
@@ -805,7 +805,7 @@ void OdpGenerator::endEmbeddedGraphics()
 {
 }
 
-void OdpGenerator::openGroup(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::openGroup(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->openGroup(propList);
 }
@@ -894,17 +894,17 @@ void OdpGenerator::insertLineBreak()
 	mpImpl->insertLineBreak();
 }
 
-void OdpGenerator::insertField(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->insertField(propList);
 }
 
-void OdpGenerator::openOrderedListLevel(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::openOrderedListLevel(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->openListLevel(propList, true);
 }
 
-void OdpGenerator::openUnorderedListLevel(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::openUnorderedListLevel(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->openListLevel(propList, false);
 }
@@ -919,7 +919,7 @@ void OdpGenerator::closeUnorderedListLevel()
 	mpImpl->closeListLevel();
 }
 
-void OdpGenerator::openListElement(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::openListElement(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->openListElement(propList);
 }
@@ -929,7 +929,7 @@ void OdpGenerator::closeListElement()
 	mpImpl->closeListElement();
 }
 
-void OdpGenerator::startTableObject(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::startTableObject(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mState.mInComment)
 		return;
@@ -961,7 +961,7 @@ void OdpGenerator::endTableObject()
 	mpImpl->popListState();
 }
 
-void OdpGenerator::openTableRow(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::openTableRow(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mState.mInComment)
 		return;
@@ -975,7 +975,7 @@ void OdpGenerator::closeTableRow()
 	mpImpl->closeTableRow();
 }
 
-void OdpGenerator::openTableCell(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::openTableCell(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mState.mInComment)
 		return;
@@ -1016,7 +1016,7 @@ void OdpGenerator::closeTableCell()
 	mpImpl->mState.mTableCellOpened = false;
 }
 
-void OdpGenerator::insertCoveredTableCell(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::insertCoveredTableCell(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mState.mInComment)
 		return;
@@ -1024,7 +1024,7 @@ void OdpGenerator::insertCoveredTableCell(const ::librevenge::RVNGPropertyList &
 	mpImpl->insertCoveredTableCell(propList);
 }
 
-void OdpGenerator::startComment(const ::librevenge::RVNGPropertyList &propList)
+void OdpGenerator::startComment(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mState.mInComment)
 	{
@@ -1062,7 +1062,7 @@ void OdpGenerator::endComment()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("officeooo:annotation"));
 }
 
-void OdpGenerator::startNotes(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::startNotes(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	if (mpImpl->mState.mInNotes)
 	{
@@ -1123,12 +1123,12 @@ void OdpGenerator::endNotes()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("presentation:notes"));
 }
 
-void OdpGenerator::defineChartStyle(const ::librevenge::RVNGPropertyList &)
+void OdpGenerator::defineChartStyle(const librevenge::RVNGPropertyList &)
 {
 	// TODO: implement me
 }
 
-void OdpGenerator::openChart(const ::librevenge::RVNGPropertyList &)
+void OdpGenerator::openChart(const librevenge::RVNGPropertyList &)
 {
 	// TODO: implement me
 }
@@ -1138,7 +1138,7 @@ void OdpGenerator::closeChart()
 	// TODO: implement me
 }
 
-void OdpGenerator::openChartTextObject(const ::librevenge::RVNGPropertyList &)
+void OdpGenerator::openChartTextObject(const librevenge::RVNGPropertyList &)
 {
 	// TODO: implement me
 }
@@ -1148,7 +1148,7 @@ void OdpGenerator::closeChartTextObject()
 	// TODO: implement me
 }
 
-void OdpGenerator::openChartPlotArea(const ::librevenge::RVNGPropertyList &)
+void OdpGenerator::openChartPlotArea(const librevenge::RVNGPropertyList &)
 {
 	// TODO: implement me
 }
@@ -1158,12 +1158,12 @@ void OdpGenerator::closeChartPlotArea()
 	// TODO: implement me
 }
 
-void OdpGenerator::insertChartAxis(const ::librevenge::RVNGPropertyList &)
+void OdpGenerator::insertChartAxis(const librevenge::RVNGPropertyList &)
 {
 	// TODO: implement me
 }
 
-void OdpGenerator::openChartSeries(const ::librevenge::RVNGPropertyList &)
+void OdpGenerator::openChartSeries(const librevenge::RVNGPropertyList &)
 {
 	// TODO: implement me
 }
@@ -1173,7 +1173,7 @@ void OdpGenerator::closeChartSeries()
 	// TODO: implement me
 }
 
-void OdpGenerator::openAnimationSequence(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::openAnimationSequence(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }
@@ -1183,7 +1183,7 @@ void OdpGenerator::closeAnimationSequence()
 	// TODO: implement me
 }
 
-void OdpGenerator::openAnimationGroup(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::openAnimationGroup(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }
@@ -1193,7 +1193,7 @@ void OdpGenerator::closeAnimationGroup()
 	// TODO: implement me
 }
 
-void OdpGenerator::openAnimationIteration(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::openAnimationIteration(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }
@@ -1203,22 +1203,22 @@ void OdpGenerator::closeAnimationIteration()
 	// TODO: implement me
 }
 
-void OdpGenerator::insertMotionAnimation(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::insertMotionAnimation(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }
 
-void OdpGenerator::insertColorAnimation(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::insertColorAnimation(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }
 
-void OdpGenerator::insertAnimation(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::insertAnimation(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }
 
-void OdpGenerator::insertEffect(const ::librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::insertEffect(const librevenge::RVNGPropertyList &/*propList*/)
 {
 	// TODO: implement me
 }

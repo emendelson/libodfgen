@@ -918,7 +918,7 @@ void OdtGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 	mpImpl->insertBinaryObject(propList);
 }
 
-void OdtGenerator::openGroup(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::openGroup(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->openGroup(propList);
 }
@@ -928,35 +928,35 @@ void OdtGenerator::closeGroup()
 	mpImpl->closeGroup();
 }
 
-void OdtGenerator::defineGraphicStyle(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::defineGraphicStyle(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->defineGraphicStyle(propList);
 }
 
-void OdtGenerator::drawRectangle(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::drawRectangle(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawRectangle(propList);
 }
 
-void OdtGenerator::drawEllipse(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawEllipse(propList);
 }
 
 
-void OdtGenerator::drawPolygon(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::drawPolygon(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawPolySomething(propList, true);
 }
 
 
-void OdtGenerator::drawPolyline(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::drawPolyline(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawPolySomething(propList, false);
 }
 
 
-void OdtGenerator::drawPath(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::drawPath(const librevenge::RVNGPropertyList &propList)
 {
 	/** CHECKME: actually, the drawing is often bad, ie. some
 	 unexpected scaling be applied, can we automatically replace the
@@ -964,7 +964,7 @@ void OdtGenerator::drawPath(const ::librevenge::RVNGPropertyList &propList)
 	mpImpl->drawPath(propList);
 }
 
-void OdtGenerator::drawConnector(const ::librevenge::RVNGPropertyList &propList)
+void OdtGenerator::drawConnector(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawConnector(propList);
 }

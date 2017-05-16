@@ -1794,7 +1794,7 @@ void OdsGenerator::endDocument()
 }
 
 
-void OdsGenerator::openGroup(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::openGroup(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->open(OdsGeneratorPrivate::C_Group);
 	if (mpImpl->mAuxiliarOdtState)
@@ -1819,14 +1819,14 @@ void OdsGenerator::closeGroup()
 	mpImpl->closeGroup();
 }
 
-void OdsGenerator::defineGraphicStyle(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::defineGraphicStyle(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mAuxiliarOdtState)
 		return mpImpl->mAuxiliarOdtState->get().defineGraphicStyle(propList);
 	mpImpl->defineGraphicStyle(propList);
 }
 
-void OdsGenerator::drawRectangle(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::drawRectangle(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mAuxiliarOdtState)
 		return mpImpl->mAuxiliarOdtState->get().drawRectangle(propList);
@@ -1835,7 +1835,7 @@ void OdsGenerator::drawRectangle(const ::librevenge::RVNGPropertyList &propList)
 	mpImpl->drawRectangle(propList);
 }
 
-void OdsGenerator::drawEllipse(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mAuxiliarOdtState)
 		return mpImpl->mAuxiliarOdtState->get().drawEllipse(propList);
@@ -1845,7 +1845,7 @@ void OdsGenerator::drawEllipse(const ::librevenge::RVNGPropertyList &propList)
 }
 
 
-void OdsGenerator::drawPolygon(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::drawPolygon(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mAuxiliarOdtState)
 		return mpImpl->mAuxiliarOdtState->get().drawPolygon(propList);
@@ -1855,7 +1855,7 @@ void OdsGenerator::drawPolygon(const ::librevenge::RVNGPropertyList &propList)
 }
 
 
-void OdsGenerator::drawPolyline(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::drawPolyline(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mAuxiliarOdtState)
 		return mpImpl->mAuxiliarOdtState->get().drawPolyline(propList);
@@ -1865,7 +1865,7 @@ void OdsGenerator::drawPolyline(const ::librevenge::RVNGPropertyList &propList)
 }
 
 
-void OdsGenerator::drawPath(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::drawPath(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mAuxiliarOdtState)
 		return mpImpl->mAuxiliarOdtState->get().drawPath(propList);
@@ -1874,7 +1874,7 @@ void OdsGenerator::drawPath(const ::librevenge::RVNGPropertyList &propList)
 	mpImpl->drawPath(propList);
 }
 
-void OdsGenerator::drawConnector(const ::librevenge::RVNGPropertyList &propList)
+void OdsGenerator::drawConnector(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->drawConnector(propList);
 }

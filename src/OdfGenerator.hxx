@@ -317,7 +317,7 @@ public:
 	//! call to draw a rectangle
 	void drawRectangle(const librevenge::RVNGPropertyList &propList);
 	//! call to draw a connector
-	void drawConnector(const ::librevenge::RVNGPropertyList &propList);
+	void drawConnector(const librevenge::RVNGPropertyList &propList);
 
 	//
 	// chart

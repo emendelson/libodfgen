@@ -1506,7 +1506,7 @@ void OdfGenerator::drawPath(const librevenge::RVNGPropertyListVector &path, cons
 
 void OdfGenerator::drawPolySomething(const librevenge::RVNGPropertyList &propList, bool isClosed)
 {
-	const ::librevenge::RVNGPropertyListVector *vertices = propList.child("svg:points");
+	const librevenge::RVNGPropertyListVector *vertices = propList.child("svg:points");
 	if (!vertices || vertices->count() < 2)
 		return;
 
