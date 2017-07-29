@@ -45,8 +45,8 @@ class FontStyle : public Style
 
 public:
 	FontStyle(const char *psName, const char *psFontFamily);
-	~FontStyle();
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	~FontStyle() override;
+	void write(OdfDocumentHandler *pHandler) const override;
 	const librevenge::RVNGString &getFontFamily() const
 	{
 		return msFontFamily;
@@ -70,7 +70,7 @@ class FontStyleManager : public StyleManager
 
 public:
 	FontStyleManager() : mStyleHash() {}
-	virtual ~FontStyleManager()
+	~FontStyleManager() override
 	{
 		clean();
 	}
@@ -85,8 +85,8 @@ public:
 	 */
 	void setEmbedded(const librevenge::RVNGString &name, const librevenge::RVNGString &mimeType, const librevenge::RVNGBinaryData &data);
 
-	virtual void clean();
-	virtual void write(OdfDocumentHandler *) const {}
+	void clean() override;
+	void write(OdfDocumentHandler *) const override {}
 	virtual void write(OdfDocumentHandler *, Style::Zone zone) const;
 
 protected:

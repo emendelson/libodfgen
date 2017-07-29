@@ -43,7 +43,7 @@ class SheetStyle;
 class SheetCellStyle : public Style
 {
 public:
-	virtual ~SheetCellStyle() {};
+	~SheetCellStyle() override {};
 	SheetCellStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName);
 	virtual void writeStyle(OdfDocumentHandler *pHandler, SheetManager const &manager) const;
 private:
@@ -53,7 +53,7 @@ private:
 class SheetRowStyle : public Style
 {
 public:
-	virtual ~SheetRowStyle() {};
+	~SheetRowStyle() override {};
 	SheetRowStyle(const librevenge::RVNGPropertyList &propList, const char *psName);
 	virtual void writeStyle(OdfDocumentHandler *pHandler, SheetManager const &manager) const;
 private:
@@ -64,7 +64,7 @@ class SheetStyle : public Style
 {
 public:
 	SheetStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone);
-	virtual ~SheetStyle();
+	~SheetStyle() override;
 	virtual void writeStyle(OdfDocumentHandler *pHandler, SheetManager const &manager) const;
 	/** add the sheet's column definitions in given storage.
 

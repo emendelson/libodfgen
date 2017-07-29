@@ -41,7 +41,7 @@ class OdfDocumentHandler;
 class TableCellStyle : public Style
 {
 public:
-	virtual ~TableCellStyle() {};
+	~TableCellStyle() override {};
 	TableCellStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName);
 	virtual void writeStyles(OdfDocumentHandler *pHandler, bool odpCompat=false) const;
 private:
@@ -51,9 +51,9 @@ private:
 class TableRowStyle : public Style
 {
 public:
-	virtual ~TableRowStyle() {};
+	~TableRowStyle() override {};
 	TableRowStyle(const librevenge::RVNGPropertyList &propList, const char *psName);
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	void write(OdfDocumentHandler *pHandler) const override;
 private:
 	librevenge::RVNGPropertyList mPropList;
 };
@@ -62,7 +62,7 @@ class Table : public Style
 {
 public:
 	Table(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone);
-	virtual ~Table();
+	~Table() override;
 
 	// write automatic/named style
 	virtual void write(OdfDocumentHandler *, bool compatibleOdp) const;
@@ -85,7 +85,7 @@ public:
 	}
 protected:
 	// default write function ( must not be called)
-	virtual void write(OdfDocumentHandler *) const;
+	void write(OdfDocumentHandler *) const override;
 private:
 	librevenge::RVNGPropertyList mPropList;
 	bool mbRowOpened, mbRowHeaderOpened, mbCellOpened;

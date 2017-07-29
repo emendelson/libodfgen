@@ -41,13 +41,13 @@ public:
 class TagElement : public DocumentElement
 {
 public:
-	virtual ~TagElement() {}
+	~TagElement() override {}
 	TagElement(const librevenge::RVNGString &szTagName) : msTagName(szTagName) {}
 	const librevenge::RVNGString &getTagName() const
 	{
 		return msTagName;
 	}
-	virtual void print() const;
+	void print() const override;
 private:
 	librevenge::RVNGString msTagName;
 };
@@ -56,11 +56,11 @@ class TagOpenElement : public TagElement
 {
 public:
 	TagOpenElement(const librevenge::RVNGString &szTagName) : TagElement(szTagName), maAttrList() {}
-	virtual ~TagOpenElement() {}
+	~TagOpenElement() override {}
 	void addAttribute(const librevenge::RVNGString &szAttributeName,
 	                  const librevenge::RVNGString &sAttributeValue, bool forceString=true);
-	virtual void write(OdfDocumentHandler *pHandler) const;
-	virtual void print() const;
+	void write(OdfDocumentHandler *pHandler) const override;
+	void print() const override;
 private:
 	librevenge::RVNGPropertyList maAttrList;
 };
@@ -69,16 +69,16 @@ class TagCloseElement : public TagElement
 {
 public:
 	TagCloseElement(const librevenge::RVNGString &szTagName) : TagElement(szTagName) {}
-	virtual ~TagCloseElement() {}
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	~TagCloseElement() override {}
+	void write(OdfDocumentHandler *pHandler) const override;
 };
 
 class CharDataElement : public DocumentElement
 {
 public:
 	CharDataElement(const librevenge::RVNGString &sData) : DocumentElement(), msData(sData) {}
-	virtual ~CharDataElement() {}
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	~CharDataElement() override {}
+	void write(OdfDocumentHandler *pHandler) const override;
 private:
 	librevenge::RVNGString msData;
 };
@@ -87,8 +87,8 @@ class TextElement : public DocumentElement
 {
 public:
 	TextElement(const librevenge::RVNGString &sTextBuf) : DocumentElement(), msTextBuf(sTextBuf) {}
-	virtual ~TextElement() {}
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	~TextElement() override {}
+	void write(OdfDocumentHandler *pHandler) const override;
 
 private:
 	librevenge::RVNGString msTextBuf;

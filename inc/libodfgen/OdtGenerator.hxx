@@ -44,91 +44,91 @@ class ODFGENAPI OdtGenerator : public librevenge::RVNGTextInterface
 {
 public:
 	OdtGenerator();
-	~OdtGenerator();
+	~OdtGenerator() override;
 	void addDocumentHandler(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
 	librevenge::RVNGStringVector getObjectNames() const;
 	bool getObjectContent(librevenge::RVNGString const &objectName, OdfDocumentHandler *pHandler);
 
-	void setDocumentMetaData(const librevenge::RVNGPropertyList &propList);
-	void startDocument(const librevenge::RVNGPropertyList &);
-	void endDocument();
+	void setDocumentMetaData(const librevenge::RVNGPropertyList &propList) override;
+	void startDocument(const librevenge::RVNGPropertyList &) override;
+	void endDocument() override;
 
-	void defineEmbeddedFont(const librevenge::RVNGPropertyList &propList);
+	void defineEmbeddedFont(const librevenge::RVNGPropertyList &propList) override;
 
-	void definePageStyle(const librevenge::RVNGPropertyList &);
-	void openPageSpan(const librevenge::RVNGPropertyList &propList);
-	void closePageSpan();
+	void definePageStyle(const librevenge::RVNGPropertyList &) override;
+	void openPageSpan(const librevenge::RVNGPropertyList &propList) override;
+	void closePageSpan() override;
 
-	void defineSectionStyle(const librevenge::RVNGPropertyList &);
-	void openSection(const librevenge::RVNGPropertyList &propList);
-	void closeSection();
+	void defineSectionStyle(const librevenge::RVNGPropertyList &) override;
+	void openSection(const librevenge::RVNGPropertyList &propList) override;
+	void closeSection() override;
 
-	void openHeader(const librevenge::RVNGPropertyList &propList);
-	void closeHeader();
-	void openFooter(const librevenge::RVNGPropertyList &propList);
-	void closeFooter();
+	void openHeader(const librevenge::RVNGPropertyList &propList) override;
+	void closeHeader() override;
+	void openFooter(const librevenge::RVNGPropertyList &propList) override;
+	void closeFooter() override;
 
-	void defineParagraphStyle(const librevenge::RVNGPropertyList &propList);
-	void openParagraph(const librevenge::RVNGPropertyList &propList);
-	void closeParagraph();
+	void defineParagraphStyle(const librevenge::RVNGPropertyList &propList) override;
+	void openParagraph(const librevenge::RVNGPropertyList &propList) override;
+	void closeParagraph() override;
 
-	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList);
-	void openSpan(const librevenge::RVNGPropertyList &propList);
-	void closeSpan();
+	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList) override;
+	void openSpan(const librevenge::RVNGPropertyList &propList) override;
+	void closeSpan() override;
 
-	void openLink(const librevenge::RVNGPropertyList &propList);
-	void closeLink();
+	void openLink(const librevenge::RVNGPropertyList &propList) override;
+	void closeLink() override;
 
-	void insertTab();
-	void insertSpace();
-	void insertText(const librevenge::RVNGString &text);
-	void insertLineBreak();
-	void insertField(const librevenge::RVNGPropertyList &propList);
+	void insertTab() override;
+	void insertSpace() override;
+	void insertText(const librevenge::RVNGString &text) override;
+	void insertLineBreak() override;
+	void insertField(const librevenge::RVNGPropertyList &propList) override;
 
-	void openOrderedListLevel(const librevenge::RVNGPropertyList &propList);
-	void openUnorderedListLevel(const librevenge::RVNGPropertyList &propList);
-	void closeOrderedListLevel();
-	void closeUnorderedListLevel();
-	void openListElement(const librevenge::RVNGPropertyList &propList);
-	void closeListElement();
+	void openOrderedListLevel(const librevenge::RVNGPropertyList &propList) override;
+	void openUnorderedListLevel(const librevenge::RVNGPropertyList &propList) override;
+	void closeOrderedListLevel() override;
+	void closeUnorderedListLevel() override;
+	void openListElement(const librevenge::RVNGPropertyList &propList) override;
+	void closeListElement() override;
 
-	void openFootnote(const librevenge::RVNGPropertyList &propList);
-	void closeFootnote();
-	void openEndnote(const librevenge::RVNGPropertyList &propList);
-	void closeEndnote();
-	void openComment(const librevenge::RVNGPropertyList &propList);
-	void closeComment();
-	void openTextBox(const librevenge::RVNGPropertyList &propList);
-	void closeTextBox();
+	void openFootnote(const librevenge::RVNGPropertyList &propList) override;
+	void closeFootnote() override;
+	void openEndnote(const librevenge::RVNGPropertyList &propList) override;
+	void closeEndnote() override;
+	void openComment(const librevenge::RVNGPropertyList &propList) override;
+	void closeComment() override;
+	void openTextBox(const librevenge::RVNGPropertyList &propList) override;
+	void closeTextBox() override;
 
-	void openTable(const librevenge::RVNGPropertyList &propList);
-	void openTableRow(const librevenge::RVNGPropertyList &propList);
-	void closeTableRow();
-	void openTableCell(const librevenge::RVNGPropertyList &propList);
-	void closeTableCell();
-	void insertCoveredTableCell(const librevenge::RVNGPropertyList &propList);
-	void closeTable();
+	void openTable(const librevenge::RVNGPropertyList &propList) override;
+	void openTableRow(const librevenge::RVNGPropertyList &propList) override;
+	void closeTableRow() override;
+	void openTableCell(const librevenge::RVNGPropertyList &propList) override;
+	void closeTableCell() override;
+	void insertCoveredTableCell(const librevenge::RVNGPropertyList &propList) override;
+	void closeTable() override;
 
 	//
 	// simple Graphic
 	//
 
-	void openGroup(const librevenge::RVNGPropertyList &propList);
-	void closeGroup();
+	void openGroup(const librevenge::RVNGPropertyList &propList) override;
+	void closeGroup() override;
 
-	void defineGraphicStyle(const librevenge::RVNGPropertyList &propList);
-	void drawRectangle(const librevenge::RVNGPropertyList &propList);
-	void drawEllipse(const librevenge::RVNGPropertyList &propList);
-	void drawPolygon(const librevenge::RVNGPropertyList &propList);
-	void drawPolyline(const librevenge::RVNGPropertyList &propList);
-	void drawPath(const librevenge::RVNGPropertyList &propList);
-	void drawConnector(const librevenge::RVNGPropertyList &propList);
+	void defineGraphicStyle(const librevenge::RVNGPropertyList &propList) override;
+	void drawRectangle(const librevenge::RVNGPropertyList &propList) override;
+	void drawEllipse(const librevenge::RVNGPropertyList &propList) override;
+	void drawPolygon(const librevenge::RVNGPropertyList &propList) override;
+	void drawPolyline(const librevenge::RVNGPropertyList &propList) override;
+	void drawPath(const librevenge::RVNGPropertyList &propList) override;
+	void drawConnector(const librevenge::RVNGPropertyList &propList) override;
 
-	void openFrame(const librevenge::RVNGPropertyList &propList);
-	void closeFrame();
+	void openFrame(const librevenge::RVNGPropertyList &propList) override;
+	void closeFrame() override;
 
-	void insertBinaryObject(const librevenge::RVNGPropertyList &propList);
-	void insertEquation(const librevenge::RVNGPropertyList &propList);
+	void insertBinaryObject(const librevenge::RVNGPropertyList &propList) override;
+	void insertEquation(const librevenge::RVNGPropertyList &propList) override;
 
 	/** Registers a handler for embedded objects.
 	  *

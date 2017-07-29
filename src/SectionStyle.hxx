@@ -36,7 +36,7 @@ class SectionStyle : public Style
 {
 public:
 	SectionStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone);
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	void write(OdfDocumentHandler *pHandler) const override;
 
 private:
 	librevenge::RVNGPropertyList mPropList;
@@ -47,7 +47,7 @@ class SectionStyleManager : public StyleManager
 {
 public:
 	SectionStyleManager() : mStyleList() {}
-	virtual ~SectionStyleManager()
+	~SectionStyleManager() override
 	{
 		clean();
 	}
@@ -57,9 +57,9 @@ public:
 	Note: using Section%i (or Section_M%i) as new name*/
 	librevenge::RVNGString add(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone=Style::Z_Unknown);
 
-	virtual void clean();
+	void clean() override;
 	// write all
-	virtual void write(OdfDocumentHandler *pHandler) const
+	void write(OdfDocumentHandler *pHandler) const override
 	{
 		write(pHandler, Style::Z_Style);
 		write(pHandler, Style::Z_StyleAutomatic);

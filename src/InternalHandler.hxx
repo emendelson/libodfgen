@@ -38,13 +38,13 @@ public:
 	InternalHandler(libodfgen::DocumentElementVector *elements) :mpElements(elements)
 	{
 	}
-	~InternalHandler() {};
+	~InternalHandler() override {};
 
-	void startDocument() {};
-	void endDocument() {};
-	void startElement(const char *psName, const librevenge::RVNGPropertyList &xPropList);
-	void endElement(const char *psName);
-	void characters(const librevenge::RVNGString &sCharacters);
+	void startDocument() override {};
+	void endDocument() override {};
+	void startElement(const char *psName, const librevenge::RVNGPropertyList &xPropList) override;
+	void endElement(const char *psName) override;
+	void characters(const librevenge::RVNGString &sCharacters) override;
 private:
 	InternalHandler(const InternalHandler &);
 	InternalHandler &operator=(const InternalHandler &);

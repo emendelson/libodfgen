@@ -42,9 +42,9 @@ public:
 	//! constructor
 	GraphicStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone);
 	//! destructor
-	~GraphicStyle();
+	~GraphicStyle() override;
 	//! write content to the document handler
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	void write(OdfDocumentHandler *pHandler) const override;
 
 private:
 	librevenge::RVNGPropertyList mPropList;
@@ -59,13 +59,13 @@ public:
 		, mMarkerStyles(), mStrokeDashStyles(), mStyles()
 		, mMarkerNameMap(), mStrokeDashNameMap(), mDisplayStrokeDashNameMap(), mStyleNameMap()
 		, mDisplayNameMap() {}
-	virtual ~GraphicStyleManager()
+	~GraphicStyleManager() override
 	{
 		clean();
 	}
-	void clean();
+	void clean() override;
 	//! write all
-	void write(OdfDocumentHandler *pHandler) const
+	void write(OdfDocumentHandler *pHandler) const override
 	{
 		write(pHandler, Style::Z_Style);
 		write(pHandler, Style::Z_StyleAutomatic);

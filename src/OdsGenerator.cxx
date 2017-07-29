@@ -148,7 +148,7 @@ public:
 	};
 
 	OdsGeneratorPrivate();
-	~OdsGeneratorPrivate();
+	~OdsGeneratorPrivate() override;
 	void addDocumentHandler(OdfDocumentHandler *pHandler, const OdfStreamType streamType)
 	{
 		if (!pHandler)
@@ -357,7 +357,7 @@ public:
 		return false;
 	}
 
-	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType);
+	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType) override;
 	void _writeStyles(OdfDocumentHandler *pHandler);
 	void _writeAutomaticStyles(OdfDocumentHandler *pHandler, OdfStreamType streamType);
 	void initPageManager();

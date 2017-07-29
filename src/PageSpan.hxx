@@ -42,8 +42,8 @@ class PageDrawingStyle : public Style
 {
 public:
 	PageDrawingStyle(librevenge::RVNGPropertyList const &propList, const librevenge::RVNGString &sName, Style::Zone zone);
-	virtual ~PageDrawingStyle();
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	~PageDrawingStyle() override;
+	void write(OdfDocumentHandler *pHandler) const override;
 
 private:
 	librevenge::RVNGPropertyList mpPropList;
@@ -54,8 +54,8 @@ class PageLayoutStyle : public Style
 {
 public:
 	PageLayoutStyle(librevenge::RVNGPropertyList const &propList, const librevenge::RVNGString &sName, Style::Zone zone);
-	virtual ~PageLayoutStyle();
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	~PageLayoutStyle() override;
+	void write(OdfDocumentHandler *pHandler) const override;
 	/** reset the page size (used by Od[pg]Generator to reset the size to union size)
 		and the margins to 0
 		\note size are given in inch

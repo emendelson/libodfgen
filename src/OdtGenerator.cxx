@@ -48,9 +48,9 @@ class OdtGeneratorPrivate : public OdfGenerator
 {
 public:
 	OdtGeneratorPrivate();
-	~OdtGeneratorPrivate();
+	~OdtGeneratorPrivate() override;
 
-	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType);
+	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType) override;
 	void _writeStyles(OdfDocumentHandler *pHandler);
 	void _writeAutomaticStyles(OdfDocumentHandler *pHandler, OdfStreamType streamType);
 

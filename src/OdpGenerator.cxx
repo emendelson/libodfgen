@@ -88,7 +88,7 @@ class OdpGeneratorPrivate : public OdfGenerator
 {
 public:
 	OdpGeneratorPrivate();
-	~OdpGeneratorPrivate();
+	~OdpGeneratorPrivate() override;
 
 	void openTextBoxFrame(const librevenge::RVNGPropertyList &propList);
 	void closeTextBoxFrame();
@@ -103,7 +103,7 @@ public:
 	void writeNotesStyles(OdfDocumentHandler *pHandler);
 
 	//! returns the document type
-	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType);
+	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType) override;
 	void _writeSettings(OdfDocumentHandler *pHandler);
 	void _writeStyles(OdfDocumentHandler *pHandler);
 	void _writeAutomaticStyles(OdfDocumentHandler *pHandler, OdfStreamType streamType);

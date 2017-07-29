@@ -42,97 +42,97 @@ class ODFGENAPI OdpGenerator : public librevenge::RVNGPresentationInterface
 {
 public:
 	OdpGenerator();
-	~OdpGenerator();
+	~OdpGenerator() override;
 	void addDocumentHandler(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
 	librevenge::RVNGStringVector getObjectNames() const;
 	bool getObjectContent(librevenge::RVNGString const &objectName, OdfDocumentHandler *pHandler);
 
-	void startDocument(const ::librevenge::RVNGPropertyList &propList);
-	void endDocument();
-	void setDocumentMetaData(const ::librevenge::RVNGPropertyList &propList);
-	void defineEmbeddedFont(const librevenge::RVNGPropertyList &propList);
-	void startSlide(const ::librevenge::RVNGPropertyList &propList);
-	void endSlide();
-	void startMasterSlide(const ::librevenge::RVNGPropertyList &propList);
-	void endMasterSlide();
-	void setSlideTransition(const ::librevenge::RVNGPropertyList &propList);
-	void startLayer(const ::librevenge::RVNGPropertyList &propList);
-	void endLayer();
-	void startEmbeddedGraphics(const ::librevenge::RVNGPropertyList &propList);
-	void endEmbeddedGraphics();
-	void openGroup(const ::librevenge::RVNGPropertyList &propList);
-	void closeGroup();
+	void startDocument(const ::librevenge::RVNGPropertyList &propList) override;
+	void endDocument() override;
+	void setDocumentMetaData(const ::librevenge::RVNGPropertyList &propList) override;
+	void defineEmbeddedFont(const librevenge::RVNGPropertyList &propList) override;
+	void startSlide(const ::librevenge::RVNGPropertyList &propList) override;
+	void endSlide() override;
+	void startMasterSlide(const ::librevenge::RVNGPropertyList &propList) override;
+	void endMasterSlide() override;
+	void setSlideTransition(const ::librevenge::RVNGPropertyList &propList) override;
+	void startLayer(const ::librevenge::RVNGPropertyList &propList) override;
+	void endLayer() override;
+	void startEmbeddedGraphics(const ::librevenge::RVNGPropertyList &propList) override;
+	void endEmbeddedGraphics() override;
+	void openGroup(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeGroup() override;
 
-	void setStyle(const ::librevenge::RVNGPropertyList &propList);
+	void setStyle(const ::librevenge::RVNGPropertyList &propList) override;
 
-	void drawRectangle(const ::librevenge::RVNGPropertyList &propList);
-	void drawEllipse(const ::librevenge::RVNGPropertyList &propList);
-	void drawPolyline(const ::librevenge::RVNGPropertyList &propList);
-	void drawPolygon(const ::librevenge::RVNGPropertyList &propList);
-	void drawPath(const ::librevenge::RVNGPropertyList &propList);
-	void drawGraphicObject(const ::librevenge::RVNGPropertyList &propList);
-	void drawConnector(const ::librevenge::RVNGPropertyList &propList);
+	void drawRectangle(const ::librevenge::RVNGPropertyList &propList) override;
+	void drawEllipse(const ::librevenge::RVNGPropertyList &propList) override;
+	void drawPolyline(const ::librevenge::RVNGPropertyList &propList) override;
+	void drawPolygon(const ::librevenge::RVNGPropertyList &propList) override;
+	void drawPath(const ::librevenge::RVNGPropertyList &propList) override;
+	void drawGraphicObject(const ::librevenge::RVNGPropertyList &propList) override;
+	void drawConnector(const ::librevenge::RVNGPropertyList &propList) override;
 
-	void startTextObject(const ::librevenge::RVNGPropertyList &propList);
-	void endTextObject();
-	void defineParagraphStyle(const librevenge::RVNGPropertyList &propList);
-	void openParagraph(const ::librevenge::RVNGPropertyList &propList);
-	void closeParagraph();
-	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList);
-	void openSpan(const ::librevenge::RVNGPropertyList &propList);
-	void closeSpan();
+	void startTextObject(const ::librevenge::RVNGPropertyList &propList) override;
+	void endTextObject() override;
+	void defineParagraphStyle(const librevenge::RVNGPropertyList &propList) override;
+	void openParagraph(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeParagraph() override;
+	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList) override;
+	void openSpan(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeSpan() override;
 
-	void openLink(const librevenge::RVNGPropertyList &propList);
-	void closeLink();
+	void openLink(const librevenge::RVNGPropertyList &propList) override;
+	void closeLink() override;
 
-	void insertText(const ::librevenge::RVNGString &str);
-	void insertTab();
-	void insertSpace();
-	void insertLineBreak();
-	void insertField(const ::librevenge::RVNGPropertyList &propList);
+	void insertText(const ::librevenge::RVNGString &str) override;
+	void insertTab() override;
+	void insertSpace() override;
+	void insertLineBreak() override;
+	void insertField(const ::librevenge::RVNGPropertyList &propList) override;
 
-	void openOrderedListLevel(const ::librevenge::RVNGPropertyList &propList);
-	void openUnorderedListLevel(const ::librevenge::RVNGPropertyList &propList);
-	void closeOrderedListLevel();
-	void closeUnorderedListLevel();
-	void openListElement(const ::librevenge::RVNGPropertyList &propList);
-	void closeListElement();
+	void openOrderedListLevel(const ::librevenge::RVNGPropertyList &propList) override;
+	void openUnorderedListLevel(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeOrderedListLevel() override;
+	void closeUnorderedListLevel() override;
+	void openListElement(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeListElement() override;
 
-	void startTableObject(const ::librevenge::RVNGPropertyList &propList);
-	void openTableRow(const ::librevenge::RVNGPropertyList &propList);
-	void closeTableRow();
-	void openTableCell(const ::librevenge::RVNGPropertyList &propList);
-	void closeTableCell();
-	void insertCoveredTableCell(const ::librevenge::RVNGPropertyList &propList);
-	void endTableObject();
+	void startTableObject(const ::librevenge::RVNGPropertyList &propList) override;
+	void openTableRow(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeTableRow() override;
+	void openTableCell(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeTableCell() override;
+	void insertCoveredTableCell(const ::librevenge::RVNGPropertyList &propList) override;
+	void endTableObject() override;
 
-	void startComment(const ::librevenge::RVNGPropertyList &propList);
-	void endComment();
+	void startComment(const ::librevenge::RVNGPropertyList &propList) override;
+	void endComment() override;
 
-	void startNotes(const ::librevenge::RVNGPropertyList &propList);
-	void endNotes();
+	void startNotes(const ::librevenge::RVNGPropertyList &propList) override;
+	void endNotes() override;
 
-	void defineChartStyle(const ::librevenge::RVNGPropertyList &propList);
-	void openChart(const ::librevenge::RVNGPropertyList &propList);
-	void closeChart();
-	void openChartTextObject(const ::librevenge::RVNGPropertyList &propList);
-	void closeChartTextObject();
-	void openChartPlotArea(const ::librevenge::RVNGPropertyList &propList);
-	void closeChartPlotArea();
-	void insertChartAxis(const ::librevenge::RVNGPropertyList &propList);
-	void openChartSeries(const ::librevenge::RVNGPropertyList &propList);
-	void closeChartSeries();
+	void defineChartStyle(const ::librevenge::RVNGPropertyList &propList) override;
+	void openChart(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeChart() override;
+	void openChartTextObject(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeChartTextObject() override;
+	void openChartPlotArea(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeChartPlotArea() override;
+	void insertChartAxis(const ::librevenge::RVNGPropertyList &propList) override;
+	void openChartSeries(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeChartSeries() override;
 
-	void openAnimationSequence(const ::librevenge::RVNGPropertyList &propList);
-	void closeAnimationSequence();
-	void openAnimationGroup(const ::librevenge::RVNGPropertyList &propList);
-	void closeAnimationGroup();
-	void openAnimationIteration(const ::librevenge::RVNGPropertyList &propList);
-	void closeAnimationIteration();
-	void insertMotionAnimation(const ::librevenge::RVNGPropertyList &propList);
-	void insertColorAnimation(const ::librevenge::RVNGPropertyList &propList);
-	void insertAnimation(const ::librevenge::RVNGPropertyList &propList);
-	void insertEffect(const ::librevenge::RVNGPropertyList &propList);
+	void openAnimationSequence(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeAnimationSequence() override;
+	void openAnimationGroup(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeAnimationGroup() override;
+	void openAnimationIteration(const ::librevenge::RVNGPropertyList &propList) override;
+	void closeAnimationIteration() override;
+	void insertMotionAnimation(const ::librevenge::RVNGPropertyList &propList) override;
+	void insertColorAnimation(const ::librevenge::RVNGPropertyList &propList) override;
+	void insertAnimation(const ::librevenge::RVNGPropertyList &propList) override;
+	void insertEffect(const ::librevenge::RVNGPropertyList &propList) override;
 
 	/** Registers a handler for embedded images.
 	  *

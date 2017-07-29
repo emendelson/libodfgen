@@ -44,7 +44,7 @@ public:
 	//! constructor
 	NumberingStyle(const librevenge::RVNGPropertyList &xPropList, const librevenge::RVNGString &psName);
 	//! destructor
-	virtual ~NumberingStyle() {};
+	~NumberingStyle() override {};
 	//! write a style
 	void writeStyle(OdfDocumentHandler *pHandler, NumberingManager const &manager) const;
 

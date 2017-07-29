@@ -41,8 +41,8 @@ class ParagraphStyle : public Style
 {
 public:
 	ParagraphStyle(librevenge::RVNGPropertyList const &propList, const librevenge::RVNGString &sName, Style::Zone zone);
-	virtual ~ParagraphStyle();
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	~ParagraphStyle() override;
+	void write(OdfDocumentHandler *pHandler) const override;
 
 private:
 	librevenge::RVNGPropertyList mpPropList;
@@ -53,7 +53,7 @@ class SpanStyle : public Style
 {
 public:
 	SpanStyle(const char *psName, const librevenge::RVNGPropertyList &xPropList, Style::Zone zone);
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	void write(OdfDocumentHandler *pHandler) const override;
 private:
 	librevenge::RVNGPropertyList mPropList;
 };
@@ -62,7 +62,7 @@ class ParagraphStyleManager : public StyleManager
 {
 public:
 	ParagraphStyleManager() : mHashNameMap(), mStyleHash(), mDisplayNameMap() {}
-	virtual ~ParagraphStyleManager()
+	~ParagraphStyleManager() override
 	{
 		clean();
 	}
@@ -77,9 +77,9 @@ public:
 	//! return the file name corresponding to a display name
 	librevenge::RVNGString getFinalDisplayName(const librevenge::RVNGString &displayName);
 
-	virtual void clean();
+	void clean() override;
 	// write all
-	virtual void write(OdfDocumentHandler *pHandler) const
+	void write(OdfDocumentHandler *pHandler) const override
 	{
 		write(pHandler, Style::Z_Style);
 		write(pHandler, Style::Z_StyleAutomatic);
@@ -101,7 +101,7 @@ class SpanStyleManager : public StyleManager
 {
 public:
 	SpanStyleManager() : mHashNameMap(), mStyleHash(), 	mDisplayNameMap() {}
-	virtual ~SpanStyleManager()
+	~SpanStyleManager() override
 	{
 		clean();
 	}
@@ -117,9 +117,9 @@ public:
 	//! return the file name corresponding to a display name
 	librevenge::RVNGString getFinalDisplayName(const librevenge::RVNGString &displayName);
 
-	virtual void clean();
+	void clean() override;
 	// write all
-	virtual void write(OdfDocumentHandler *pHandler) const
+	void write(OdfDocumentHandler *pHandler) const override
 	{
 		write(pHandler, Style::Z_Style);
 		write(pHandler, Style::Z_StyleAutomatic);

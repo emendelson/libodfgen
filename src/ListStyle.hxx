@@ -43,7 +43,7 @@ class OrderedListLevelStyle : public ListLevelStyle
 {
 public:
 	OrderedListLevelStyle(const librevenge::RVNGPropertyList &xPropList);
-	void write(OdfDocumentHandler *pHandler, int iLevel) const;
+	void write(OdfDocumentHandler *pHandler, int iLevel) const override;
 private:
 	librevenge::RVNGPropertyList mPropList;
 };
@@ -52,7 +52,7 @@ class UnorderedListLevelStyle : public ListLevelStyle
 {
 public:
 	UnorderedListLevelStyle(const librevenge::RVNGPropertyList &xPropList);
-	void write(OdfDocumentHandler *pHandler, int iLevel) const;
+	void write(OdfDocumentHandler *pHandler, int iLevel) const override;
 private:
 	librevenge::RVNGPropertyList mPropList;
 };
@@ -61,9 +61,9 @@ class ListStyle : public Style
 {
 public:
 	ListStyle(const char *psName, const int iListID, Style::Zone zone);
-	virtual ~ListStyle();
+	~ListStyle() override;
 	void updateListLevel(const int iLevel, const librevenge::RVNGPropertyList &xPropList, bool ordered);
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	void write(OdfDocumentHandler *pHandler) const override;
 	int getListID()
 	{
 		return miListID;
