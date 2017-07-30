@@ -141,7 +141,7 @@ private:
 OdgGeneratorPrivate::OdgGeneratorPrivate() : OdfGenerator(),
 	mStateStack(),
 	mfMaxWidth(0.0), mfMaxHeight(0.0),
-	mpCurrentPageSpan(0), miPageIndex(0),
+	mpCurrentPageSpan(nullptr), miPageIndex(0),
 	mDummyMasterSlideStorage()
 {
 	pushState();
@@ -411,7 +411,7 @@ void OdgGenerator::startPage(const librevenge::RVNGPropertyList &propList)
 {
 	librevenge::RVNGPropertyList pList(propList);
 
-	mpImpl->mpCurrentPageSpan=0;
+	mpImpl->mpCurrentPageSpan=nullptr;
 	if (pList["librevenge:master-page-name"])
 	{
 		mpImpl->mpCurrentPageSpan=mpImpl->getPageSpanManager().get(pList["librevenge:master-page-name"]->getStr());

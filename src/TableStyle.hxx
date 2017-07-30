@@ -126,12 +126,12 @@ public:
 	}
 	Table *getActualTable()
 	{
-		if (mTableOpened.empty()) return 0;
+		if (mTableOpened.empty()) return nullptr;
 		return mTableOpened.back().get();
 	}
 	Table const *getActualTable() const
 	{
-		if (mTableOpened.empty()) return 0;
+		if (mTableOpened.empty()) return nullptr;
 		return mTableOpened.back().get();
 	}
 	//! open a table and update the list of elements

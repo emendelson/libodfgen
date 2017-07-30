@@ -122,7 +122,7 @@ private:
 OdtGeneratorPrivate::OdtGeneratorPrivate() :
 	mStateStack(),
 	mSectionManager(),
-	mpCurrentPageSpan(0)
+	mpCurrentPageSpan(nullptr)
 {
 	initPageManager();
 	pushState();

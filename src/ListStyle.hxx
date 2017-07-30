@@ -73,7 +73,7 @@ public:
 	{
 		return mDisplayName;
 	}
-	void setDisplayName(const char *displayName=0)
+	void setDisplayName(const char *displayName=nullptr)
 	{
 		if (!displayName || !*displayName)
 			mDisplayName="";

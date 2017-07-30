@@ -124,7 +124,7 @@ public:
 	//! return the last opened sheet
 	SheetStyle *actualSheet()
 	{
-		if (!mbSheetOpened || !mSheetStyles.back()) return 0;
+		if (!mbSheetOpened || !mSheetStyles.back()) return nullptr;
 		return mSheetStyles.back().get();
 	}
 	//! open a sheet and update the list of elements

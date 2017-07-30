@@ -171,7 +171,7 @@ void SheetRowStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const 
 
 
 SheetStyle::SheetStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone) :
-	Style(psName, zone), mPropList(xPropList), mColumns(0),
+	Style(psName, zone), mPropList(xPropList), mColumns(nullptr),
 	mRowNameHash(), mRowStyleHash(), mCellNameHash(), mCellStyleHash()
 {
 	mColumns = mPropList.child("librevenge:columns");

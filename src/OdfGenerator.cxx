@@ -354,7 +354,7 @@ OdfEmbeddedObject OdfGenerator::findEmbeddedObjectHandler(const librevenge::RVNG
 	if (i != mObjectHandlers.end())
 		return i->second;
 
-	return 0;
+	return nullptr;
 }
 
 OdfEmbeddedImage OdfGenerator::findEmbeddedImageHandler(const librevenge::RVNGString &mimeType) const
@@ -363,7 +363,7 @@ OdfEmbeddedImage OdfGenerator::findEmbeddedImageHandler(const librevenge::RVNGSt
 	if (i != mImageHandlers.end())
 		return i->second;
 
-	return 0;
+	return nullptr;
 }
 
 void OdfGenerator::registerEmbeddedObjectHandler(const librevenge::RVNGString &mimeType, OdfEmbeddedObject objectHandler)
@@ -952,7 +952,7 @@ void OdfGenerator::openParagraph(const librevenge::RVNGPropertyList &propList)
 {
 	librevenge::RVNGPropertyList pList(propList);
 	librevenge::RVNGString paragraphName("");
-	bool isMasterPage=(propList["style:master-page-name"]!=0);
+	bool isMasterPage=(propList["style:master-page-name"]!=nullptr);
 
 	if (propList["text:outline-level"])
 		pList.insert("style:default-outline-level", propList["text:outline-level"]->clone());

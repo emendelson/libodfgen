@@ -197,8 +197,8 @@ librevenge::RVNGString GraphicStyleManager::getStyleNameForMarker(librevenge::RV
 
 librevenge::RVNGString GraphicStyleManager::getStyleNameForStrokeDash(librevenge::RVNGPropertyList const &style)
 {
-	bool isStyle=style["style:display-name"]!=0;
-	bool hasParent=style["librevenge:parent-display-name"]!=0;
+	bool isStyle=style["style:display-name"]!=nullptr;
+	bool hasParent=style["librevenge:parent-display-name"]!=nullptr;
 	bool checkEmpty=isStyle || hasParent;
 
 	librevenge::RVNGPropertyList pList;

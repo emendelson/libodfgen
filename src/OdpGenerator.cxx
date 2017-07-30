@@ -130,7 +130,7 @@ private:
 
 OdpGeneratorPrivate::OdpGeneratorPrivate() :
 	mfMaxWidth(0.0), mfMaxHeight(0.0),
-	mpCurrentPageSpan(0), miPageIndex(0),
+	mpCurrentPageSpan(nullptr), miPageIndex(0),
 	mState(),
 	mDummyMasterSlideStorage()
 {
@@ -581,7 +581,7 @@ void OdpGenerator::startSlide(const librevenge::RVNGPropertyList &propList)
 {
 	librevenge::RVNGPropertyList pList(propList);
 
-	mpImpl->mpCurrentPageSpan=0;
+	mpImpl->mpCurrentPageSpan=nullptr;
 	if (!mpImpl->mpCurrentPageSpan)
 	{
 		mpImpl->updatePageSpanPropertiesToCreatePage(pList);

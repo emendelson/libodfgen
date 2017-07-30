@@ -388,7 +388,7 @@ OdsGeneratorPrivate::OdsGeneratorPrivate() : OdfGenerator(),
 	mStateStack(),
 	mAuxiliarOdcState(), mAuxiliarOdtState(),
 	mSheetManager(mNumberingManager),
-	mpCurrentPageSpan(0)
+	mpCurrentPageSpan(nullptr)
 {
 	mStateStack.push(State());
 	initPageManager();

@@ -165,7 +165,7 @@ PageSpan::PageSpan(librevenge::RVNGString const &masterName, librevenge::RVNGStr
 	msLayoutName(""),
 	msDrawingName("")
 {
-	for (int i=0; i<C_NumContentTypes; ++i) mpContent[i]=0;
+	for (int i=0; i<C_NumContentTypes; ++i) mpContent[i]=nullptr;
 }
 
 PageSpan::~PageSpan()
@@ -256,7 +256,7 @@ void PageSpan::writeMasterPages(OdfDocumentHandler *pHandler) const
 	*/
 
 	if (mpContent[C_Master] && mbIsMasterPage)
-		_writeContent(0, *mpContent[C_Master], pHandler);
+		_writeContent(nullptr, *mpContent[C_Master], pHandler);
 	pHandler->endElement("style:master-page");
 }
 
@@ -293,7 +293,7 @@ PageSpan *PageSpanManager::get(librevenge::RVNGString const &name)
 	if (mpNameToMasterMap.find(masterName)==mpNameToMasterMap.end())
 	{
 		ODFGEN_DEBUG_MSG(("PageSpan::get: can not find a master page name\n"));
-		return 0;
+		return nullptr;
 	}
 	return mpNameToMasterMap.find(masterName)->second.get();
 }
@@ -314,12 +314,12 @@ PageSpan *PageSpanManager::add(const librevenge::RVNGPropertyList &xPropList, bo
 		if (displayName.empty())
 		{
 			ODFGEN_DEBUG_MSG(("PageSpan::add: can not find the master page name\n"));
-			return 0;
+			return nullptr;
 		}
 		if (mpNameToMasterMap.find(displayName)!=mpNameToMasterMap.end())
 		{
 			ODFGEN_DEBUG_MSG(("PageSpan::add: a master page already exists with the same name\n"));
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -351,7 +351,7 @@ PageSpan *PageSpanManager::add(const librevenge::RVNGPropertyList &xPropList, bo
 librevenge::RVNGString PageSpanManager::findOrAddDrawing(const librevenge::RVNGPropertyList &propList, bool isMaster)
 {
 	if (!propList["librevenge:drawing-name"] && !propList.child("librevenge:drawing-page"))
-		return 0;
+		return nullptr;
 
 	librevenge::RVNGString drawingName("");
 	Style::Zone zone=isMaster ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic;

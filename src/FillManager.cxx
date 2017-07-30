@@ -80,8 +80,8 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 {
 	needCreateOpacityStyle=false;
 
-	bool isStyle=style["style:display-name"]!=0;
-	bool hasParent=style["librevenge:parent-display-name"]!=0;
+	bool isStyle=style["style:display-name"]!=nullptr;
+	bool hasParent=style["librevenge:parent-display-name"]!=nullptr;
 	bool checkEmpty=isStyle || hasParent;
 	librevenge::RVNGPropertyList pList;
 	if (!checkEmpty)
@@ -201,8 +201,8 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropertyList const &style)
 {
 	librevenge::RVNGPropertyList pList;
-	bool isStyle=style["style:display-name"]!=0;
-	bool hasParent=style["librevenge:parent-display-name"]!=0;
+	bool isStyle=style["style:display-name"]!=nullptr;
+	bool hasParent=style["librevenge:parent-display-name"]!=nullptr;
 	// basic data
 	char const *wh[] = { "draw:color", "draw:distance", "draw:rotation", "draw:style" };
 	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
@@ -260,8 +260,8 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 
 librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPropertyList const &style)
 {
-	bool isStyle=style["style:display-name"]!=0;
-	bool hasParent=style["librevenge:parent-display-name"]!=0;
+	bool isStyle=style["style:display-name"]!=nullptr;
+	bool hasParent=style["librevenge:parent-display-name"]!=nullptr;
 	bool checkEmpty=isStyle || hasParent;
 
 	librevenge::RVNGPropertyList pList;

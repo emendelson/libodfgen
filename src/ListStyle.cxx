@@ -233,7 +233,7 @@ void ListStyle::write(OdfDocumentHandler *pHandler) const
 //
 
 ListManager::State::State() :
-	mpCurrentListStyle(0),
+	mpCurrentListStyle(nullptr),
 	miCurrentListLevel(0),
 	miLastListLevel(0),
 	miLastListNumber(0),
@@ -302,7 +302,7 @@ void ListManager::defineLevel(const librevenge::RVNGPropertyList &propList, bool
 	if (propList["librevenge:list-id"])
 		id = propList["librevenge:list-id"]->getInt();
 
-	ListStyle *pListStyle = 0;
+	ListStyle *pListStyle = nullptr;
 	State &state=getState();
 	// as all direct list have the same id:-1, we reused the last list
 	// excepted at level 0 where we force the redefinition of a new list
@@ -315,7 +315,7 @@ void ListManager::defineLevel(const librevenge::RVNGPropertyList &propList, bool
 	// prior list or the prior list has another listId OR (2) we can
 	// tell that the user actually is starting a new list at level 1
 	// (and only level 1)
-	if (pListStyle == 0 ||
+	if (pListStyle == nullptr ||
 	        (ordered && propList["librevenge:level"] && propList["librevenge:level"]->getInt()==1 &&
 	         (propList["text:start-value"] && propList["text:start-value"]->getInt() != int(state.miLastListNumber+1))))
 	{
