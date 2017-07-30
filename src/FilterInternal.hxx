@@ -34,7 +34,7 @@
 #include <config.h>
 #endif
 
-#if defined(HAVE_GCC_ATTRIBUTE_FORMAT)
+#if defined(HAVE_FUNC_ATTRIBUTE_FORMAT)
 #  define ODFGEN_ATTRIBUTE_PRINTF(fmt, arg) __attribute__((format(printf, fmt, arg)))
 #else
 #  define ODFGEN_ATTRIBUTE_PRINTF(fmt, arg)
