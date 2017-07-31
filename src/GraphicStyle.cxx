@@ -92,15 +92,15 @@ void GraphicStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) 
 {
 	if (zone==Style::Z_Style)
 	{
-		for (size_t i=0; i < mMarkerStyles.size(); ++i)
-			mMarkerStyles[i]->write(pHandler);
-		for (size_t i=0; i<mStrokeDashStyles.size(); ++i)
-			mStrokeDashStyles[i]->write(pHandler);
+		for (const auto &markerStyle : mMarkerStyles)
+			markerStyle->write(pHandler);
+		for (const auto &strokeDashStyle : mStrokeDashStyles)
+			strokeDashStyle->write(pHandler);
 	}
-	for (size_t i=0; i<mStyles.size(); ++i)
+	for (const auto &style : mStyles)
 	{
-		if (mStyles[i] && mStyles[i]->getZone()==zone)
-			mStyles[i]->write(pHandler);
+		if (style && style->getZone()==zone)
+			style->write(pHandler);
 	}
 }
 
@@ -385,10 +385,10 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 		"style:mirror", "style:parent-style-name",
 		"style:run-through", "style:wrap"
 	};
-	for (unsigned b = 0; b < ODFGEN_N_ELEMENTS(others); b++)
+	for (auto &other : others)
 	{
-		if (style[others[b]])
-			element.insert(others[b], style[others[b]]->getStr());
+		if (style[other])
+			element.insert(other, style[other]->getStr());
 	}
 }
 
@@ -404,10 +404,10 @@ void GraphicStyleManager::addFrameProperties(librevenge::RVNGPropertyList const 
 		// "svg:x", "svg:y", "svg:width", "svg:height", "style:wrap", "style:run-through",
 		// "text:anchor-type", "text:anchor-page-number"
 	};
-	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(attrib); ++i)
+	for (auto &i : attrib)
 	{
-		if (propList[attrib[i]])
-			element.insert(attrib[i], propList[attrib[i]]->getStr());
+		if (propList[i])
+			element.insert(i, propList[i]->getStr());
 	}
 }
 

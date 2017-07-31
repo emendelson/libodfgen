@@ -165,14 +165,14 @@ PageSpan::PageSpan(librevenge::RVNGString const &masterName, librevenge::RVNGStr
 	msLayoutName(""),
 	msDrawingName("")
 {
-	for (int i=0; i<C_NumContentTypes; ++i) mpContent[i]=nullptr;
+	for (auto &i : mpContent) i=nullptr;
 }
 
 PageSpan::~PageSpan()
 {
-	for (int i=0; i<C_NumContentTypes; ++i)
+	for (auto &i : mpContent)
 	{
-		if (mpContent[i]) delete mpContent[i];
+		if (i) delete i;
 	}
 }
 
@@ -267,11 +267,9 @@ void PageSpan::_writeContent(const char *contentTagName,
 	bool hasTagName=contentTagName && strlen(contentTagName);
 	if (hasTagName)
 		TagOpenElement(contentTagName).write(pHandler);
-	for (std::vector<shared_ptr<DocumentElement> >::const_iterator iter = content.begin();
-	        iter != content.end();
-	        ++iter)
+	for (const auto &iter : content)
 	{
-		(*iter)->write(pHandler);
+		iter->write(pHandler);
 	}
 	if (hasTagName)
 		TagCloseElement(contentTagName).write(pHandler);
@@ -440,25 +438,25 @@ librevenge::RVNGString PageSpanManager::findOrAddLayout(const librevenge::RVNGPr
 void PageSpanManager::writePageStyles(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
 	// first the layout
-	for (size_t i=0; i<mpLayoutList.size(); ++i)
+	for (const auto &i : mpLayoutList)
 	{
-		if (!mpLayoutList[i] || mpLayoutList[i]->getZone()!=zone) continue;
-		mpLayoutList[i]->write(pHandler);
+		if (!i || i->getZone()!=zone) continue;
+		i->write(pHandler);
 	}
 	// now the drawing style
-	for (size_t i=0; i<mpDrawingList.size(); ++i)
+	for (const auto &i : mpDrawingList)
 	{
-		if (!mpDrawingList[i] || mpDrawingList[i]->getZone()!=zone) continue;
-		mpDrawingList[i]->write(pHandler);
+		if (!i || i->getZone()!=zone) continue;
+		i->write(pHandler);
 	}
 }
 
 void PageSpanManager::writeMasterPages(OdfDocumentHandler *pHandler) const
 {
-	for (size_t i=0; i<mpPageList.size(); ++i)
+	for (const auto &i : mpPageList)
 	{
-		if (!mpPageList[i] || !mpPageList[i]->isMasterPage()) continue;
-		mpPageList[i]->writeMasterPages(pHandler);
+		if (!i || !i->isMasterPage()) continue;
+		i->writeMasterPages(pHandler);
 	}
 }
 
@@ -466,10 +464,10 @@ void PageSpanManager::resetPageSizeAndMargins(double width, double height)
 {
 	if (mpLayoutList.size() <= 1)
 		return;
-	for (size_t i=0; i<mpLayoutList.size(); ++i)
+	for (auto &i : mpLayoutList)
 	{
-		if (!mpLayoutList[i]) continue;
-		mpLayoutList[i]->resetPageSizeAndMargins(width, height);
+		if (!i) continue;
+		i->resetPageSizeAndMargins(width, height);
 	}
 }
 

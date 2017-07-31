@@ -277,10 +277,10 @@ bool OdfGenerator::getObjectContent(librevenge::RVNGString const &objectName, Od
 	}
 	pHandler->startDocument();
 	ObjectContainer &object=*(it->second);
-	for (size_t i=0; i<object.mStorage.size(); ++i)
+	for (auto &i : object.mStorage)
 	{
-		if (!object.mStorage[i]) continue;
-		object.mStorage[i]->write(pHandler);
+		if (!i) continue;
+		i->write(pHandler);
 	}
 	pHandler->endDocument();
 	return true;
@@ -296,9 +296,9 @@ void OdfGenerator::sendStorage(libodfgen::DocumentElementVector const *storage, 
 		ODFGEN_DEBUG_MSG(("OdfGenerator::sendStorage: called without storage\n"));
 		return;
 	}
-	for (size_t i=0; i<storage->size(); ++i)
+	for (const auto &i : *storage)
 	{
-		if ((*storage)[i])(*storage)[i]->write(pHandler);
+		if (i)i->write(pHandler);
 	}
 }
 
@@ -489,10 +489,10 @@ void OdfGenerator::addFrameProperties(const librevenge::RVNGPropertyList &propLi
 		"text:anchor-page-number", "text:anchor-type",
 		"table:end-cell-address"
 	};
-	for (int i=0; i<8; ++i)
+	for (auto &i : frameAttrib)
 	{
-		if (propList[frameAttrib[i]])
-			element.addAttribute(frameAttrib[i], propList[frameAttrib[i]]->getStr());
+		if (propList[i])
+			element.addAttribute(i, propList[i]->getStr());
 	}
 
 	if (propList["svg:width"])
@@ -626,9 +626,9 @@ void OdfGenerator::appendLayersMasterStyles(OdfDocumentHandler *pHandler)
 		layer.write(pHandler);
 		TagCloseElement("draw:layer").write(pHandler);
 	}
-	for (std::set<librevenge::RVNGString>::const_iterator it=mLayerNameSet.begin(); it!=mLayerNameSet.end(); ++it)
+	for (const auto &layerName : mLayerNameSet)
 	{
-		layer.addAttribute("draw:name", *it);
+		layer.addAttribute("draw:name", layerName);
 		layer.write(pHandler);
 		TagCloseElement("draw:layer").write(pHandler);
 	}

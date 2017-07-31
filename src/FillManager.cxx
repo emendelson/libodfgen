@@ -44,14 +44,14 @@ void FillManager::clean()
 
 void FillManager::write(OdfDocumentHandler *pHandler) const
 {
-	for (size_t i=0; i < mBitmapStyles.size(); ++i)
-		mBitmapStyles[i]->write(pHandler);
-	for (size_t i=0; i < mGradientStyles.size(); ++i)
-		mGradientStyles[i]->write(pHandler);
-	for (size_t i=0; i < mHatchStyles.size(); ++i)
-		mHatchStyles[i]->write(pHandler);
-	for (size_t i=0; i < mOpacityStyles.size(); ++i)
-		mOpacityStyles[i]->write(pHandler);
+	for (const auto &bitmapStyle : mBitmapStyles)
+		bitmapStyle->write(pHandler);
+	for (const auto &gradientStyle : mGradientStyles)
+		gradientStyle->write(pHandler);
+	for (const auto &hatchStyle : mHatchStyles)
+		hatchStyle->write(pHandler);
+	for (const auto &opacityStyle : mOpacityStyles)
+		opacityStyle->write(pHandler);
 }
 
 librevenge::RVNGString FillManager::getStyleNameForBitmap(librevenge::RVNGString const &bitmap)
@@ -119,10 +119,10 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 		"draw:border", "draw:cx", "draw:cy", "draw:end-color", "draw:end-intensity",
 		"draw:start-color", "draw:start-intensity", "draw:style"
 	};
-	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
+	for (auto &i : wh)
 	{
-		if (style[wh[i]])
-			pList.insert(wh[i], style[wh[i]]->getStr());
+		if (style[i])
+			pList.insert(i, style[i]->getStr());
 	}
 	if (pList.empty())
 	{
@@ -166,10 +166,10 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 		{
 			"draw:start-color", "draw:end-color", "draw:border", "draw:start-intensity", "draw:end-intensity"
 		};
-		for (unsigned i=0; i<ODFGEN_N_ELEMENTS(attrib); ++i)
+		for (auto &i : attrib)
 		{
-			if (pList[attrib[i]])
-				openElement->addAttribute(attrib[i], pList[attrib[i]]->getStr());
+			if (pList[i])
+				openElement->addAttribute(i, pList[i]->getStr());
 		}
 
 		// Work around a mess in LibreOffice where both opacities of 100% are interpreted as complete transparency
@@ -205,10 +205,10 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 	bool hasParent=style["librevenge:parent-display-name"]!=nullptr;
 	// basic data
 	char const *wh[] = { "draw:color", "draw:distance", "draw:rotation", "draw:style" };
-	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
+	for (auto &i : wh)
 	{
-		if (style[wh[i]])
-			pList.insert(wh[i], style[wh[i]]->getStr());
+		if (style[i])
+			pList.insert(i, style[i]->getStr());
 	}
 	if (pList.empty() && (isStyle || hasParent))
 	{
@@ -306,10 +306,10 @@ librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPrope
 	}
 	// basic data
 	char const *(wh[]) = { "draw:border", "draw:cx", "draw:cy"	};
-	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
+	for (auto &i : wh)
 	{
-		if (style[wh[i]])
-			pList.insert(wh[i], style[wh[i]]->getStr());
+		if (style[i])
+			pList.insert(i, style[i]->getStr());
 	}
 	if (pList.empty())
 	{

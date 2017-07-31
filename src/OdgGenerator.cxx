@@ -714,10 +714,10 @@ void OdgGenerator::startTextObject(const librevenge::RVNGPropertyList &propList)
 		"fo:min-width", "fo:min-height", "fo:max-width", "fo:max-height", "fo:padding-top", "fo:padding-bottom",
 		"fo:padding-left", "fo:padding-right", "draw:textarea-vertical-align", "draw:fill", "draw:fill-color"
 	};
-	for (unsigned i=0; i<ODFGEN_N_ELEMENTS(attrib); ++i)
+	for (auto &i : attrib)
 	{
-		if (propList[attrib[i]])
-			pDrawFrameOpenElement->addAttribute(attrib[i], propList[attrib[i]]->getStr());
+		if (propList[i])
+			pDrawFrameOpenElement->addAttribute(i, propList[i]->getStr());
 	}
 
 	double x = 0.0;

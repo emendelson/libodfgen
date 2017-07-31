@@ -361,10 +361,10 @@ bool TableManager::closeTable()
 
 void TableManager::write(OdfDocumentHandler *pHandler, Style::Zone zone, bool compatibleOdp) const
 {
-	for (size_t i=0; i < mTableStyles.size(); ++i)
+	for (const auto &tableStyle : mTableStyles)
 	{
-		if (mTableStyles[i] && mTableStyles[i]->getZone()==zone)
-			mTableStyles[i]->write(pHandler, compatibleOdp);
+		if (tableStyle && tableStyle->getZone()==zone)
+			tableStyle->write(pHandler, compatibleOdp);
 	}
 }
 

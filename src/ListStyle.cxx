@@ -170,11 +170,10 @@ ListStyle::ListStyle(const char *psName, const int iListID, Style::Zone zone) :
 
 ListStyle::~ListStyle()
 {
-	for (std::map<int, ListLevelStyle *>::iterator iter = mxListLevels.begin();
-	        iter != mxListLevels.end(); ++iter)
+	for (auto &xListlevel : mxListLevels)
 	{
-		if (iter->second)
-			delete iter->second;
+		if (xListlevel.second)
+			delete xListlevel.second;
 	}
 
 }
@@ -218,11 +217,10 @@ void ListStyle::write(OdfDocumentHandler *pHandler) const
 		listStyleOpenElement.addAttribute("style:display-name", mDisplayName);
 	listStyleOpenElement.write(pHandler);
 
-	for (std::map<int, ListLevelStyle *>::const_iterator iter = mxListLevels.begin();
-	        iter != mxListLevels.end(); ++iter)
+	for (const auto &xListLevel : mxListLevels)
 	{
-		if (iter->second)
-			iter->second->write(pHandler, iter->first);
+		if (xListLevel.second)
+			xListLevel.second->write(pHandler, xListLevel.first);
 	}
 
 	pHandler->endElement("text:list-style");
@@ -281,17 +279,16 @@ ListManager::ListManager() : miNumListStyles(0), mListStylesVector(), mIdListSty
 
 ListManager::~ListManager()
 {
-	for (std::vector<ListStyle *>::iterator iterListStyles = mListStylesVector.begin();
-	        iterListStyles != mListStylesVector.end(); ++iterListStyles)
-		delete *iterListStyles;
+	for (auto &listStyle : mListStylesVector)
+		delete listStyle;
 }
 
 void ListManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
-	for (std::vector<ListStyle *>::const_iterator iterListStyles = mListStylesVector.begin(); iterListStyles != mListStylesVector.end(); ++iterListStyles)
+	for (auto listStyle : mListStylesVector)
 	{
-		if ((*iterListStyles)->getZone() == zone)
-			(*iterListStyles)->write(pHandler);
+		if (listStyle->getZone() == zone)
+			listStyle->write(pHandler);
 	}
 
 }
@@ -363,10 +360,10 @@ void ListManager::defineLevel(const librevenge::RVNGPropertyList &propList, bool
 	// Iterate through ALL list styles with the same WordPerfect list id and define a level if it is not already defined
 	// This solves certain problems with lists that start and finish without reaching certain levels and then begin again
 	// and reach those levels. See gradguide0405_PC.wpd in the regression suite
-	for (std::vector<ListStyle *>::iterator iterListStyles = mListStylesVector.begin(); iterListStyles != mListStylesVector.end(); ++iterListStyles)
+	for (auto &iterListStyles : mListStylesVector)
 	{
-		if ((* iterListStyles) && (* iterListStyles)->getListID() == id)
-			(* iterListStyles)->updateListLevel((propList["librevenge:level"]->getInt() - 1), propList, ordered);
+		if (iterListStyles && iterListStyles->getListID() == id)
+			iterListStyles->updateListLevel((propList["librevenge:level"]->getInt() - 1), propList, ordered);
 	}
 }
 

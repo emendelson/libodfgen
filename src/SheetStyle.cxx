@@ -400,9 +400,9 @@ librevenge::RVNGString SheetManager::convertFormula(const librevenge::RVNGProper
 			}
 			std::string oper(list["librevenge:operator"]->getStr().cstr());
 			bool find=false;
-			for (unsigned w=0; w<ODFGEN_N_ELEMENTS(operators); ++w)
+			for (auto &w : operators)
 			{
-				if (oper!=operators[w]) continue;
+				if (oper!=w) continue;
 				s << oper;
 				find=true;
 				break;
@@ -532,10 +532,10 @@ librevenge::RVNGString SheetManager::convertCellsRange(const librevenge::RVNGPro
 
 void SheetManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
-	for (size_t i=0; i < mSheetStyles.size(); ++i)
+	for (const auto &sheetStyle : mSheetStyles)
 	{
-		if (mSheetStyles[i] && mSheetStyles[i]->getZone()==zone)
-			mSheetStyles[i]->writeStyle(pHandler, *this);
+		if (sheetStyle && sheetStyle->getZone()==zone)
+			sheetStyle->writeStyle(pHandler, *this);
 	}
 }
 

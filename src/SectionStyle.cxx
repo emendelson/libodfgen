@@ -125,10 +125,10 @@ librevenge::RVNGString SectionStyleManager::add(const librevenge::RVNGPropertyLi
 
 void SectionStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
-	for (size_t i=0; i<mStyleList.size(); ++i)
+	for (const auto &i : mStyleList)
 	{
-		if (mStyleList[i] && mStyleList[i]->getZone()==zone)
-			mStyleList[i]->write(pHandler);
+		if (i && i->getZone()==zone)
+			i->write(pHandler);
 	}
 }
 

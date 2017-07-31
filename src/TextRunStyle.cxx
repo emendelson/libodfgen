@@ -181,11 +181,10 @@ void ParagraphStyleManager::clean()
 
 void ParagraphStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
-	for (std::map<librevenge::RVNGString, shared_ptr<ParagraphStyle> >::const_iterator iter = mStyleHash.begin();
-	        iter != mStyleHash.end(); ++iter)
+	for (const auto &iter : mStyleHash)
 	{
-		if (iter->second && iter->second->getZone()==zone)
-			(iter->second)->write(pHandler);
+		if (iter.second && iter.second->getZone()==zone)
+			(iter.second)->write(pHandler);
 	}
 }
 
@@ -355,11 +354,10 @@ void SpanStyleManager::addSpanProperties(librevenge::RVNGPropertyList const &sty
 
 void SpanStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
-	for (std::map<librevenge::RVNGString, shared_ptr<SpanStyle> >::const_iterator iter = mStyleHash.begin();
-	        iter != mStyleHash.end(); ++iter)
+	for (const auto &iter : mStyleHash)
 	{
-		if (iter->second && iter->second->getZone()==zone)
-			(iter->second)->write(pHandler);
+		if (iter.second && iter.second->getZone()==zone)
+			(iter.second)->write(pHandler);
 	}
 }
 
