@@ -25,7 +25,7 @@
 
 #include <libodfgen/libodfgen.hxx>
 
-class StringDocumentHandler : public OdfDocumentHandler
+class StringDocumentHandler final : public OdfDocumentHandler
 {
 public:
 	StringDocumentHandler();
@@ -35,11 +35,11 @@ public:
 		return m_data.cstr();
 	}
 
-	virtual void startDocument() {}
-	virtual void endDocument();
-	virtual void startElement(const char *psName, const librevenge::RVNGPropertyList &xPropList);
-	virtual void endElement(const char *psName);
-	virtual void characters(const librevenge::RVNGString &sCharacters);
+	void startDocument() final {}
+	void endDocument() final;
+	void startElement(const char *psName, const librevenge::RVNGPropertyList &xPropList) final;
+	void endElement(const char *psName) final;
+	void characters(const librevenge::RVNGString &sCharacters) final;
 private:
 private:
 	librevenge::RVNGString m_data;
