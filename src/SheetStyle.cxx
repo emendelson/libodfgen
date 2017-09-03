@@ -479,8 +479,14 @@ librevenge::RVNGString SheetManager::convertCellRange(const librevenge::RVNGProp
 		ODFGEN_DEBUG_MSG(("SheetManager::convertCellRange: find bad coordinate!!!\n"));
 		return res;
 	}
-	if (list["librevenge:sheet-name"]) s << list["librevenge:sheet-name"]->getStr().cstr();
-	else if (list["librevenge:sheet"]) s << list["librevenge:sheet"]->getStr().cstr();
+	if (list["librevenge:sheet-name"] || list["librevenge:sheet"])
+	{
+		if (list["librevenge:file-name"]) s << "'" << list["librevenge:file-name"]->getStr().cstr() << "'#";
+		if (list["librevenge:sheet-name"])
+			s << list["librevenge:sheet-name"]->getStr().cstr();
+		else
+			s << list["librevenge:sheet"]->getStr().cstr();
+	}
 	s << ".";
 	if (list["librevenge:column-absolute"] && list["librevenge:column-absolute"]->getInt()) s << "$";
 	if (column>=26) s << char('A'+(column/26-1));
@@ -506,13 +512,25 @@ librevenge::RVNGString SheetManager::convertCellsRange(const librevenge::RVNGPro
 		ODFGEN_DEBUG_MSG(("SheetManager::convertCellsRange: find bad coordinate1!!!\n"));
 		return res;
 	}
-	if (list["librevenge:sheet-name"]) s << list["librevenge:sheet-name"]->getStr().cstr();
+	if (list["librevenge:sheet-name"] || list["librevenge:start-sheet-name"])
+	{
+		if (list["librevenge:file-name"]) s << "'" << list["librevenge:file-name"]->getStr().cstr() << "'#";
+		if (list["librevenge:sheet-name"])
+			s << list["librevenge:sheet-name"]->getStr().cstr();
+		else
+			s << list["librevenge:start-sheet-name"]->getStr().cstr();
+	}
 	s << ".";
 	if (list["librevenge:start-column-absolute"] && list["librevenge:start-column-absolute"]->getInt()) s << "$";
 	if (column>=26) s << char('A'+(column/26-1));
 	s << char('A'+(column%26));
 	if (list["librevenge:start-row-absolute"] && list["librevenge:start-row-absolute"]->getInt()) s << "$";
 	s << row+1 << ":";
+	if (list["librevenge:end-sheet-name"])
+	{
+		if (list["librevenge:file-name"]) s << "'" << list["librevenge:file-name"]->getStr().cstr() << "'#";
+		s << list["librevenge:end-sheet-name"]->getStr().cstr() << ".";
+	}
 	if (list["librevenge:end-column"])
 		column=list["librevenge:end-column"]->getInt();
 	if (list["librevenge:end-row"])

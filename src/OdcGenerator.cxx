@@ -186,6 +186,8 @@ void OdcGeneratorPrivate::writeChartStyle(librevenge::RVNGPropertyList const &st
 	librevenge::RVNGPropertyList graphProp;
 	mGraphicManager.addGraphicProperties(style,graphProp);
 	mGraphicManager.addFrameProperties(style,graphProp);
+	if (!style["fo:min-width"] && graphProp["fo:min-width"])
+		graphProp.remove("fo:min-width");
 	if (!graphProp.empty())
 	{
 		pHandler->startElement("style:graphic-properties", graphProp);
@@ -378,6 +380,7 @@ bool OdcGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 	docContentPropList.insert("xmlns:script", "urn:oasis:names:tc:opendocument:xmlns:script:1.0");
 	docContentPropList.insert("xmlns:style", "urn:oasis:names:tc:opendocument:xmlns:style:1.0");
 	docContentPropList.insert("office:version", librevenge::RVNGPropertyFactory::newStringProp("1.2"));
+	docContentPropList.insert("xmlns:loext", "urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0");
 	if (streamType == ODF_FLAT_XML)
 		docContentPropList.insert("office:mimetype", "application/vnd.oasis.opendocument.chart");
 	pHandler->startElement(documentType.c_str(), docContentPropList);
@@ -615,11 +618,11 @@ void OdcGenerator::openChartTextObject(const librevenge::RVNGPropertyList &propL
 	mpImpl->mChartDocumentStates.push(state);
 
 	auto openElement = std::make_shared<TagOpenElement>(what.c_str());
-	for (int i=0; i<2; ++i)
+	for (int i=0; i<4; ++i)
 	{
-		static char const *(wh[2]) =
+		static char const *(wh[4]) =
 		{
-			"svg:x", "svg:y"
+			"svg:x", "svg:y", "svg:width", "svg:height"
 		};
 		if (propList[wh[i]])
 			openElement->addAttribute(wh[i], propList[wh[i]]->getStr());
@@ -761,6 +764,13 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 	}
 	if (propList["librevenge:chart-id"])
 		openElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(propList["librevenge:chart-id"]->getInt()));
+	const librevenge::RVNGPropertyListVector *label=propList.child("chart:label-cell-address");
+	if (label)
+	{
+		librevenge::RVNGString range=mpImpl->getAddressString(propList.child("chart:label-cell-address"));
+		if (!range.empty())
+			openElement->addAttribute("chart:label-cell-address", range);
+	}
 	mpImpl->getCurrentStorage()->push_back(openElement);
 	const librevenge::RVNGPropertyListVector *childs=propList.child("librevenge:childs");
 	for (unsigned long c=0; c<(childs ? childs->count() : 0); ++c)
@@ -827,13 +837,16 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 	}
 	state.mbChartSerieOpened=true;
 	auto openElement = std::make_shared<TagOpenElement>("chart:series");
-	for (int i=0; i<3; ++i)
+	for (int i=0; i<4; ++i)
 	{
-		static char const *(wh[3]) =
+		static char const *(wh[4]) =
 		{
-			"chart:attached-axis", "chart:class", "xml:id"
+			"chart:attached-axis", "chart:class", "xml:id", "chart:label-string"
 		};
-		if (propList[wh[i]])
+		if (!propList[wh[i]]) continue;
+		if (i==3)
+			openElement->addAttribute("loext:label-string", propList[wh[i]]->getStr());
+		else
 			openElement->addAttribute(wh[i], propList[wh[i]]->getStr());
 	}
 	if (propList["librevenge:chart-id"])
