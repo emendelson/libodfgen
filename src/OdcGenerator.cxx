@@ -764,12 +764,19 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 	}
 	if (propList["librevenge:chart-id"])
 		openElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(propList["librevenge:chart-id"]->getInt()));
-	const librevenge::RVNGPropertyListVector *label=propList.child("chart:label-cell-address");
-	if (label)
+	for (int i=0; i<2; ++i)
 	{
-		librevenge::RVNGString range=mpImpl->getAddressString(propList.child("chart:label-cell-address"));
-		if (!range.empty())
-			openElement->addAttribute("chart:label-cell-address", range);
+		static char const *(wh[2]) =
+		{
+			"chart:label-cell-address", "chart:values-cell-range-address"
+		};
+		if (propList.child(wh[i]))
+		{
+			librevenge::RVNGString range=
+			    mpImpl->getAddressString(propList.child(wh[i]));
+			if (!range.empty())
+				openElement->addAttribute(wh[i], range);
+		}
 	}
 	mpImpl->getCurrentStorage()->push_back(openElement);
 	const librevenge::RVNGPropertyListVector *childs=propList.child("librevenge:childs");
