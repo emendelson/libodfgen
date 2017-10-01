@@ -823,7 +823,21 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 			}
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
+			if (child.child("table:cell-range"))
+			{
+				// checkme: does not seem to work
+				librevenge::RVNGString range=
+				    mpImpl->getAddressString(child.child("table:cell-range"));
+				if (!range.empty())
+					childElement->addAttribute("table:cell-range", range);
+			}
 			mpImpl->getCurrentStorage()->push_back(childElement);
+			if (child["librevenge:text"])
+			{
+				mpImpl->getCurrentStorage()->push_back(std::make_shared<TagOpenElement>("text:p"));
+				mpImpl->getCurrentStorage()->push_back(std::make_shared<TextElement>(child["librevenge:text"]->getStr()));
+				mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("text:p"));
+			}
 			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:title"));
 		}
 		else
