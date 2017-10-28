@@ -1,5 +1,3 @@
 EXTRA_DIST = \
 	compile-resource \
-	lt-compile-resource \
-	libodfgen.dsw \
-	libodfgen.dsp
+	lt-compile-resource
