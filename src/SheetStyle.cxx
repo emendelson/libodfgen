@@ -77,7 +77,7 @@ void SheetCellStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const
 	bool paddingSet=false;
 	for (i.rewind(); i.next();)
 	{
-		int len = (int) strlen(i.key());
+		auto len = (int) strlen(i.key());
 		if (i.child())
 			continue;
 		if (len > 3 && strncmp(i.key(), "fo:", 3)==0)

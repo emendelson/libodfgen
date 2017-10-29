@@ -259,8 +259,7 @@ librevenge::RVNGString ParagraphStyleManager::findOrAdd(const librevenge::RVNGPr
 
 shared_ptr<ParagraphStyle> const ParagraphStyleManager::get(const librevenge::RVNGString &name) const
 {
-	std::map<librevenge::RVNGString, shared_ptr<ParagraphStyle> >::const_iterator iter
-	    = mStyleHash.find(name);
+	auto iter = mStyleHash.find(name);
 	if (iter == mStyleHash.end()) return shared_ptr<ParagraphStyle>();
 	return iter->second;
 }
@@ -405,8 +404,7 @@ librevenge::RVNGString SpanStyleManager::getFinalDisplayName(const librevenge::R
 
 shared_ptr<SpanStyle> const SpanStyleManager::get(const librevenge::RVNGString &name) const
 {
-	std::map<librevenge::RVNGString, shared_ptr<SpanStyle> >::const_iterator iter
-	    = mStyleHash.find(name);
+	auto iter = mStyleHash.find(name);
 	if (iter == mStyleHash.end()) return shared_ptr<SpanStyle>();
 	return iter->second;
 }

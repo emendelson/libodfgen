@@ -1198,7 +1198,7 @@ void OdsGenerator::openHeader(const librevenge::RVNGPropertyList &propList)
 	if (!mpImpl->inHeaderFooter())
 		return;
 
-	libodfgen::DocumentElementVector *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
+	auto *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
 	if (propList["librevenge:occurrence"] && (propList["librevenge:occurrence"]->getStr() == "even" ||
 	                                          propList["librevenge:occurrence"]->getStr() == "left"))
 		mpImpl->mpCurrentPageSpan->setHeaderLeftContent(pHeaderFooterContentElements);
@@ -1242,7 +1242,7 @@ void OdsGenerator::openFooter(const librevenge::RVNGPropertyList &propList)
 	if (!mpImpl->inHeaderFooter())
 		return;
 
-	libodfgen::DocumentElementVector *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
+	auto *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
 	if (propList["librevenge:occurrence"] && (propList["librevenge:occurrence"]->getStr() == "even" ||
 	                                          propList["librevenge:occurrence"]->getStr() == "left"))
 		mpImpl->mpCurrentPageSpan->setFooterLeftContent(pHeaderFooterContentElements);

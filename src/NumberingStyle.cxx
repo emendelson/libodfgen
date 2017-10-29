@@ -264,8 +264,7 @@ void NumberingManager::clean()
 
 librevenge::RVNGString NumberingManager::getStyleName(librevenge::RVNGString const &localName) const
 {
-	std::map<librevenge::RVNGString, shared_ptr<NumberingStyle> >::const_iterator it=
-	    mNumberingHash.find(localName);
+	auto it = mNumberingHash.find(localName);
 	if (it==mNumberingHash.end() || !it->second)
 	{
 		ODFGEN_DEBUG_MSG(("NumberingManager::getStyleName: can not find %s\n", localName.cstr()));

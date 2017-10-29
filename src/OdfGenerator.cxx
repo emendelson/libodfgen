@@ -249,7 +249,7 @@ OdfGenerator::ObjectContainer::~ObjectContainer()
 OdfGenerator::ObjectContainer &OdfGenerator::createObjectFile
 (librevenge::RVNGString const &objectName, librevenge::RVNGString const &objectType, bool isDir)
 {
-	ObjectContainer *res=new ObjectContainer(objectType, isDir);
+	auto *res=new ObjectContainer(objectType, isDir);
 	mNameObjectMap[objectName]=res;
 	return *res;
 }
@@ -269,7 +269,7 @@ librevenge::RVNGStringVector OdfGenerator::getObjectNames() const
 bool OdfGenerator::getObjectContent(librevenge::RVNGString const &objectName, OdfDocumentHandler *pHandler)
 {
 	if (!pHandler) return false;
-	std::map<librevenge::RVNGString, ObjectContainer *>::iterator it=mNameObjectMap.find(objectName);
+	auto it=mNameObjectMap.find(objectName);
 	if (it==mNameObjectMap.end() || !it->second)
 	{
 		ODFGEN_DEBUG_MSG(("OdfGenerator::getObjectContent: can not find object %s\n", objectName.cstr()));
@@ -350,7 +350,7 @@ void  OdfGenerator::writeTargetDocuments()
 ////////////////////////////////////////////////////////////
 OdfEmbeddedObject OdfGenerator::findEmbeddedObjectHandler(const librevenge::RVNGString &mimeType) const
 {
-	std::map<librevenge::RVNGString, OdfEmbeddedObject>::const_iterator i = mObjectHandlers.find(mimeType);
+	auto i = mObjectHandlers.find(mimeType);
 	if (i != mObjectHandlers.end())
 		return i->second;
 
@@ -359,7 +359,7 @@ OdfEmbeddedObject OdfGenerator::findEmbeddedObjectHandler(const librevenge::RVNG
 
 OdfEmbeddedImage OdfGenerator::findEmbeddedImageHandler(const librevenge::RVNGString &mimeType) const
 {
-	std::map<librevenge::RVNGString, OdfEmbeddedImage>::const_iterator i = mImageHandlers.find(mimeType);
+	auto i = mImageHandlers.find(mimeType);
 	if (i != mImageHandlers.end())
 		return i->second;
 

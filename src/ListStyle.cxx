@@ -180,7 +180,7 @@ ListStyle::~ListStyle()
 
 bool ListStyle::isListLevelDefined(int iLevel) const
 {
-	std::map<int, ListLevelStyle *>::const_iterator iter = mxListLevels.find(iLevel);
+	auto iter = mxListLevels.find(iLevel);
 	if (iter == mxListLevels.end() || !iter->second)
 		return false;
 

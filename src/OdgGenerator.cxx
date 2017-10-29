@@ -459,7 +459,7 @@ void OdgGenerator::startMasterPage(const librevenge::RVNGPropertyList &propList)
 		PageSpan *pageSpan=mpImpl->getPageSpanManager().add(pList, true);
 		if (pageSpan)
 		{
-			libodfgen::DocumentElementVector *pMasterElements = new libodfgen::DocumentElementVector;
+			auto *pMasterElements = new libodfgen::DocumentElementVector;
 			pageSpan->setMasterContent(pMasterElements);
 			mpImpl->pushStorage(pMasterElements);
 		}
