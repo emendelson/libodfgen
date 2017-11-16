@@ -158,8 +158,8 @@ void PageLayoutStyle::write(OdfDocumentHandler *pHandler) const
 //
 // page span
 //
-PageSpan::PageSpan(librevenge::RVNGString const &masterName, librevenge::RVNGString const &masterDisplay, bool isMasterPage) :
-	mbIsMasterPage(isMasterPage),
+PageSpan::PageSpan(librevenge::RVNGString const &masterName, librevenge::RVNGString const &masterDisplay, bool isMasterPage_) :
+	mbIsMasterPage(isMasterPage_),
 	msMasterName(masterName),
 	msMasterDisplay(masterDisplay),
 	msLayoutName(""),
