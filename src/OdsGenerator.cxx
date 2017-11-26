@@ -1711,6 +1711,22 @@ void OdsGenerator::insertBinaryObject(const librevenge::RVNGPropertyList &propLi
 	mpImpl->insertBinaryObject(propList);
 }
 
+void OdsGenerator::insertEquation(const librevenge::RVNGPropertyList &propList)
+{
+	// Embedded objects without a frame simply don't make sense for us
+	if (!mpImpl->getState().mbFirstInFrame)
+	{
+		ODFGEN_DEBUG_MSG(("OdsGenerator::insertEquation: called outsided a frame\n"));
+		return;
+	}
+	mpImpl->getState().mbFirstInFrame=false;
+	if (mpImpl->mAuxiliarOdtState)
+		return mpImpl->mAuxiliarOdtState->get().insertEquation(propList);
+	if (!mpImpl->checkOutsideOdc("insertEquation"))
+		return;
+	mpImpl->insertEquation(propList);
+}
+
 void OdsGenerator::openTextBox(const librevenge::RVNGPropertyList &propList)
 {
 	mpImpl->open(OdsGeneratorPrivate::C_TextBox);

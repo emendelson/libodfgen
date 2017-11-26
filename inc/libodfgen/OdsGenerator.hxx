@@ -151,7 +151,7 @@ public:
 	void drawPath(const librevenge::RVNGPropertyList &propList) override;
 	void drawConnector(const librevenge::RVNGPropertyList &propList) override;
 
-	void insertEquation(const librevenge::RVNGPropertyList &) override {}
+	void insertEquation(const librevenge::RVNGPropertyList &) override;
 
 	/** Registers a handler for embedded images.
 	  *

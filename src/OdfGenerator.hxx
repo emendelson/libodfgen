@@ -297,6 +297,13 @@ public:
 	void insertBinaryObject(const librevenge::RVNGPropertyList &propList);
 
 	//
+	// equation
+	//
+
+	//! inserts a binary object
+	void insertEquation(const librevenge::RVNGPropertyList &propList);
+
+	//
 	// graphic
 	//
 
@@ -347,6 +354,9 @@ protected:
 	librevenge::RVNGString getCurrentGraphicStyleName(const librevenge::RVNGPropertyList &shapeList);
 	//! returns the current graphic style name ( MODIFYME)
 	librevenge::RVNGString getCurrentGraphicStyleName();
+
+	//! unescape all xml caracters (replacing them by their unicode representation)
+	void unescapeXML(const char *s, const unsigned long sz, librevenge::RVNGString &res);
 
 	// the current set of elements that we're writing to
 	libodfgen::DocumentElementVector *mpCurrentStorage;
@@ -436,6 +446,8 @@ protected:
 	/// stack of bool to know if we close a single paragraph or a heading paragraph
 	std::stack<bool> mParagraphHeadingStack;
 
+	//! map xml caracter to unicode
+	std::map<std::string, unsigned long> mXmlToUnicodeMap;
 private:
 	// copy constructor (unimplemented)
 	OdfGenerator(OdfGenerator const &);

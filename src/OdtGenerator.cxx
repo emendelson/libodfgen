@@ -1002,8 +1002,11 @@ void OdtGenerator::defineSectionStyle(librevenge::RVNGPropertyList const &)
 {
 }
 
-void OdtGenerator::insertEquation(librevenge::RVNGPropertyList const &)
+void OdtGenerator::insertEquation(librevenge::RVNGPropertyList const &propList)
 {
+	if (!mpImpl->getState().mbInFrame) // Embedded objects without a frame simply don't make sense for us
+		return;
+	mpImpl->insertEquation(propList);
 }
 
 void OdtGenerator::endDocument()
