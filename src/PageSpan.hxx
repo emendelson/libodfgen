@@ -69,7 +69,7 @@ private:
 class PageSpan
 {
 protected:
-	enum ContentType
+	enum ContentType : int
 	{
 		C_Header=0, C_HeaderFirst, C_HeaderLeft, C_HeaderLast,
 		C_Footer, C_FooterFirst, C_FooterLeft, C_FooterLast,
