@@ -914,12 +914,12 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 		else if (type=="domain")
 		{
 			auto childElement = std::make_shared<TagOpenElement>("chart:domain");
-			if (child.child("table:cell-range"))
+			if (child.child("table:cell-range-address"))
 			{
 				librevenge::RVNGString range=
-				    mpImpl->getAddressString(child.child("table:cell-range"));
+				    mpImpl->getAddressString(child.child("table:cell-range-address"));
 				if (!range.empty())
-					childElement->addAttribute("table:cell-range", range);
+					childElement->addAttribute("table:cell-range-address", range);
 			}
 			mpImpl->getCurrentStorage()->push_back(childElement);
 			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:domain"));
