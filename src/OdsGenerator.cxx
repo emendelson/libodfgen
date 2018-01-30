@@ -1774,7 +1774,7 @@ void OdsGenerator::closeTextBox()
 	mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("draw:text-box"));
 }
 
-void OdsGenerator::startDocument(const librevenge::RVNGPropertyList &)
+void OdsGenerator::startDocument(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->getState().mbStarted)
 	{
@@ -1783,6 +1783,7 @@ void OdsGenerator::startDocument(const librevenge::RVNGPropertyList &)
 	}
 	mpImpl->getState().mbStarted=true;
 	mpImpl->open(OdsGeneratorPrivate::C_Document);
+	mpImpl->appendBodySettings(propList);
 }
 
 void OdsGenerator::endDocument()

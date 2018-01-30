@@ -383,8 +383,9 @@ bool OdgGenerator::getObjectContent(librevenge::RVNGString const &objectName, Od
 	return mpImpl->getObjectContent(objectName, pHandler);
 }
 
-void OdgGenerator::startDocument(const librevenge::RVNGPropertyList &)
+void OdgGenerator::startDocument(const librevenge::RVNGPropertyList &propList)
 {
+	mpImpl->appendBodySettings(propList);
 }
 
 void OdgGenerator::endDocument()

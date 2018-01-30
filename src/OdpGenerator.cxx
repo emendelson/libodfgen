@@ -553,8 +553,9 @@ bool OdpGenerator::getObjectContent(librevenge::RVNGString const &objectName, Od
 	return mpImpl->getObjectContent(objectName, pHandler);
 }
 
-void OdpGenerator::startDocument(const librevenge::RVNGPropertyList &/*propList*/)
+void OdpGenerator::startDocument(const librevenge::RVNGPropertyList &propList)
 {
+	mpImpl->appendBodySettings(propList);
 }
 
 void OdpGenerator::endDocument()

@@ -308,6 +308,49 @@ void OdfGenerator::initStateWith(OdfGenerator const &orig)
 	mIdChartMap=orig.mIdChartMap;
 }
 
+void OdfGenerator::appendBodySettings(const librevenge::RVNGPropertyList &propList)
+{
+	const librevenge::RVNGPropertyListVector *childs=propList.child("librevenge:childs");
+	if (!childs) return;
+	for (unsigned long c=0; c< childs->count(); ++c)
+	{
+		auto const &child=(*childs)[c];
+		if (!child["librevenge:type"])
+		{
+			ODFGEN_DEBUG_MSG(("OdfGenerator::appendBodySettings: find a child without any type\n"));
+			continue;
+		}
+		if (child["librevenge:type"]->getStr()=="table:calculation-settings")
+		{
+			auto calcSetting=std::make_shared<TagOpenElement>("table:calculation-settings");
+			char const *(wh[])= { "table:automatic-find-labels", "table:case-sensitive", "table:null-year",
+			                      "table:precision-as-shown", "table:search-criteria-must-apply-to-whole-cell",
+			                      "table:use-regular-expressions", "table:use-wildcards"
+			                    };
+			// checkme: had also childs elements: table:iteration, table:null-date
+			for (size_t i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
+			{
+				if (child[wh[i]])
+					calcSetting->addAttribute(wh[i], child[wh[i]]->getStr());
+			}
+			mBodyStorage.push_back(calcSetting);
+			mBodyStorage.push_back(std::make_shared<TagCloseElement>("table:calculation-settings"));
+		}
+		else
+		{
+			if (!child["librevenge:type"]->getStr().empty())
+			{
+				ODFGEN_DEBUG_MSG(("OdfGenerator::appendBodySettings: find a child with unknown \"%s\" type\n",
+				                  child["librevenge:type"]->getStr().cstr()));
+			}
+			else
+			{
+				ODFGEN_DEBUG_MSG(("OdfGenerator::appendBodySettings: find a child with an empty type\n"));
+			}
+		}
+	}
+
+}
 ////////////////////////////////////////////////////////////
 // object
 ////////////////////////////////////////////////////////////

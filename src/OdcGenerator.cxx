@@ -1030,8 +1030,9 @@ void OdcGenerator::endDocument()
 	mpImpl->writeTargetDocuments();
 }
 
-void OdcGenerator::startDocument(const librevenge::RVNGPropertyList &)
+void OdcGenerator::startDocument(const librevenge::RVNGPropertyList &propList)
 {
+	mpImpl->appendBodySettings(propList);
 }
 
 void OdcGenerator::initStateWith(OdfGenerator const &orig)

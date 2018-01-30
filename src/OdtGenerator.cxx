@@ -1015,8 +1015,9 @@ void OdtGenerator::endDocument()
 	mpImpl->writeTargetDocuments();
 }
 
-void OdtGenerator::startDocument(const librevenge::RVNGPropertyList &)
+void OdtGenerator::startDocument(const librevenge::RVNGPropertyList &propList)
 {
+	mpImpl->appendBodySettings(propList);
 }
 
 void OdtGenerator::closePageSpan()

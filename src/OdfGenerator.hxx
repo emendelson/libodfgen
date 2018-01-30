@@ -69,6 +69,20 @@ public:
 	void setDocumentMetaData(const librevenge::RVNGPropertyList &propList);
 	//! write the document meta data
 	void writeDocumentMetaData(OdfDocumentHandler *pHandler);
+
+	/** looks if there is a vector "librevenge:childs" in propList ;
+		if yes, goes through each child to see if some elements must
+		be added at the beginning of the main body child: office:text,
+		office:spreadsheet, ...
+
+		\note:
+		Must be called with the argument of startDocument
+		\par
+		Actually, only child with "librevenge:type"
+		"table:calculation-settings" is retrieved
+	*/
+	void appendBodySettings(const librevenge::RVNGPropertyList &propList);
+
 	//
 	// document handler
 	//
