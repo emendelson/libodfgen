@@ -200,15 +200,26 @@ void OdcGeneratorPrivate::writeChartStyle(librevenge::RVNGPropertyList const &st
 librevenge::RVNGString OdcGeneratorPrivate::getAddressString(librevenge::RVNGPropertyListVector const *vector) const
 {
 	librevenge::RVNGString res("");
-	if (!vector || vector->count()!=1)
+	if (!vector)
 	{
 		ODFGEN_DEBUG_MSG(("OdcGenerator::getAddressString: can not find the address propertyList..\n"));
 		return res;
 	}
-	if ((*vector)[0]["librevenge:row"])
-		res=SheetManager::convertCellRange((*vector)[0]);
-	else
-		res=SheetManager::convertCellsRange((*vector)[0]);
+	librevenge::RVNGPropertyListVector::Iter i(*vector);
+	for (i.rewind(); i.next();)
+	{
+		librevenge::RVNGString cells;
+		if (i()["librevenge:row"])
+			cells=SheetManager::convertCellRange(i());
+		else
+			cells=SheetManager::convertCellsRange(i());
+		if (!cells.empty())
+		{
+			if (!res.empty())
+				res.append(' ');
+			res.append(cells);
+		}
+	}
 	return res;
 }
 
@@ -716,7 +727,6 @@ void OdcGenerator::openChartPlotArea(const librevenge::RVNGPropertyList &propLis
 			if (child["librevenge:chart-id"])
 				childElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(child["librevenge:chart-id"]->getInt()));
 			mpImpl->getCurrentStorage()->push_back(childElement);
-			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:categories"));
 		}
 		else if (type=="floor" || type=="wall")
 		{
@@ -764,20 +774,6 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 	}
 	if (propList["librevenge:chart-id"])
 		openElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(propList["librevenge:chart-id"]->getInt()));
-	for (int i=0; i<2; ++i)
-	{
-		static char const *(wh[2]) =
-		{
-			"chart:label-cell-address", "chart:values-cell-range-address"
-		};
-		if (propList.child(wh[i]))
-		{
-			librevenge::RVNGString range=
-			    mpImpl->getAddressString(propList.child(wh[i]));
-			if (!range.empty())
-				openElement->addAttribute(wh[i], range);
-		}
-	}
 	mpImpl->getCurrentStorage()->push_back(openElement);
 	const librevenge::RVNGPropertyListVector *childs=propList.child("librevenge:childs");
 	for (unsigned long c=0; c<(childs ? childs->count() : 0); ++c)
@@ -789,12 +785,12 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 		if (type=="categories")
 		{
 			auto childElement = std::make_shared<TagOpenElement>("chart:categories");
-			if (child.child("table:cell-range"))
+			if (child.child("table:cell-range-address"))
 			{
 				librevenge::RVNGString range=
-				    mpImpl->getAddressString(child.child("table:cell-range"));
+				    mpImpl->getAddressString(child.child("table:cell-range-address"));
 				if (!range.empty())
-					childElement->addAttribute("table:cell-range", range);
+					childElement->addAttribute("table:cell-range-address", range);
 			}
 			mpImpl->getCurrentStorage()->push_back(childElement);
 			mpImpl->getCurrentStorage()->push_back(std::make_shared<TagCloseElement>("chart:categories"));
