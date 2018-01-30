@@ -1356,7 +1356,8 @@ void OdfGenerator::insertEquation(const librevenge::RVNGPropertyList &propList)
 	// check quickly for false file, ie. check that the file begins at least with '<'
 	auto p=data.c_str();
 	while (*p && *p==' ') ++p;
-	if (*p!='<') {
+	if (*p!='<')
+	{
 		ODFGEN_DEBUG_MSG(("OdfGenerator::insertEquation: sorry, I do not recognize a mathml file\n"));
 		return;
 	}
