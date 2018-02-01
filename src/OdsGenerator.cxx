@@ -408,7 +408,7 @@ bool OdsGeneratorPrivate::close(Command command)
 	if (mCommandStack.empty() || mCommandStack.top()!=command)
 	{
 #ifdef DEBUG
-		static char const *(wh[]) =
+		static char const *wh[] =
 		{
 			"Document", "PageSpan", "Header", "Footer", "Sheet", "SheetRow", "SheetCell",
 			"Chart", "ChartDataLabel", "ChartPlotArea", "ChartSerie", "ChartTextObject",
@@ -589,7 +589,7 @@ void OdsGeneratorPrivate::_writeStyles(OdfDocumentHandler *pHandler)
 	standardStyleOpenElement.write(pHandler);
 	pHandler->endElement("style:style");
 
-	static char const *(s_paraStyle[4*10]) =
+	static char const *s_paraStyle[4*10] =
 	{
 		"Text_Body", "Text Body", "Standard", "text",
 		"Table_Contents", "Table Contents", "Text_Body", "extra",
@@ -614,7 +614,7 @@ void OdsGeneratorPrivate::_writeStyles(OdfDocumentHandler *pHandler)
 		pHandler->endElement("style:style");
 	}
 
-	static char const *(s_textStyle[2*4])=
+	static char const *s_textStyle[2*4] =
 	{
 		"Footnote_Symbol", "Footnote Symbol", "Endnote_Symbol", "Endnote Symbol",
 		"Footnote_anchor", "Footnote anchor", "Endnote_anchor", "Endnote anchor"

@@ -316,7 +316,7 @@ void OdcGeneratorPrivate::_writeStyles(OdfDocumentHandler *pHandler)
 	standardStyleOpenElement.write(pHandler);
 	pHandler->endElement("style:style");
 
-	static char const *(s_paraStyle[4*4]) =
+	static char const *s_paraStyle[4*4] =
 	{
 		"Text_Body", "Text Body", "Standard", "text",
 		"Table_Contents", "Table Contents", "Text_Body", "extra",
@@ -578,7 +578,7 @@ void OdcGenerator::openChart(const librevenge::RVNGPropertyList &propList)
 	auto openElement = std::make_shared<TagOpenElement>("chart:chart");
 	for (int i=0; i<8; ++i)
 	{
-		static char const *(wh[8]) =
+		static char const *wh[8] =
 		{
 			"chart:class", "chart:column-mapping", "chart:row-mapping",
 			"svg:height", "svg:width", "xlink:href", "xlink:type", "xml:id"
@@ -631,7 +631,7 @@ void OdcGenerator::openChartTextObject(const librevenge::RVNGPropertyList &propL
 	auto openElement = std::make_shared<TagOpenElement>(what.c_str());
 	for (int i=0; i<4; ++i)
 	{
-		static char const *(wh[4]) =
+		static char const *wh[4] =
 		{
 			"svg:x", "svg:y", "svg:width", "svg:height"
 		};
@@ -645,7 +645,7 @@ void OdcGenerator::openChartTextObject(const librevenge::RVNGPropertyList &propL
 	{
 		for (int i=0; i<4; ++i)
 		{
-			static char const *(wh[4]) =
+			static char const *wh[4] =
 			{
 				"chart:legend-align", "chart:legend-position",
 				"style:legend-expansion",  "style:legend-expansion-aspect-ratio"
@@ -690,7 +690,7 @@ void OdcGenerator::openChartPlotArea(const librevenge::RVNGPropertyList &propLis
 	auto openElement = std::make_shared<TagOpenElement>("chart:plot-area");
 	for (int i=0; i<17; ++i)
 	{
-		static char const *(wh[17]) =
+		static char const *wh[17] =
 		{
 			"chart:data-source-has-labels",
 			"dr3d:ambient-color", "dr3d:distance", "dr3d:focal-length", "dr3d:lighting-mode",
@@ -765,7 +765,7 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 	auto openElement = std::make_shared<TagOpenElement>("chart:axis");
 	for (int i=0; i<2; ++i)
 	{
-		static char const *(wh[2]) =
+		static char const *wh[2] =
 		{
 			"chart:dimension", "chart:name"
 		};
@@ -810,7 +810,7 @@ void OdcGenerator::insertChartAxis(const librevenge::RVNGPropertyList &propList)
 			auto childElement = std::make_shared<TagOpenElement>("chart:title");
 			for (int i=0; i<2; ++i)
 			{
-				static char const *(wh[2]) =
+				static char const *wh[2] =
 				{
 					"svg:x", "svg:y"
 				};
@@ -856,7 +856,7 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 	auto openElement = std::make_shared<TagOpenElement>("chart:series");
 	for (int i=0; i<4; ++i)
 	{
-		static char const *(wh[4]) =
+		static char const *wh[4] =
 		{
 			"chart:attached-axis", "chart:class", "xml:id", "chart:label-string"
 		};
@@ -870,7 +870,7 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 		openElement->addAttribute("chart:style-name",mpImpl->getChartStyleName(propList["librevenge:chart-id"]->getInt()));
 	for (int i=0; i<2; ++i)
 	{
-		static char const *(wh[2]) =
+		static char const *wh[2] =
 		{
 			"chart:label-cell-address", "chart:values-cell-range-address"
 		};
@@ -895,7 +895,7 @@ void OdcGenerator::openChartSerie(const librevenge::RVNGPropertyList &propList)
 			auto childElement = std::make_shared<TagOpenElement>("chart:data-point");
 			for (int i=0; i<2; ++i)
 			{
-				static char const *(wh[2]) =
+				static char const *wh[2] =
 				{
 					"chart:repeated", "xml:id"
 				};

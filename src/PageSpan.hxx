@@ -171,7 +171,7 @@ private:
 	librevenge::RVNGString msLayoutName;
 	//! the page drawing display name
 	librevenge::RVNGString msDrawingName;
-	libodfgen::DocumentElementVector *(mpContent[C_NumContentTypes]);
+	libodfgen::DocumentElementVector *mpContent[C_NumContentTypes];
 };
 
 //! class used to store the list of created page

@@ -143,7 +143,7 @@ void PageLayoutStyle::write(OdfDocumentHandler *pHandler) const
 
 	for (int j=0; j<2; ++j)
 	{
-		char const *(wh[])= {"librevenge:header", "librevenge:footer"};
+		char const *wh[]= {"librevenge:header", "librevenge:footer"};
 		if (!mpPropList.child(wh[j]) || mpPropList.child(wh[j])->count()!=1)
 			continue;
 		pHandler->startElement(j==0 ? "style:header-style" : "style:footer-style", librevenge::RVNGPropertyList());
@@ -411,7 +411,7 @@ librevenge::RVNGString PageSpanManager::findOrAddLayout(const librevenge::RVNGPr
 	}
 	for (int j=0; j<3; ++j)
 	{
-		char const *(wh[])= {"librevenge:footnote", "librevenge:header", "librevenge:footer"};
+		char const *wh[]= {"librevenge:footnote", "librevenge:header", "librevenge:footer"};
 		if (propList.child(wh[j]))
 			layoutList.insert(wh[j], *propList.child(wh[j]));
 	}

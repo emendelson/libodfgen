@@ -230,7 +230,7 @@ void OdtGeneratorPrivate::_writeStyles(OdfDocumentHandler *pHandler)
 	standardStyleOpenElement.write(pHandler);
 	pHandler->endElement("style:style");
 
-	static char const *(s_paraStyle[4*10]) =
+	static char const *s_paraStyle[4*10] =
 	{
 		"Text_Body", "Text Body", "Standard", "text",
 		"Table_Contents", "Table Contents", "Text_Body", "extra",
@@ -255,7 +255,7 @@ void OdtGeneratorPrivate::_writeStyles(OdfDocumentHandler *pHandler)
 		pHandler->endElement("style:style");
 	}
 
-	static char const *(s_textStyle[2*4])=
+	static char const *s_textStyle[2*4] =
 	{
 		"Footnote_Symbol", "Footnote Symbol", "Endnote_Symbol", "Endnote Symbol",
 		"Footnote_anchor", "Footnote anchor", "Endnote_anchor", "Endnote anchor"
@@ -286,7 +286,7 @@ void OdtGeneratorPrivate::_writeStyles(OdfDocumentHandler *pHandler)
 	lineOpenElement.write(pHandler);
 	pHandler->endElement("text:linenumbering-configuration");
 
-	static char const *(s_noteConfig[4*2])=
+	static char const *s_noteConfig[4*2] =
 	{
 		"footnote", "Footnote_Symbol", "Footnote_anchor", "1",
 		"endnote", "Endnote_Symbol", "Endnote_anchor", "i"

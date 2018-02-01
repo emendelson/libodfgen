@@ -371,7 +371,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 			element.insert("draw:marker-end-width", "0.118in");
 	}
 	// other
-	char const *(others[])=
+	char const *others[] =
 	{
 		"draw:auto-grow-height",
 		"draw:ole-draw-aspect",

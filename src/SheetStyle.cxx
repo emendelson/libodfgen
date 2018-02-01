@@ -375,7 +375,7 @@ bool SheetManager::closeSheet()
 
 librevenge::RVNGString SheetManager::convertFormula(const librevenge::RVNGPropertyListVector &formula)
 {
-	char const *(operators[])=
+	char const *operators[] =
 	{
 		"(", ")", "+", "-", "*", "/", "=", "<>",  ";", "<", ">", "<=", ">=", "^", "&", "!", "~", ":", "%", "{", "}", "|"
 	};

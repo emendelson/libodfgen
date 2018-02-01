@@ -323,10 +323,10 @@ void OdfGenerator::appendBodySettings(const librevenge::RVNGPropertyList &propLi
 		if (child["librevenge:type"]->getStr()=="table:calculation-settings")
 		{
 			auto calcSetting=std::make_shared<TagOpenElement>("table:calculation-settings");
-			char const *(wh[])= { "table:automatic-find-labels", "table:case-sensitive", "table:null-year",
-			                      "table:precision-as-shown", "table:search-criteria-must-apply-to-whole-cell",
-			                      "table:use-regular-expressions", "table:use-wildcards"
-			                    };
+			char const *wh[]= { "table:automatic-find-labels", "table:case-sensitive", "table:null-year",
+			                    "table:precision-as-shown", "table:search-criteria-must-apply-to-whole-cell",
+			                    "table:use-regular-expressions", "table:use-wildcards"
+			                  };
 			// checkme: had also childs elements: table:iteration, table:null-date
 			for (size_t i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
 			{
@@ -593,7 +593,7 @@ void OdfGenerator::closeFrame()
 
 void OdfGenerator::addFrameProperties(const librevenge::RVNGPropertyList &propList, TagOpenElement &element) const
 {
-	static char const *(frameAttrib[])=
+	static char const *frameAttrib[] =
 	{
 		"draw:z-index",
 		"fo:max-width", "fo:max-height",
@@ -731,7 +731,7 @@ void OdfGenerator::appendLayersMasterStyles(OdfDocumentHandler *pHandler)
 	// add the default layers
 	for (int i=0; i<5; ++i)
 	{
-		static char const *(defaults[])= {"layout", "background", "backgroundobjects", "controls", "measurelines"};
+		static char const *defaults[] = {"layout", "background", "backgroundobjects", "controls", "measurelines"};
 		if (mLayerNameSet.find(defaults[i])!=mLayerNameSet.end())
 			continue;
 		layer.addAttribute("draw:name", defaults[i]);
@@ -800,7 +800,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<2; ++i)
 		{
-			char const *(wh[])= {"text:display", "text:outline-level"};
+			char const *wh[]= {"text:display", "text:outline-level"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], propList[wh[i]]->getStr());
 		}
@@ -809,7 +809,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<4; ++i)
 		{
-			char const *(wh[])= {"text:condition", "text:current-value", "text:string-value-if-false", "text:string-value-if-true"};
+			char const *wh[]= {"text:condition", "text:current-value", "text:string-value-if-false", "text:string-value-if-true"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -860,7 +860,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<2; ++i)
 		{
-			char const *(wh[])= {"text:condition", "text:is-hidden"};
+			char const *wh[]= {"text:condition", "text:is-hidden"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -869,7 +869,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<2; ++i)
 		{
-			char const *(wh[])= {"text:description", "text:placeholder-type"};
+			char const *wh[]= {"text:description", "text:placeholder-type"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -878,7 +878,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<1; ++i)
 		{
-			char const *(wh[])= {"text:name"};
+			char const *wh[]= {"text:name"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -887,7 +887,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<2; ++i)
 		{
-			char const *(wh[])= {"text:reference-format", "text:ref-name"};
+			char const *wh[]= {"text:reference-format", "text:ref-name"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -896,7 +896,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<3; ++i)
 		{
-			char const *(wh[])= {"text:formula", "text:name", "text:ref-name"};
+			char const *wh[]= {"text:formula", "text:name", "text:ref-name"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -905,7 +905,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<1; ++i)
 		{
-			char const *(wh[])= {"text:description"};
+			char const *wh[]= {"text:description"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -914,7 +914,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<3; ++i)
 		{
-			char const *(wh[])= {"office:string-value", "office:value", "text:name"};
+			char const *wh[]= {"office:string-value", "office:value", "text:name"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -923,7 +923,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<2; ++i)
 		{
-			char const *(wh[])= {"text:display", "text:name"};
+			char const *wh[]= {"text:display", "text:name"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -932,7 +932,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<5; ++i)
 		{
-			char const *(wh[])= {"text:formula", "text:name", "office:string-value", "office:value", "office:value-type"};
+			char const *wh[]= {"text:formula", "text:name", "office:string-value", "office:value", "office:value-type"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -942,7 +942,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<4; ++i)
 		{
-			char const *(wh[])= {"text:column-name", "text:database-name", "text:table-name", "text:table-type"};
+			char const *wh[]= {"text:column-name", "text:database-name", "text:table-name", "text:table-type"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -951,7 +951,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<3; ++i)
 		{
-			char const *(wh[])= {"text:database-name", "text:table-name", "text:table-type"};
+			char const *wh[]= {"text:database-name", "text:table-name", "text:table-type"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -960,7 +960,7 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 	{
 		for (int i=0; i<5; ++i)
 		{
-			char const *(wh[])= {"text:condition", "text:database-name", "text:row-number", "text:table-name", "text:table-type"};
+			char const *wh[]= {"text:condition", "text:database-name", "text:row-number", "text:table-name", "text:table-type"};
 			if (propList[wh[i]])
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
@@ -1613,7 +1613,7 @@ librevenge::RVNGString OdfGenerator::getCurrentGraphicStyleName(const librevenge
 	// check that no default are set, there will can be set with mGraphicStyle, if needed
 	for (int i=0; i<3; ++i)
 	{
-		char const *(wh[])= {"draw:fill","draw:shadow","draw:stroke"};
+		char const *wh[]= {"draw:fill","draw:shadow","draw:stroke"};
 		if (!shapeList[wh[i]] && styleList[wh[i]])
 			styleList.remove(wh[i]);
 	}
@@ -1647,7 +1647,7 @@ void OdfGenerator::drawEllipse(const librevenge::RVNGPropertyList &propList)
 	pDrawEllipseElement->addAttribute("svg:height", sValue);
 	for (int i=0; i<4; ++i)
 	{
-		char const *(wh[])= {"draw:kind", "draw:start-angle", "draw:end-angle", "draw:transform"};
+		char const *wh[]= {"draw:kind", "draw:start-angle", "draw:end-angle", "draw:transform"};
 		if (propList[wh[i]])
 			pDrawEllipseElement->addAttribute(wh[i], propList[wh[i]]->getStr());
 	}
