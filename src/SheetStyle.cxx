@@ -529,8 +529,9 @@ librevenge::RVNGString SheetManager::convertCellsRange(const librevenge::RVNGPro
 	if (list["librevenge:end-sheet-name"])
 	{
 		if (list["librevenge:file-name"]) s << "'" << list["librevenge:file-name"]->getStr().cstr() << "'#";
-		s << list["librevenge:end-sheet-name"]->getStr().cstr() << ".";
+		s << list["librevenge:end-sheet-name"]->getStr().cstr();
 	}
+	s << ".";
 	if (list["librevenge:end-column"])
 		column=list["librevenge:end-column"]->getInt();
 	if (list["librevenge:end-row"])
