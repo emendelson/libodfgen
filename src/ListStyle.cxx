@@ -231,7 +231,7 @@ void ListStyle::write(OdfDocumentHandler *pHandler) const
 //
 
 ListManager::State::State() :
-	mpCurrentListStyle(nullptr),
+	mpCurrentListStyle(),
 	miCurrentListLevel(0),
 	miLastListLevel(0),
 	miLastListNumber(0),
@@ -279,8 +279,6 @@ ListManager::ListManager() : miNumListStyles(0), mListStylesVector(), mIdListSty
 
 ListManager::~ListManager()
 {
-	for (auto &listStyle : mListStylesVector)
-		delete listStyle;
 }
 
 void ListManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
@@ -299,7 +297,7 @@ void ListManager::defineLevel(const librevenge::RVNGPropertyList &propList, bool
 	if (propList["librevenge:list-id"])
 		id = propList["librevenge:list-id"]->getInt();
 
-	ListStyle *pListStyle = nullptr;
+	std::shared_ptr<ListStyle> pListStyle;
 	State &state=getState();
 	// as all direct list have the same id:-1, we reused the last list
 	// excepted at level 0 where we force the redefinition of a new list
@@ -338,7 +336,7 @@ void ListManager::defineLevel(const librevenge::RVNGPropertyList &propList, bool
 			sName.sprintf(ordered ? "OL%i" : "UL%i", miNumListStyles);
 		miNumListStyles++;
 
-		pListStyle = new ListStyle(sName.cstr(), id, zone);
+		pListStyle = std::make_shared<ListStyle>(sName.cstr(), id, zone);
 		if (!displayName.empty())
 			pListStyle->setDisplayName(displayName.cstr());
 

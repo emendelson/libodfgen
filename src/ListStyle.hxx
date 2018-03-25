@@ -26,6 +26,7 @@
 #define _LISTSTYLE_HXX_
 
 #include <map>
+#include <memory>
 #include <stack>
 #include <vector>
 #include <librevenge/librevenge.h>
@@ -104,7 +105,7 @@ public:
 		State();
 		State(const State &state);
 
-		ListStyle *mpCurrentListStyle;
+		std::shared_ptr<ListStyle> mpCurrentListStyle;
 		unsigned int miCurrentListLevel;
 		unsigned int miLastListLevel;
 		unsigned int miLastListNumber;
@@ -145,9 +146,9 @@ protected:
 	// list styles
 	unsigned int miNumListStyles;
 	// list styles
-	std::vector<ListStyle *> mListStylesVector;
+	std::vector<std::shared_ptr<ListStyle>> mListStylesVector;
 	// a map id -> last list style defined with id
-	std::map<int, ListStyle *> mIdListStyleMap;
+	std::map<int, std::shared_ptr<ListStyle>> mIdListStyleMap;
 
 	//! list states
 	std::stack<State> mStatesStack;
