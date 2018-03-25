@@ -14,9 +14,9 @@
  * For further information visit http://libwpd.sourceforge.net
  */
 
-#include "DocumentElement.hxx"
-
 #include "FilterInternal.hxx"
+
+#include "DocumentElement.hxx"
 
 #include <cstdarg>
 #include <cstdio>

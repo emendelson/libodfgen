@@ -24,12 +24,13 @@
  * Corel Corporation or Corel Corporation Limited."
  */
 
+#include <libodfgen/libodfgen.hxx>
+
 #include <map>
 #include <stack>
 #include <string>
 
 #include <librevenge/librevenge.h>
-#include <libodfgen/libodfgen.hxx>
 
 #include "DocumentElement.hxx"
 #include "FilterInternal.hxx"

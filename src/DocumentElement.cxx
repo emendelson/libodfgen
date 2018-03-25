@@ -24,6 +24,7 @@
  */
 
 #include "DocumentElement.hxx"
+
 #include "FilterInternal.hxx"
 #include <string.h>
 

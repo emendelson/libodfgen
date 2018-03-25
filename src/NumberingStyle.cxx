@@ -20,6 +20,8 @@
  * For further information visit http://libwpd.sourceforge.net
  */
 
+#include "NumberingStyle.hxx"
+
 #include <math.h>
 #ifdef _MSC_VER
 # include <minmax.h>
@@ -31,7 +33,6 @@
 
 #include "DocumentElement.hxx"
 
-#include "NumberingStyle.hxx"
 #include "SheetStyle.hxx"
 
 NumberingStyle::NumberingStyle(const librevenge::RVNGPropertyList &xPropList, const librevenge::RVNGString &psName)

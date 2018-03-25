@@ -28,6 +28,8 @@
 #include "config.h"
 #endif
 
+#include "OdfGenerator.hxx"
+
 #include <math.h>
 
 #include <cctype>
@@ -43,8 +45,6 @@
 #include "InternalHandler.hxx"
 #include "ListStyle.hxx"
 #include "TableStyle.hxx"
-
-#include "OdfGenerator.hxx"
 
 using namespace libodfgen;
 

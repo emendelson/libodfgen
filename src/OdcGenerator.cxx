@@ -24,6 +24,8 @@
  * Corel Corporation or Corel Corporation Limited."
  */
 
+#include "OdcGenerator.hxx"
+
 #include <librevenge/librevenge.h>
 
 #include <map>
@@ -43,8 +45,6 @@
 #include "TextRunStyle.hxx"
 
 #include "OdfGenerator.hxx"
-
-#include "OdcGenerator.hxx"
 
 // the state we use for writing the final document
 struct ChartDocumentState

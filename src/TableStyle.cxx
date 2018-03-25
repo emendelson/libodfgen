@@ -24,9 +24,10 @@
  * Corel Corporation or Corel Corporation Limited."
  */
 
+#include "TableStyle.hxx"
+
 #include <math.h>
 #include "FilterInternal.hxx"
-#include "TableStyle.hxx"
 #include "DocumentElement.hxx"
 
 #ifdef _MSC_VER

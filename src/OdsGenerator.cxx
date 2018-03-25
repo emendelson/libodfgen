@@ -24,6 +24,8 @@
  * Corel Corporation or Corel Corporation Limited."
  */
 
+#include <libodfgen/libodfgen.hxx>
+
 #include <librevenge/librevenge.h>
 
 #include <iomanip>
@@ -32,8 +34,6 @@
 #include <stack>
 #include <sstream>
 #include <string>
-
-#include <libodfgen/libodfgen.hxx>
 
 #include "DocumentElement.hxx"
 #include "FilterInternal.hxx"

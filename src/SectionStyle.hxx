@@ -25,6 +25,7 @@
 #ifndef _SECTIONSTYLE_HXX_
 #define _SECTIONSTYLE_HXX_
 
+#include <memory>
 #include <vector>
 
 #include <librevenge/librevenge.h>

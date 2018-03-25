@@ -22,8 +22,9 @@
 /* "This product is not manufactured, approved, or supported by
  * Corel Corporation or Corel Corporation Limited."
  */
-#include "FilterInternal.hxx"
 #include "ListStyle.hxx"
+
+#include "FilterInternal.hxx"
 #include "DocumentElement.hxx"
 
 using libodfgen::make_unique;

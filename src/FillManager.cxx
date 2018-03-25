@@ -20,10 +20,11 @@
  * For further information visit http://libwpd.sourceforge.net
  */
 
+#include "FillManager.hxx"
+
 #include <librevenge/librevenge.h>
 
 #include "FilterInternal.hxx"
-#include "FillManager.hxx"
 #include "DocumentElement.hxx"
 
 void FillManager::clean()

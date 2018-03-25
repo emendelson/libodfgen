@@ -23,8 +23,10 @@
 /* "This product is not manufactured, approved, or supported by
  * Corel Corporation or Corel Corporation Limited."
  */
-#include "FilterInternal.hxx"
+
 #include "TextRunStyle.hxx"
+
+#include "FilterInternal.hxx"
 #include "DocumentElement.hxx"
 
 #ifdef _MSC_VER

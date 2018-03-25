@@ -23,6 +23,7 @@
 /* "This product is not manufactured, approved, or supported by
  * Corel Corporation or Corel Corporation Limited."
  */
+#include "GraphicFunctions.hxx"
 
 #include <math.h>
 
@@ -33,8 +34,6 @@
 
 // removeme for ODFGEN_DEBUG_MSG
 #include "FilterInternal.hxx"
-
-#include "GraphicFunctions.hxx"
 
 namespace libodfgen
 {

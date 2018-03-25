@@ -23,10 +23,9 @@
  * Corel Corporation or Corel Corporation Limited."
  */
 
-#include "FilterInternal.hxx"
-
 #include "FontStyle.hxx"
 
+#include "FilterInternal.hxx"
 #include "DocumentElement.hxx"
 
 FontStyle::EmbeddedInfo::EmbeddedInfo(const librevenge::RVNGString &mimeType, const librevenge::RVNGBinaryData &data)

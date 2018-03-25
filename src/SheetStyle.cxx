@@ -20,6 +20,8 @@
  * For further information visit http://libwpd.sourceforge.net
  */
 
+#include "SheetStyle.hxx"
+
 #include <math.h>
 #ifdef _MSC_VER
 # include <minmax.h>
@@ -33,8 +35,6 @@
 #include "FilterInternal.hxx"
 #include "NumberingStyle.hxx"
 #include "TextRunStyle.hxx"
-
-#include "SheetStyle.hxx"
 
 SheetCellStyle::SheetCellStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName) :
 	Style(psName),

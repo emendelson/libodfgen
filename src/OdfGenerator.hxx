@@ -41,6 +41,7 @@
 #include "FontStyle.hxx"
 #include "GraphicStyle.hxx"
 #include "InternalHandler.hxx"
+#include "ListStyle.hxx"
 #include "NumberingStyle.hxx"
 #include "PageSpan.hxx"
 #include "TableStyle.hxx"

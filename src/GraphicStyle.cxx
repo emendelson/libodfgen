@@ -20,11 +20,12 @@
  * For further information visit http://libwpd.sourceforge.net
  */
 
+#include "GraphicStyle.hxx"
+
 #include <librevenge/librevenge.h>
 
 #include "FilterInternal.hxx"
 #include "FillManager.hxx"
-#include "GraphicStyle.hxx"
 #include "DocumentElement.hxx"
 
 GraphicStyle::GraphicStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone) :
