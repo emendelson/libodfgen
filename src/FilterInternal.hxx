@@ -48,6 +48,10 @@
 
 #define ODFGEN_N_ELEMENTS(m) sizeof(m)/sizeof(m[0])
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 class DocumentElement;
 
 namespace libodfgen

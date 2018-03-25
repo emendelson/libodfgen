@@ -46,10 +46,6 @@
 
 #include "OdfGenerator.hxx"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 // Workaround for the incapacity of impress to have multiple page
 // sizes in the same document. Once that limitation is lifted,
 // remove this
