@@ -87,7 +87,7 @@ private:
 	//! hash key -> name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mHashNameMap;
 	//! style name -> NumberingStyle
-	std::map<librevenge::RVNGString, shared_ptr<NumberingStyle> > mNumberingHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<NumberingStyle> > mNumberingHash;
 };
 #endif
 

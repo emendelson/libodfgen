@@ -106,7 +106,7 @@ void FontStyleManager::clean()
 
 void FontStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
 {
-	std::map<librevenge::RVNGString, shared_ptr<FontStyle> >::const_iterator iter;
+	std::map<librevenge::RVNGString, std::shared_ptr<FontStyle> >::const_iterator iter;
 	for (iter = mStyleHash.begin(); iter != mStyleHash.end(); ++iter)
 	{
 		if (iter->second->getZone()==zone)
@@ -125,12 +125,12 @@ void FontStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) con
 
 librevenge::RVNGString FontStyleManager::findOrAdd(const char *psFontFamily)
 {
-	std::map<librevenge::RVNGString, shared_ptr<FontStyle> >::const_iterator iter =
+	std::map<librevenge::RVNGString, std::shared_ptr<FontStyle> >::const_iterator iter =
 	    mStyleHash.find(psFontFamily);
 	if (iter!=mStyleHash.end()) return psFontFamily;
 
 	// ok create a new font
-	shared_ptr<FontStyle> font(new FontStyle(psFontFamily, psFontFamily));
+	std::shared_ptr<FontStyle> font(new FontStyle(psFontFamily, psFontFamily));
 	mStyleHash[psFontFamily] = font;
 	return psFontFamily;
 }

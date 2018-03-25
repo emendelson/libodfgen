@@ -241,7 +241,7 @@ librevenge::RVNGString ParagraphStyleManager::findOrAdd(const librevenge::RVNGPr
 			else
 				mDisplayNameMap[name]=sName;
 		}
-		shared_ptr<ParagraphStyle> parag(new ParagraphStyle(pList, sName, currentZone));
+		std::shared_ptr<ParagraphStyle> parag(new ParagraphStyle(pList, sName, currentZone));
 		mStyleHash[sName] =parag;
 		mHashNameMap[hashKey] = sName;
 		if (!deferMasterPageNameInsertion)
@@ -257,10 +257,10 @@ librevenge::RVNGString ParagraphStyleManager::findOrAdd(const librevenge::RVNGPr
 	return findOrAdd(pList, zone);
 }
 
-shared_ptr<ParagraphStyle> const ParagraphStyleManager::get(const librevenge::RVNGString &name) const
+std::shared_ptr<ParagraphStyle> const ParagraphStyleManager::get(const librevenge::RVNGString &name) const
 {
 	auto iter = mStyleHash.find(name);
-	if (iter == mStyleHash.end()) return shared_ptr<ParagraphStyle>();
+	if (iter == mStyleHash.end()) return std::shared_ptr<ParagraphStyle>();
 	return iter->second;
 }
 
@@ -386,7 +386,7 @@ librevenge::RVNGString SpanStyleManager::findOrAdd(const librevenge::RVNGPropert
 		sName.sprintf("Span_M%i", (int)mStyleHash.size());
 	else
 		sName.sprintf("Span%i", (int)mStyleHash.size());
-	shared_ptr<SpanStyle> span(new SpanStyle(sName.cstr(), propList, zone));
+	std::shared_ptr<SpanStyle> span(new SpanStyle(sName.cstr(), propList, zone));
 	mStyleHash[sName] = span;
 	mHashNameMap[hashKey] = sName;
 	if (propList["style:display-name"] && !propList["style:display-name"]->getStr().empty())
@@ -402,10 +402,10 @@ librevenge::RVNGString SpanStyleManager::getFinalDisplayName(const librevenge::R
 	return librevenge::RVNGString("");
 }
 
-shared_ptr<SpanStyle> const SpanStyleManager::get(const librevenge::RVNGString &name) const
+std::shared_ptr<SpanStyle> const SpanStyleManager::get(const librevenge::RVNGString &name) const
 {
 	auto iter = mStyleHash.find(name);
-	if (iter == mStyleHash.end()) return shared_ptr<SpanStyle>();
+	if (iter == mStyleHash.end()) return std::shared_ptr<SpanStyle>();
 	return iter->second;
 }
 

@@ -366,9 +366,9 @@ public:
 	std::stack<State> mStateStack;
 
 	// auxiliar odc handler to create data
-	shared_ptr<OdcGeneratorState> mAuxiliarOdcState;
+	std::shared_ptr<OdcGeneratorState> mAuxiliarOdcState;
 	// auxiliar odt handler to create data
-	shared_ptr<OdtGeneratorState> mAuxiliarOdtState;
+	std::shared_ptr<OdtGeneratorState> mAuxiliarOdtState;
 
 	// table styles
 	SheetManager  mSheetManager;

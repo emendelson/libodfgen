@@ -139,7 +139,7 @@ librevenge::RVNGString GraphicStyleManager::findOrAdd(librevenge::RVNGPropertyLi
 			ODFGEN_DEBUG_MSG(("GraphicStyleManager::findOrAdd: can not find any style with name %s\n", pName.cstr()));
 		}
 	}
-	shared_ptr<GraphicStyle> style(new GraphicStyle(pList, name.cstr(), zone));
+	std::shared_ptr<GraphicStyle> style(new GraphicStyle(pList, name.cstr(), zone));
 	mStyles.push_back(style);
 
 	if (propList["style:display-name"] && !propList["style:display-name"]->getStr().empty())

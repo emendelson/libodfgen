@@ -92,7 +92,7 @@ protected:
 	// graphics styles
 	libodfgen::DocumentElementVector mMarkerStyles;
 	libodfgen::DocumentElementVector mStrokeDashStyles;
-	std::vector<shared_ptr<GraphicStyle> > mStyles;
+	std::vector<std::shared_ptr<GraphicStyle> > mStyles;
 
 	// marker hash -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mMarkerNameMap;

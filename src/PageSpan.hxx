@@ -217,20 +217,20 @@ protected:
 	librevenge::RVNGString findOrAddLayout(const librevenge::RVNGPropertyList &xPropList);
 
 	//! the list of page
-	std::vector<shared_ptr<PageSpan> > mpPageList;
+	std::vector<std::shared_ptr<PageSpan> > mpPageList;
 	//! a map master page name to pagespan
-	std::map<librevenge::RVNGString, shared_ptr<PageSpan> > mpNameToMasterMap;
+	std::map<librevenge::RVNGString, std::shared_ptr<PageSpan> > mpNameToMasterMap;
 
 	//! the list of layout style
-	std::vector<shared_ptr<PageLayoutStyle> > mpLayoutList;
+	std::vector<std::shared_ptr<PageLayoutStyle> > mpLayoutList;
 	//! a map named layout to page layout style
-	std::map<librevenge::RVNGString, shared_ptr<PageLayoutStyle> > mpNameToLayoutMap;
+	std::map<librevenge::RVNGString, std::shared_ptr<PageLayoutStyle> > mpNameToLayoutMap;
 	// hash key -> layout style
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mHashLayoutMap;
 	//! the list of drawing style
-	std::vector<shared_ptr<PageDrawingStyle> > mpDrawingList;
+	std::vector<std::shared_ptr<PageDrawingStyle> > mpDrawingList;
 	//! a map named drawing to page drawing style
-	std::map<librevenge::RVNGString, shared_ptr<PageDrawingStyle> > mpNameToDrawingMap;
+	std::map<librevenge::RVNGString, std::shared_ptr<PageDrawingStyle> > mpNameToDrawingMap;
 	// hash key -> drawing style
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mHashDrawingMap;
 };

@@ -256,11 +256,11 @@ void OdpGeneratorPrivate::openTextBoxFrame(const librevenge::RVNGPropertyList &p
 		x -= deltax;
 		y -= deltay;
 	}
-	shared_ptr<librevenge::RVNGProperty> svg_x(librevenge::RVNGPropertyFactory::newInchProp(x));
-	shared_ptr<librevenge::RVNGProperty> svg_y(librevenge::RVNGPropertyFactory::newInchProp(y));
+	std::shared_ptr<librevenge::RVNGProperty> svg_x(librevenge::RVNGPropertyFactory::newInchProp(x));
+	std::shared_ptr<librevenge::RVNGProperty> svg_y(librevenge::RVNGPropertyFactory::newInchProp(y));
 	if (angle < 0 || angle > 0)
 	{
-		shared_ptr<librevenge::RVNGProperty> librevenge_rotate(librevenge::RVNGPropertyFactory::newDoubleProp(angle));
+		std::shared_ptr<librevenge::RVNGProperty> librevenge_rotate(librevenge::RVNGPropertyFactory::newDoubleProp(angle));
 		sValue.sprintf("rotate (%s) translate(%s, %s)",
 		               librevenge_rotate->getStr().cstr(),
 		               svg_x->getStr().cstr(),

@@ -333,7 +333,7 @@ PageSpan *PageSpanManager::add(const librevenge::RVNGPropertyList &xPropList, bo
 		createNewMaster=true;
 		masterName.sprintf("PM%i", (int) mpPageList.size());
 	}
-	shared_ptr<PageSpan> page(new PageSpan(masterName, displayName, createNewMaster));
+	std::shared_ptr<PageSpan> page(new PageSpan(masterName, displayName, createNewMaster));
 	mpPageList.push_back(page);
 	if (isMasterPage)
 		mpNameToMasterMap[displayName]=page;
@@ -381,7 +381,7 @@ librevenge::RVNGString PageSpanManager::findOrAddDrawing(const librevenge::RVNGP
 	librevenge::RVNGString finalName("");
 	finalName.sprintf("DP%i", (int) mpDrawingList.size()+1);
 	mHashDrawingMap[hashKey]=finalName;
-	shared_ptr<PageDrawingStyle> style(new PageDrawingStyle(drawingList, finalName, zone));
+	std::shared_ptr<PageDrawingStyle> style(new PageDrawingStyle(drawingList, finalName, zone));
 	mpDrawingList.push_back(style);
 	if (!drawingName.empty())
 		mpNameToDrawingMap[drawingName]=style;
@@ -428,7 +428,7 @@ librevenge::RVNGString PageSpanManager::findOrAddLayout(const librevenge::RVNGPr
 	librevenge::RVNGString finalName("");
 	finalName.sprintf("PL%i", (int) mpLayoutList.size());
 	mHashLayoutMap[hashKey]=finalName;
-	shared_ptr<PageLayoutStyle> style(new PageLayoutStyle(layoutList, finalName, zone));
+	std::shared_ptr<PageLayoutStyle> style(new PageLayoutStyle(layoutList, finalName, zone));
 	mpLayoutList.push_back(style);
 	if (!layoutName.empty())
 		mpNameToLayoutMap[layoutName]=style;

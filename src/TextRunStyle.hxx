@@ -73,7 +73,7 @@ public:
 	librevenge::RVNGString findOrAdd(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone=Style::Z_Unknown);
 
 	/* returns the style corresponding to a given name ( if it exists ) */
-	shared_ptr<ParagraphStyle> const get(const librevenge::RVNGString &name) const;
+	std::shared_ptr<ParagraphStyle> const get(const librevenge::RVNGString &name) const;
 	//! return the file name corresponding to a display name
 	librevenge::RVNGString getFinalDisplayName(const librevenge::RVNGString &displayName);
 
@@ -92,7 +92,7 @@ protected:
 	// hash key -> name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mHashNameMap;
 	// style name -> paragraph style
-	std::map<librevenge::RVNGString, shared_ptr<ParagraphStyle> > mStyleHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<ParagraphStyle> > mStyleHash;
 	// display name -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayNameMap;
 };
@@ -111,7 +111,7 @@ public:
 	Note: using Span%i (or Span_M%i) as new name*/
 	librevenge::RVNGString findOrAdd(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone=Style::Z_Unknown);
 	/* returns the style corresponding to a given name ( if it exists ) */
-	shared_ptr<SpanStyle> const get(const librevenge::RVNGString &name) const;
+	std::shared_ptr<SpanStyle> const get(const librevenge::RVNGString &name) const;
 	/** append the span in the element, ie. the stroke, pattern, bitmap, marker properties */
 	static void addSpanProperties(librevenge::RVNGPropertyList const &style, librevenge::RVNGPropertyList &element);
 	//! return the file name corresponding to a display name
@@ -132,7 +132,7 @@ protected:
 	// hash key -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mHashNameMap;
 	// style name -> SpanStyle
-	std::map<librevenge::RVNGString, shared_ptr<SpanStyle> > mStyleHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<SpanStyle> > mStyleHash;
 	// display name -> style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayNameMap;
 };

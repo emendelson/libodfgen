@@ -87,11 +87,11 @@ private:
 	// hash key -> row style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mRowNameHash;
 	// style name -> SheetRowStyle
-	std::map<librevenge::RVNGString, shared_ptr<SheetRowStyle> > mRowStyleHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<SheetRowStyle> > mRowStyleHash;
 	// hash key -> cell style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mCellNameHash;
 	// style name -> SheetCellStyle
-	std::map<librevenge::RVNGString, shared_ptr<SheetCellStyle> > mCellStyleHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<SheetCellStyle> > mCellStyleHash;
 
 	// Disable copying
 	SheetStyle(const SheetStyle &);
@@ -152,7 +152,7 @@ private:
 	//! flag to know if the last sheet is opened or closed
 	bool mbSheetOpened;
 	//! the list of style
-	std::vector<shared_ptr<SheetStyle> > mSheetStyles;
+	std::vector<std::shared_ptr<SheetStyle> > mSheetStyles;
 };
 #endif
 

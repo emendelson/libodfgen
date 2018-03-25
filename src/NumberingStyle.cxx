@@ -287,7 +287,7 @@ void NumberingManager::addStyle(const librevenge::RVNGPropertyList &xPropList)
 	else
 		finalName.sprintf("Numbering_num%i", (int) mNumberingHash.size());
 
-	shared_ptr<NumberingStyle> style(new NumberingStyle(xPropList, finalName));
+	std::shared_ptr<NumberingStyle> style(new NumberingStyle(xPropList, finalName));
 	mHashNameMap[NumberingStyle::getHashName(xPropList)]=finalName;
 	mNumberingHash[name]=style;
 }
@@ -302,7 +302,7 @@ librevenge::RVNGString NumberingManager::findOrAdd(const librevenge::RVNGPropert
 	// ok create a new list
 	librevenge::RVNGString finalName;
 	finalName.sprintf("Numbering_num%i", (int) mNumberingHash.size());
-	shared_ptr<NumberingStyle> style(new NumberingStyle(propList, finalName));
+	std::shared_ptr<NumberingStyle> style(new NumberingStyle(propList, finalName));
 	mNumberingHash[finalName]=style;
 	mHashNameMap[hashKey]=finalName;
 	return finalName;
@@ -312,7 +312,7 @@ void NumberingManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) con
 {
 	if (zone!=Style::Z_ContentAutomatic)
 		return;
-	std::map<librevenge::RVNGString, shared_ptr<NumberingStyle> >::const_iterator nIt;
+	std::map<librevenge::RVNGString, std::shared_ptr<NumberingStyle> >::const_iterator nIt;
 	for (nIt=mNumberingHash.begin(); nIt!=mNumberingHash.end(); ++nIt)
 	{
 		if (!nIt->second) continue;

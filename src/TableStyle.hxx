@@ -29,10 +29,8 @@
 #include <librevenge/librevenge.h>
 
 #include <map>
+#include <memory>
 #include <vector>
-
-// for shared_ptr
-#include "FilterInternal.hxx"
 
 #include "Style.hxx"
 
@@ -93,11 +91,11 @@ private:
 	// hash key -> row style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mRowNameHash;
 	// style name -> TableRowStyle
-	std::map<librevenge::RVNGString, shared_ptr<TableRowStyle> > mRowStyleHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<TableRowStyle> > mRowStyleHash;
 	// hash key -> cell style name
 	std::map<librevenge::RVNGString, librevenge::RVNGString> mCellNameHash;
 	// style name -> TableCellStyle
-	std::map<librevenge::RVNGString, shared_ptr<TableCellStyle> > mCellStyleHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<TableCellStyle> > mCellStyleHash;
 
 	// disable copying
 	Table(const Table &);
@@ -139,8 +137,8 @@ public:
 	bool closeTable();
 
 private:
-	std::vector<shared_ptr<Table> > mTableOpened;
-	std::vector<shared_ptr<Table> > mTableStyles;
+	std::vector<std::shared_ptr<Table> > mTableOpened;
+	std::vector<std::shared_ptr<Table> > mTableStyles;
 
 	// disable copying
 	TableManager(const TableManager &);

@@ -70,7 +70,7 @@ public:
 
 protected:
 	// the list of section
-	std::vector<shared_ptr<SectionStyle> > mStyleList;
+	std::vector<std::shared_ptr<SectionStyle> > mStyleList;
 };
 
 #endif

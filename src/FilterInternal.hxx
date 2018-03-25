@@ -46,8 +46,6 @@
 #define ODFGEN_DEBUG_MSG(M)
 #endif
 
-using std::shared_ptr;
-
 #define ODFGEN_N_ELEMENTS(m) sizeof(m)/sizeof(m[0])
 
 class DocumentElement;
@@ -64,7 +62,7 @@ std::unique_ptr<T> make_unique(Args &&... args)
 librevenge::RVNGString doubleToString(const double value);
 bool getInchValue(librevenge::RVNGProperty const &prop, double &value);
 
-typedef std::vector<shared_ptr<DocumentElement>> DocumentElementVector;
+typedef std::vector<std::shared_ptr<DocumentElement>> DocumentElementVector;
 
 void debugPrint(const char *format, ...)  ODFGEN_ATTRIBUTE_PRINTF(1, 2);
 

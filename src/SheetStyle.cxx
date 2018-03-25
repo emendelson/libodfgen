@@ -254,14 +254,14 @@ void SheetStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const &ma
 		}
 	}
 
-	std::map<librevenge::RVNGString, shared_ptr<SheetRowStyle> >::const_iterator rIt;
+	std::map<librevenge::RVNGString, std::shared_ptr<SheetRowStyle> >::const_iterator rIt;
 	for (rIt=mRowStyleHash.begin(); rIt!=mRowStyleHash.end(); ++rIt)
 	{
 		if (!rIt->second) continue;
 		rIt->second->writeStyle(pHandler, manager);
 	}
 
-	std::map<librevenge::RVNGString, shared_ptr<SheetCellStyle> >::const_iterator cIt;
+	std::map<librevenge::RVNGString, std::shared_ptr<SheetCellStyle> >::const_iterator cIt;
 	for (cIt=mCellStyleHash.begin(); cIt!=mCellStyleHash.end(); ++cIt)
 	{
 		if (!cIt->second) continue;
@@ -289,7 +289,7 @@ librevenge::RVNGString SheetStyle::addRow(const librevenge::RVNGPropertyList &pr
 	librevenge::RVNGString name;
 	name.sprintf("%s_row%i", getName().cstr(), (int) mRowStyleHash.size());
 	mRowNameHash[hashKey]=name;
-	mRowStyleHash[name]=shared_ptr<SheetRowStyle>(new SheetRowStyle(propList, name.cstr()));
+	mRowStyleHash[name]=std::shared_ptr<SheetRowStyle>(new SheetRowStyle(propList, name.cstr()));
 	return name;
 }
 
@@ -323,7 +323,7 @@ librevenge::RVNGString SheetStyle::addCell(const librevenge::RVNGPropertyList &p
 	librevenge::RVNGString name;
 	name.sprintf("%s_cell%i", getName().cstr(), (int) mCellStyleHash.size());
 	mCellNameHash[hashKey]=name;
-	mCellStyleHash[name]=shared_ptr<SheetCellStyle>(new SheetCellStyle(propList, name.cstr()));
+	mCellStyleHash[name]=std::shared_ptr<SheetCellStyle>(new SheetCellStyle(propList, name.cstr()));
 	return name;
 }
 
@@ -357,7 +357,7 @@ bool SheetManager::openSheet(const librevenge::RVNGPropertyList &xPropList, Styl
 		sTableName.sprintf("Sheet_M%i", (int) mSheetStyles.size());
 	else
 		sTableName.sprintf("Sheet%i", (int) mSheetStyles.size());
-	shared_ptr<SheetStyle> sheet(new SheetStyle(xPropList, sTableName.cstr(), zone));
+	std::shared_ptr<SheetStyle> sheet(new SheetStyle(xPropList, sTableName.cstr(), zone));
 	mSheetStyles.push_back(sheet);
 	return true;
 }

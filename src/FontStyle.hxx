@@ -62,7 +62,7 @@ private:
 
 private:
 	librevenge::RVNGString msFontFamily;
-	shared_ptr<EmbeddedInfo> m_embeddedInfo;
+	std::shared_ptr<EmbeddedInfo> m_embeddedInfo;
 };
 
 class FontStyleManager : public StyleManager
@@ -91,7 +91,7 @@ public:
 
 protected:
 	// style name -> SpanStyle
-	std::map<librevenge::RVNGString, shared_ptr<FontStyle> > mStyleHash;
+	std::map<librevenge::RVNGString, std::shared_ptr<FontStyle> > mStyleHash;
 };
 
 #endif
