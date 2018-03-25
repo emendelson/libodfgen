@@ -26,6 +26,8 @@
 #include "ListStyle.hxx"
 #include "DocumentElement.hxx"
 
+using libodfgen::make_unique;
+
 OrderedListLevelStyle::OrderedListLevelStyle(const librevenge::RVNGPropertyList &xPropList) :
 	mPropList(xPropList)
 {
@@ -170,12 +172,6 @@ ListStyle::ListStyle(const char *psName, const int iListID, Style::Zone zone) :
 
 ListStyle::~ListStyle()
 {
-	for (auto &xListlevel : mxListLevels)
-	{
-		if (xListlevel.second)
-			delete xListlevel.second;
-	}
-
 }
 
 bool ListStyle::isListLevelDefined(int iLevel) const
@@ -184,13 +180,13 @@ bool ListStyle::isListLevelDefined(int iLevel) const
 	return iter != mxListLevels.end() && iter->second;
 }
 
-void ListStyle::setListLevel(int iLevel, ListLevelStyle *iListLevelStyle)
+void ListStyle::setListLevel(int iLevel, std::unique_ptr<ListLevelStyle> iListLevelStyle)
 {
 	// can't uncomment this next line without adding some extra logic.
 	// figure out which is best: use the initial message, or constantly
 	// update?
 	if (!isListLevelDefined(iLevel))
-		mxListLevels[iLevel] = iListLevelStyle;
+		mxListLevels[iLevel] = std::move(iListLevelStyle);
 }
 
 void ListStyle::updateListLevel(const int iLevel, const librevenge::RVNGPropertyList &xPropList, bool ordered)
@@ -200,9 +196,9 @@ void ListStyle::updateListLevel(const int iLevel, const librevenge::RVNGProperty
 	if (!isListLevelDefined(iLevel))
 	{
 		if (ordered)
-			setListLevel(iLevel, new OrderedListLevelStyle(xPropList));
+			setListLevel(iLevel, make_unique<OrderedListLevelStyle>(xPropList));
 		else
-			setListLevel(iLevel, new UnorderedListLevelStyle(xPropList));
+			setListLevel(iLevel, make_unique<UnorderedListLevelStyle>(xPropList));
 	}
 }
 

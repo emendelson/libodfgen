@@ -83,7 +83,7 @@ public:
 	}
 
 protected:
-	void setListLevel(int iLevel, ListLevelStyle *iListLevelStyle);
+	void setListLevel(int iLevel, std::unique_ptr<ListLevelStyle> iListLevelStyle);
 
 private:
 	ListStyle(const ListStyle &);
@@ -92,7 +92,7 @@ private:
 	librevenge::RVNGString mDisplayName;
 	//! the list id
 	const int miListID;
-	std::map<int, ListLevelStyle *> mxListLevels;
+	std::map<int, std::unique_ptr<ListLevelStyle>> mxListLevels;
 };
 
 /** a list manager */
