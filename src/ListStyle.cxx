@@ -181,10 +181,7 @@ ListStyle::~ListStyle()
 bool ListStyle::isListLevelDefined(int iLevel) const
 {
 	auto iter = mxListLevels.find(iLevel);
-	if (iter == mxListLevels.end() || !iter->second)
-		return false;
-
-	return true;
+	return iter != mxListLevels.end() && iter->second;
 }
 
 void ListStyle::setListLevel(int iLevel, ListLevelStyle *iListLevelStyle)
