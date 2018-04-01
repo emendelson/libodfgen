@@ -452,7 +452,7 @@ protected:
 	// the number of created object
 	int miObjectNumber;
 	// name to object map
-	std::map<librevenge::RVNGString, ObjectContainer *> mNameObjectMap;
+	std::map<librevenge::RVNGString, std::unique_ptr<ObjectContainer>> mNameObjectMap;
 
 	// embedded image handlers
 	std::map<librevenge::RVNGString, OdfEmbeddedImage > mImageHandlers;

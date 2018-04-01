@@ -142,12 +142,6 @@ OdfGenerator::~OdfGenerator()
 	mFillManager.clean();
 	mGraphicManager.clean();
 	mTableManager.clean();
-	std::map<librevenge::RVNGString, ObjectContainer *>::iterator it;
-	for (it=mNameObjectMap.begin(); it!=mNameObjectMap.end(); ++it)
-	{
-		if (it->second)
-			delete it->second;
-	}
 }
 
 std::string OdfGenerator::getDocumentType(OdfStreamType streamType)
@@ -282,8 +276,7 @@ void OdfGenerator::appendFilesInManifest(OdfDocumentHandler *pHandler)
 		file.write(pHandler);
 		TagCloseElement("manifest:file-entry").write(pHandler);
 	}
-	std::map<librevenge::RVNGString, ObjectContainer *>::const_iterator oIt;
-	for (oIt=mNameObjectMap.begin(); oIt!=mNameObjectMap.end(); ++oIt)
+	for (auto oIt=mNameObjectMap.begin(); oIt!=mNameObjectMap.end(); ++oIt)
 	{
 		if (!oIt->second) continue;
 
@@ -358,16 +351,15 @@ OdfGenerator::ObjectContainer::~ObjectContainer()
 OdfGenerator::ObjectContainer &OdfGenerator::createObjectFile
 (librevenge::RVNGString const &objectName, librevenge::RVNGString const &objectType, bool isDir)
 {
-	auto *res=new ObjectContainer(objectType, isDir);
-	mNameObjectMap[objectName]=res;
-	return *res;
+	std::unique_ptr<ObjectContainer> res{new ObjectContainer(objectType, isDir)};
+	auto ret = mNameObjectMap.insert(std::make_pair(objectName, std::move(res)));
+	return *ret.first->second;
 }
 
 librevenge::RVNGStringVector OdfGenerator::getObjectNames() const
 {
 	librevenge::RVNGStringVector res;
-	std::map<librevenge::RVNGString, ObjectContainer *>::const_iterator it;
-	for (it=mNameObjectMap.begin(); it!=mNameObjectMap.end(); ++it)
+	for (auto it=mNameObjectMap.begin(); it!=mNameObjectMap.end(); ++it)
 	{
 		if (!it->second || it->second->mIsDir) continue;
 		res.append(it->first);
