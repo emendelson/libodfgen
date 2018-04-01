@@ -25,6 +25,8 @@
 #ifndef __ODCGENERATOR_HXX__
 #define __ODCGENERATOR_HXX__
 
+#include <memory>
+
 #include <librevenge/librevenge.h>
 
 #include <libodfgen/OdfDocumentHandler.hxx>
@@ -99,7 +101,7 @@ private:
 	OdcGenerator(OdcGenerator const &);
 	OdcGenerator &operator=(OdcGenerator const &);
 
-	OdcGeneratorPrivate *mpImpl;
+	std::unique_ptr<OdcGeneratorPrivate> mpImpl;
 };
 
 #endif // __ODCGENERATOR_HXX__

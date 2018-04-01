@@ -442,8 +442,6 @@ OdcGenerator::OdcGenerator() : mpImpl(new OdcGeneratorPrivate)
 
 OdcGenerator::~OdcGenerator()
 {
-	if (mpImpl)
-		delete mpImpl;
 }
 
 void OdcGenerator::addDocumentHandler(OdfDocumentHandler *pHandler, const OdfStreamType streamType)
