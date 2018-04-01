@@ -732,7 +732,7 @@ bool OdsGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 		// writing out the document
 		TagOpenElement("office:body").write(pHandler);
 		TagOpenElement("office:spreadsheet").write(pHandler);
-		sendStorage(&mBodyStorage, pHandler);
+		sendStorage(mpBodyStorage.get(), pHandler);
 		pHandler->endElement("office:spreadsheet");
 		pHandler->endElement("office:body");
 		ODFGEN_DEBUG_MSG(("OdsGenerator: Document Body: Finished writing all doc els..\n"));
@@ -789,7 +789,7 @@ void OdsGenerator::openSheet(const librevenge::RVNGPropertyList &propList)
 	}
 
 	librevenge::RVNGPropertyList finalPropList(propList);
-	if (mpImpl->getCurrentStorage() == &mpImpl->getBodyStorage())
+	if (mpImpl->getCurrentStorage() == mpImpl->getBodyStorage())
 	{
 		if (mpImpl->mpCurrentPageSpan)
 			finalPropList.insert("style:master-page-name", mpImpl->mpCurrentPageSpan->getMasterName());
@@ -1198,7 +1198,7 @@ void OdsGenerator::openHeader(const librevenge::RVNGPropertyList &propList)
 	if (!mpImpl->inHeaderFooter())
 		return;
 
-	auto *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
+	auto pHeaderFooterContentElements = std::make_shared<libodfgen::DocumentElementVector>();
 	if (propList["librevenge:occurrence"] && (propList["librevenge:occurrence"]->getStr() == "even" ||
 	                                          propList["librevenge:occurrence"]->getStr() == "left"))
 		mpImpl->mpCurrentPageSpan->setHeaderLeftContent(pHeaderFooterContentElements);
@@ -1242,7 +1242,7 @@ void OdsGenerator::openFooter(const librevenge::RVNGPropertyList &propList)
 	if (!mpImpl->inHeaderFooter())
 		return;
 
-	auto *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
+	auto pHeaderFooterContentElements = std::make_shared<libodfgen::DocumentElementVector>();
 	if (propList["librevenge:occurrence"] && (propList["librevenge:occurrence"]->getStr() == "even" ||
 	                                          propList["librevenge:occurrence"]->getStr() == "left"))
 		mpImpl->mpCurrentPageSpan->setFooterLeftContent(pHeaderFooterContentElements);

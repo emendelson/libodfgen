@@ -93,10 +93,10 @@ static void appendUnicodeTo(unsigned long val, librevenge::RVNGString &buffer)
 }
 
 OdfGenerator::OdfGenerator()
-	: mpCurrentStorage(&mBodyStorage)
+	: mpCurrentStorage()
 	, mStorageStack()
 	, mMetaDataStorage()
-	, mBodyStorage()
+	, mpBodyStorage(new libodfgen::DocumentElementVector())
 	, mPageSpanManager()
 	, mFontManager()
 	, mFillManager()
@@ -130,6 +130,7 @@ OdfGenerator::OdfGenerator()
 	, mParagraphHeadingStack()
 	, mXmlToUnicodeMap()
 {
+	mpCurrentStorage = mpBodyStorage;
 }
 
 OdfGenerator::~OdfGenerator()
@@ -329,8 +330,8 @@ void OdfGenerator::appendBodySettings(const librevenge::RVNGPropertyList &propLi
 				if (child[wh[i]])
 					calcSetting->addAttribute(wh[i], child[wh[i]]->getStr());
 			}
-			mBodyStorage.push_back(calcSetting);
-			mBodyStorage.push_back(std::make_shared<TagCloseElement>("table:calculation-settings"));
+			mpBodyStorage->push_back(calcSetting);
+			mpBodyStorage->push_back(std::make_shared<TagCloseElement>("table:calculation-settings"));
 		}
 		else
 		{
@@ -410,7 +411,7 @@ void OdfGenerator::sendStorage(libodfgen::DocumentElementVector const *storage, 
 	}
 }
 
-void OdfGenerator::pushStorage(libodfgen::DocumentElementVector *newStorage)
+void OdfGenerator::pushStorage(const std::shared_ptr<libodfgen::DocumentElementVector> &newStorage)
 {
 	if (!newStorage)
 	{

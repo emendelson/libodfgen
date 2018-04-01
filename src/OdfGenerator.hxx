@@ -28,6 +28,7 @@
 #define _ODFGENERATOR_HXX_
 
 #include <map>
+#include <memory>
 #include <set>
 #include <stack>
 #include <string>
@@ -150,18 +151,18 @@ public:
 	//
 
 	//! returns the current storage
-	libodfgen::DocumentElementVector *getCurrentStorage()
+	const std::shared_ptr<libodfgen::DocumentElementVector> &getCurrentStorage()
 	{
 		return mpCurrentStorage;
 	}
 	//! push a storage
-	void pushStorage(libodfgen::DocumentElementVector *newStorage);
+	void pushStorage(const std::shared_ptr<libodfgen::DocumentElementVector> &newStorage);
 	/** pop a storage */
 	bool popStorage();
 	//! returns the body storage
-	libodfgen::DocumentElementVector &getBodyStorage()
+	const std::shared_ptr<libodfgen::DocumentElementVector> &getBodyStorage()
 	{
-		return mBodyStorage;
+		return mpBodyStorage;
 	}
 	//! returns the meta data storage
 	libodfgen::DocumentElementVector &getMetaDataStorage()
@@ -374,13 +375,13 @@ protected:
 	void unescapeXML(const char *s, const unsigned long sz, librevenge::RVNGString &res);
 
 	// the current set of elements that we're writing to
-	libodfgen::DocumentElementVector *mpCurrentStorage;
+	std::shared_ptr<libodfgen::DocumentElementVector> mpCurrentStorage;
 	// the stack of all storage
-	std::stack<libodfgen::DocumentElementVector *> mStorageStack;
+	std::stack<std::shared_ptr<libodfgen::DocumentElementVector>> mStorageStack;
 	// the meta data elements
 	libodfgen::DocumentElementVector mMetaDataStorage;
 	// content elements
-	libodfgen::DocumentElementVector mBodyStorage;
+	std::shared_ptr<libodfgen::DocumentElementVector> mpBodyStorage;
 
 	// page span manager
 	PageSpanManager mPageSpanManager;

@@ -422,7 +422,7 @@ bool OdcGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 		// writing out the document
 		TagOpenElement("office:body").write(pHandler);
 		TagOpenElement("office:chart").write(pHandler);
-		sendStorage(&mBodyStorage, pHandler);
+		sendStorage(mpBodyStorage.get(), pHandler);
 		ODFGEN_DEBUG_MSG(("OdcGenerator: Document Body: Finished writing all doc els..\n"));
 
 		pHandler->endElement("office:chart");

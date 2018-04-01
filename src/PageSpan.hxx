@@ -27,6 +27,7 @@
 
 #include <librevenge/librevenge.h>
 #include <map>
+#include <memory>
 #include <set>
 #include <vector>
 
@@ -115,39 +116,39 @@ public:
 	{
 		return msDrawingName;
 	}
-	void setHeaderContent(libodfgen::DocumentElementVector *pContent)
+	void setHeaderContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_Header, pContent);
 	}
-	void setFooterContent(libodfgen::DocumentElementVector *pContent)
+	void setFooterContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_Footer, pContent);
 	}
-	void setHeaderLeftContent(libodfgen::DocumentElementVector *pContent)
+	void setHeaderLeftContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_HeaderLeft, pContent);
 	}
-	void setFooterLeftContent(libodfgen::DocumentElementVector *pContent)
+	void setFooterLeftContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_FooterLeft, pContent);
 	}
-	void setHeaderFirstContent(libodfgen::DocumentElementVector *pContent)
+	void setHeaderFirstContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_HeaderFirst, pContent);
 	}
-	void setFooterFirstContent(libodfgen::DocumentElementVector *pContent)
+	void setFooterFirstContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_FooterFirst, pContent);
 	}
-	void setHeaderLastContent(libodfgen::DocumentElementVector *pContent)
+	void setHeaderLastContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_HeaderLast, pContent);
 	}
-	void setFooterLastContent(libodfgen::DocumentElementVector *pContent)
+	void setFooterLastContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_FooterLast, pContent);
 	}
-	void setMasterContent(libodfgen::DocumentElementVector *pContent)
+	void setMasterContent(const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 	{
 		storeContent(C_Master, pContent);
 	}
@@ -155,7 +156,7 @@ public:
 	/** small function which mainly replaced space by underscore */
 	static librevenge::RVNGString protectString(librevenge::RVNGString const &orig);
 protected:
-	void storeContent(ContentType type, libodfgen::DocumentElementVector *pContent);
+	void storeContent(ContentType type, const std::shared_ptr<libodfgen::DocumentElementVector> &pContent);
 	void _writeContent(const char *contentTagName, const libodfgen::DocumentElementVector &content,
 	                   OdfDocumentHandler *pHandler) const;
 private:
@@ -171,7 +172,7 @@ private:
 	librevenge::RVNGString msLayoutName;
 	//! the page drawing display name
 	librevenge::RVNGString msDrawingName;
-	libodfgen::DocumentElementVector *mpContent[C_NumContentTypes];
+	std::shared_ptr<libodfgen::DocumentElementVector> mpContent[C_NumContentTypes];
 };
 
 //! class used to store the list of created page

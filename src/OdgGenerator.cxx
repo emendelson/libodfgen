@@ -339,7 +339,7 @@ bool OdgGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 	{
 		TagOpenElement("office:body").write(pHandler);
 		TagOpenElement("office:drawing").write(pHandler);
-		sendStorage(&mBodyStorage, pHandler);
+		sendStorage(mpBodyStorage.get(), pHandler);
 		pHandler->endElement("office:drawing");
 		pHandler->endElement("office:body");
 	}
@@ -456,7 +456,7 @@ void OdgGenerator::startMasterPage(const librevenge::RVNGPropertyList &propList)
 		PageSpan *pageSpan=mpImpl->getPageSpanManager().add(pList, true);
 		if (pageSpan)
 		{
-			auto *pMasterElements = new libodfgen::DocumentElementVector;
+			auto pMasterElements = std::make_shared<libodfgen::DocumentElementVector>();
 			pageSpan->setMasterContent(pMasterElements);
 			mpImpl->pushStorage(pMasterElements);
 		}
@@ -466,7 +466,7 @@ void OdgGenerator::startMasterPage(const librevenge::RVNGPropertyList &propList)
 	if (!ok)
 	{
 		ODFGEN_DEBUG_MSG(("OdgGenerator::startMasterPage: creation of the master page has failed\n"));
-		mpImpl->pushStorage(&mpImpl->mDummyMasterSlideStorage);
+		mpImpl->pushStorage(std::shared_ptr<libodfgen::DocumentElementVector>(&mpImpl->mDummyMasterSlideStorage, libodfgen::DummyDeleter()));
 	}
 	mpImpl->pushState();
 }

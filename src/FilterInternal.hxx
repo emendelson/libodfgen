@@ -63,6 +63,11 @@ std::unique_ptr<T> make_unique(Args &&... args)
 	return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
+struct DummyDeleter
+{
+	void operator()(void *) {}
+};
+
 librevenge::RVNGString doubleToString(const double value);
 bool getInchValue(librevenge::RVNGProperty const &prop, double &value);
 

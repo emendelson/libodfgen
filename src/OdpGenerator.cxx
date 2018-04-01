@@ -32,6 +32,7 @@
 #include <deque>
 #include <string>
 #include <map>
+#include <memory>
 #include <stack>
 
 #include "DocumentElement.hxx"
@@ -509,7 +510,7 @@ bool OdpGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 	{
 		TagOpenElement("office:body").write(pHandler);
 		TagOpenElement("office:presentation").write(pHandler);
-		sendStorage(&mBodyStorage, pHandler);
+		sendStorage(mpBodyStorage.get(), pHandler);
 		pHandler->endElement("office:presentation");
 		pHandler->endElement("office:body");
 	}
@@ -619,7 +620,7 @@ void OdpGenerator::startMasterSlide(const librevenge::RVNGPropertyList &propList
 		PageSpan *pageSpan=mpImpl->getPageSpanManager().add(pList, true);
 		if (pageSpan)
 		{
-			auto *pMasterElements = new libodfgen::DocumentElementVector;
+			auto pMasterElements = std::make_shared<libodfgen::DocumentElementVector>();
 			pageSpan->setMasterContent(pMasterElements);
 			mpImpl->pushStorage(pMasterElements);
 		}
@@ -629,7 +630,7 @@ void OdpGenerator::startMasterSlide(const librevenge::RVNGPropertyList &propList
 	if (!ok)
 	{
 		ODFGEN_DEBUG_MSG(("OdpGenerator::startMasterSlide creation of the master page has failed\n"));
-		mpImpl->pushStorage(&mpImpl->mDummyMasterSlideStorage);
+		mpImpl->pushStorage(std::shared_ptr<libodfgen::DocumentElementVector>(&mpImpl->mDummyMasterSlideStorage, libodfgen::DummyDeleter()));
 	}
 }
 

@@ -172,10 +172,6 @@ PageSpan::PageSpan(librevenge::RVNGString const &masterName, librevenge::RVNGStr
 
 PageSpan::~PageSpan()
 {
-	for (auto &i : mpContent)
-	{
-		if (i) delete i;
-	}
 }
 
 librevenge::RVNGString PageSpan::protectString(librevenge::RVNGString const &orig)
@@ -187,7 +183,7 @@ librevenge::RVNGString PageSpan::protectString(librevenge::RVNGString const &ori
 	return res;
 }
 
-void PageSpan::storeContent(ContentType type, libodfgen::DocumentElementVector *pContent)
+void PageSpan::storeContent(ContentType type, const std::shared_ptr<libodfgen::DocumentElementVector> &pContent)
 {
 	if (type<0||type>=C_NumContentTypes)
 	{
@@ -195,8 +191,6 @@ void PageSpan::storeContent(ContentType type, libodfgen::DocumentElementVector *
 		// probably better to do not delete it
 		return;
 	}
-	if (mpContent[type])
-		delete mpContent[type];
 	mpContent[type]=pContent;
 }
 

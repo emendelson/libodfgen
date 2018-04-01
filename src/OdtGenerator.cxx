@@ -435,7 +435,7 @@ bool OdtGeneratorPrivate::writeTargetDocument(OdfDocumentHandler *pHandler, OdfS
 		// writing out the document
 		TagOpenElement("office:body").write(pHandler);
 		TagOpenElement("office:text").write(pHandler);
-		sendStorage(&mBodyStorage, pHandler);
+		sendStorage(mpBodyStorage.get(), pHandler);
 		ODFGEN_DEBUG_MSG(("OdtGenerator: Document Body: Finished writing all doc els..\n"));
 
 		pHandler->endElement("office:text");
@@ -507,7 +507,7 @@ void OdtGenerator::openHeader(const librevenge::RVNGPropertyList &propList)
 	if (!mpImpl->inHeaderFooter())
 		return;
 
-	auto *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
+	auto pHeaderFooterContentElements = std::make_shared<libodfgen::DocumentElementVector>();
 	if (propList["librevenge:occurrence"] && (propList["librevenge:occurrence"]->getStr() == "even" ||
 	                                          propList["librevenge:occurrence"]->getStr() == "left"))
 		mpImpl->mpCurrentPageSpan->setHeaderLeftContent(pHeaderFooterContentElements);
@@ -543,7 +543,7 @@ void OdtGenerator::openFooter(const librevenge::RVNGPropertyList &propList)
 	if (!mpImpl->inHeaderFooter())
 		return;
 
-	auto *pHeaderFooterContentElements = new libodfgen::DocumentElementVector;
+	auto pHeaderFooterContentElements = std::make_shared<libodfgen::DocumentElementVector>();;
 	if (propList["librevenge:occurrence"] && (propList["librevenge:occurrence"]->getStr() == "even" ||
 	                                          propList["librevenge:occurrence"]->getStr() == "left"))
 		mpImpl->mpCurrentPageSpan->setFooterLeftContent(pHeaderFooterContentElements);
@@ -608,7 +608,7 @@ void OdtGenerator::openParagraph(const librevenge::RVNGPropertyList &propList)
 	// from "Table Contents"
 
 	librevenge::RVNGPropertyList finalPropList(propList);
-	if (mpImpl->getState().mbFirstParagraphInPageSpan && mpImpl->getCurrentStorage() == &mpImpl->getBodyStorage())
+	if (mpImpl->getState().mbFirstParagraphInPageSpan && mpImpl->getCurrentStorage() == mpImpl->getBodyStorage())
 	{
 		if (!mpImpl->mpCurrentPageSpan)
 		{
@@ -686,7 +686,7 @@ void OdtGenerator::closeUnorderedListLevel()
 void OdtGenerator::openListElement(const librevenge::RVNGPropertyList &propList)
 {
 	librevenge::RVNGPropertyList finalPropList(propList);
-	if (mpImpl->getState().mbFirstParagraphInPageSpan && mpImpl->getCurrentStorage() == &mpImpl->getBodyStorage())
+	if (mpImpl->getState().mbFirstParagraphInPageSpan && mpImpl->getCurrentStorage() == mpImpl->getBodyStorage())
 	{
 		if (!mpImpl->mpCurrentPageSpan)
 		{
@@ -811,7 +811,7 @@ void OdtGenerator::openTable(const librevenge::RVNGPropertyList &propList)
 		return;
 
 	librevenge::RVNGPropertyList pList(propList);
-	if (mpImpl->getState().mbFirstElement && mpImpl->getCurrentStorage() == &mpImpl->getBodyStorage())
+	if (mpImpl->getState().mbFirstElement && mpImpl->getCurrentStorage() == mpImpl->getBodyStorage())
 	{
 		if (!mpImpl->mpCurrentPageSpan)
 		{
