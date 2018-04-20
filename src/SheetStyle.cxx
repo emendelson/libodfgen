@@ -445,12 +445,63 @@ librevenge::RVNGString SheetManager::convertFormula(const librevenge::RVNGProper
 		else if (type=="librevenge-cell")
 		{
 			librevenge::RVNGString range=convertCellRange(list);
-			if (range.empty()) return res;
+			if (range.empty())
+			{
+				// look for special case: a complete row or column
+				if ((list["librevenge:column"] && list["librevenge:row"]) ||
+				        (!list["librevenge:column"] && !list["librevenge:row"]))
+					return res;
+				if (i+2<formula.count() &&
+				        formula[i+1]["librevenge:operator"] && formula[i+1]["librevenge:operator"]->getStr()==":" &&
+				        formula[i+2]["librevenge:type"] && formula[i+2]["librevenge:type"]->getStr()=="librevenge-cell")
+				{
+					// cell followed by a range's operator and a cell, recreate the range cells...
+					auto rList(list);
+					if (list["librevenge:column"]) rList.insert("librevenge:start-column", list["librevenge:column"]->getStr());
+					if (list["librevenge:column-absolute"]) rList.insert("librevenge:start-column-absolute", list["librevenge:column-absolute"]->getStr());
+					if (list["librevenge:row"]) rList.insert("librevenge:start-row", list["librevenge:row"]->getStr());
+					if (list["librevenge:row-absolute"]) rList.insert("librevenge:start-row-absolute", list["librevenge:row-absolute"]->getStr());
+					if (formula[i+2]["librevenge:column"]) rList.insert("librevenge:end-column", formula[i+2]["librevenge:column"]->getStr());
+					if (formula[i+2]["librevenge:column-absolute"]) rList.insert("librevenge:end-column-absolute", formula[i+2]["librevenge:column-absolute"]->getStr());
+					if (formula[i+2]["librevenge:row"]) rList.insert("librevenge:end-row", formula[i+2]["librevenge:row"]->getStr());
+					if (formula[i+2]["librevenge:row-absolute"]) rList.insert("librevenge:end-row-absolute", formula[i+2]["librevenge:row-absolute"]->getStr());
+					i += 2;
+					range=convertRowOrColumnCellsRange(rList);
+				}
+				else
+				{
+					// isolated cell, recreate a range cells
+					auto rList(list);
+					if (list["librevenge:column"])
+					{
+						rList.insert("librevenge:start-column", list["librevenge:column"]->getStr());
+						rList.insert("librevenge:end-column", list["librevenge:column"]->getStr());
+					}
+					if (list["librevenge:column-absolute"])
+					{
+						rList.insert("librevenge:start-column-absolute", list["librevenge:column-absolute"]->getStr());
+						rList.insert("librevenge:end-column-absolute", list["librevenge:column-absolute"]->getStr());
+					}
+					if (list["librevenge:row"])
+					{
+						rList.insert("librevenge:start-row", list["librevenge:row"]->getStr());
+						rList.insert("librevenge:end-row", list["librevenge:row"]->getStr());
+					}
+					if (list["librevenge:row-absolute"])
+					{
+						rList.insert("librevenge:start-row-absolute", list["librevenge:row-absolute"]->getStr());
+						rList.insert("librevenge:end-row-absolute", list["librevenge:row-absolute"]->getStr());
+					}
+					range=convertRowOrColumnCellsRange(rList);
+				}
+				if (range.empty()) return res;
+			}
 			s << "[" << range.cstr() << "]";
 		}
 		else if (type=="librevenge-cells")
 		{
 			librevenge::RVNGString ranges=convertCellsRange(list);
+			if (ranges.empty()) ranges=convertRowOrColumnCellsRange(list); // check for columns or rows ranges
 			if (ranges.empty()) return res;
 			s << "[" << ranges.cstr() << "]";
 		}
@@ -493,6 +544,66 @@ librevenge::RVNGString SheetManager::convertCellRange(const librevenge::RVNGProp
 	s << char('A'+(column%26));
 	if (list["librevenge:row-absolute"] && list["librevenge:row-absolute"]->getInt()) s << "$";
 	s << row+1;
+	return s.str().c_str();
+}
+
+librevenge::RVNGString SheetManager::convertRowOrColumnCellsRange(const librevenge::RVNGPropertyList &list)
+{
+	std::stringstream s;
+	librevenge::RVNGString res("");
+	bool isColumn=true;
+	if (list["librevenge:start-row"]) // check if this is a row ranges
+	{
+		if (!list["librevenge:end-row"] || list["librevenge:start-column"]) return res;
+		isColumn=false;
+	}
+	else if (!list["librevenge:start-column"] || !list["librevenge:end-column"])
+		return res;
+	int dim1=list[isColumn ? "librevenge:start-column" : "librevenge:start-row"]->getInt();
+	int dim2=list[isColumn ? "librevenge:end-column" : "librevenge:end-row"]->getInt();
+	if (dim1<0 || dim2<dim1)
+	{
+		ODFGEN_DEBUG_MSG(("SheetManager::convertRowOrColumnCellsRange: find bad coordinates!!!\n"));
+		return res;
+	}
+	if (list["librevenge:sheet-name"] || list["librevenge:start-sheet-name"])
+	{
+		if (list["librevenge:file-name"]) s << "'" << list["librevenge:file-name"]->getStr().cstr() << "'#";
+		if (list["librevenge:sheet-name"])
+			s << list["librevenge:sheet-name"]->getStr().cstr();
+		else
+			s << list["librevenge:start-sheet-name"]->getStr().cstr();
+	}
+	s << ".";
+	if (isColumn)
+	{
+		if (list["librevenge:start-column-absolute"] && list["librevenge:start-column-absolute"]->getInt()) s << "$";
+		if (dim1>=26) s << char('A'+(dim1/26-1));
+		s << char('A'+(dim1%26));
+		s << ":";
+		if (list["librevenge:end-sheet-name"])
+		{
+			if (list["librevenge:file-name"]) s << "'" << list["librevenge:file-name"]->getStr().cstr() << "'#";
+			s << list["librevenge:end-sheet-name"]->getStr().cstr();
+		}
+		s << ".";
+		if (list["librevenge:end-column-absolute"] && list["librevenge:end-column-absolute"]->getInt()) s << "$";
+		if (dim2>=26) s << char('A'+(dim2/26-1));
+		s << char('A'+(dim2%26));
+	}
+	else
+	{
+		if (list["librevenge:start-row-absolute"] && list["librevenge:start-row-absolute"]->getInt()) s << "$";
+		s << dim1+1 << ":";
+		if (list["librevenge:end-sheet-name"])
+		{
+			if (list["librevenge:file-name"]) s << "'" << list["librevenge:file-name"]->getStr().cstr() << "'#";
+			s << list["librevenge:end-sheet-name"]->getStr().cstr();
+		}
+		s << ".";
+		if (list["librevenge:end-row-absolute"] && list["librevenge:end-row-absolute"]->getInt()) s << "$";
+		s << dim2+1;
+	}
 	return s.str().c_str();
 }
 

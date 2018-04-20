@@ -145,6 +145,7 @@ public:
 	static librevenge::RVNGString convertFormula(const librevenge::RVNGPropertyListVector &formatsList);
 	static librevenge::RVNGString convertCellRange(const librevenge::RVNGPropertyList &cell);
 	static librevenge::RVNGString convertCellsRange(const librevenge::RVNGPropertyList &cells);
+	static librevenge::RVNGString convertRowOrColumnCellsRange(const librevenge::RVNGPropertyList &cells);
 
 private:
 	//! the numbering manager
