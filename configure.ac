@@ -109,9 +109,9 @@ AS_IF([test $platform_win32 = yes],
 # Check for cflags
 # ================
 AC_ARG_ENABLE([werror],
-    [AS_HELP_STRING([--disable-werror], [Treat all warnings as errors, usefull for development])],
+    [AS_HELP_STRING([--enable-werror], [Treat all warnings as errors, usefull for development])],
     [enable_werror="$enableval"],
-    [enable_werror=yes]
+    [enable_werror=no]
 )
 AS_IF([test x"$enable_werror" != "xno"], [
     CFLAGS="$CFLAGS -Werror"
