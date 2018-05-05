@@ -249,7 +249,7 @@ static void createOds()
 	{
 		cell.insert("librevenge:column", c);
 		generator.openSheetCell(cell);
-		static char const *(wh[3])= {"a","b","c"};
+		static char const *wh[3] = {"a","b","c"};
 		generator.openParagraph(librevenge::RVNGPropertyList());
 		generator.openSpan(span);
 		generator.insertText(wh[c]);
