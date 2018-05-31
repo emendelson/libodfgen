@@ -36,6 +36,30 @@
 #include "NumberingStyle.hxx"
 #include "TextRunStyle.hxx"
 
+namespace libodfgen
+{
+static std::string getColumnName(int col)
+{
+	// note: we can also limit the maximal number of column. However,
+	// in this case, the current code must generate a valid string ;
+	// of course, the resulting formula will be invalid when col is
+	// too big (which seems ok and the best that we can do)
+	if (col<0)
+	{
+		ODFGEN_DEBUG_MSG(("libodfgen::getColumnName[SheetStyle.cxx]: called with invalid column %d\n", col));
+		return "ZZZZ"; // we must return something, ZZZZ must make the formula invalid...
+	}
+	std::string name(1, char(col%26+'A'));
+	col /= 26;
+	while (col>0)
+	{
+		--col;
+		name.insert(0, std::string(1,char(col%26+'A')));
+		col /= 26;
+	}
+	return name;
+}
+}
 SheetCellStyle::SheetCellStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName) :
 	Style(psName),
 	mPropList(xPropList)
@@ -540,8 +564,7 @@ librevenge::RVNGString SheetManager::convertCellRange(const librevenge::RVNGProp
 	}
 	s << ".";
 	if (list["librevenge:column-absolute"] && list["librevenge:column-absolute"]->getInt()) s << "$";
-	if (column>=26) s << char('A'+(column/26-1));
-	s << char('A'+(column%26));
+	s << libodfgen::getColumnName(column);
 	if (list["librevenge:row-absolute"] && list["librevenge:row-absolute"]->getInt()) s << "$";
 	s << row+1;
 	return s.str().c_str();
@@ -578,8 +601,7 @@ librevenge::RVNGString SheetManager::convertRowOrColumnCellsRange(const libreven
 	if (isColumn)
 	{
 		if (list["librevenge:start-column-absolute"] && list["librevenge:start-column-absolute"]->getInt()) s << "$";
-		if (dim1>=26) s << char('A'+(dim1/26-1));
-		s << char('A'+(dim1%26));
+		s << libodfgen::getColumnName(dim1);
 		s << ":";
 		if (list["librevenge:end-sheet-name"])
 		{
@@ -588,8 +610,7 @@ librevenge::RVNGString SheetManager::convertRowOrColumnCellsRange(const libreven
 		}
 		s << ".";
 		if (list["librevenge:end-column-absolute"] && list["librevenge:end-column-absolute"]->getInt()) s << "$";
-		if (dim2>=26) s << char('A'+(dim2/26-1));
-		s << char('A'+(dim2%26));
+		s << libodfgen::getColumnName(dim2);
 	}
 	else
 	{
@@ -633,8 +654,7 @@ librevenge::RVNGString SheetManager::convertCellsRange(const librevenge::RVNGPro
 	}
 	s << ".";
 	if (list["librevenge:start-column-absolute"] && list["librevenge:start-column-absolute"]->getInt()) s << "$";
-	if (column>=26) s << char('A'+(column/26-1));
-	s << char('A'+(column%26));
+	s << libodfgen::getColumnName(column);
 	if (list["librevenge:start-row-absolute"] && list["librevenge:start-row-absolute"]->getInt()) s << "$";
 	s << row+1 << ":";
 	if (list["librevenge:end-sheet-name"])
@@ -653,8 +673,7 @@ librevenge::RVNGString SheetManager::convertCellsRange(const librevenge::RVNGPro
 		return res;
 	}
 	if (list["librevenge:end-column-absolute"] && list["librevenge:end-column-absolute"]->getInt()) s << "$";
-	if (column>=26) s << char('A'+(column/26-1));
-	s << char('A'+(column%26));
+	s << libodfgen::getColumnName(column);
 	if (list["librevenge:end-row-absolute"] && list["librevenge:end-row-absolute"]->getInt()) s << "$";
 	s << row+1;
 	return s.str().c_str();
