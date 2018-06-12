@@ -1,3 +1,17 @@
+libodfgen 0.1.7
+- All:
+    + switch to C++-11
+    + fuzzing: correct many problem
+    + support more text's style attributes
+    + add support for named's graphic style
+    + ods/odt: try to retrieve some MathML equations
+- Chart:
+    + support more attributes,
+- Spreadsheet:
+    + allow external file reference
+    + do not create invalid file if there is more than 26*26 columns
+- Other improvements and fixes.
+
 libodfgen 0.1.6
 - All:
     + Support hatching fills.
