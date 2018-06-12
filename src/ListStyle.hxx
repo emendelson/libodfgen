@@ -43,7 +43,7 @@ public:
 class OrderedListLevelStyle : public ListLevelStyle
 {
 public:
-	OrderedListLevelStyle(const librevenge::RVNGPropertyList &xPropList);
+	explicit OrderedListLevelStyle(const librevenge::RVNGPropertyList &xPropList);
 	void write(OdfDocumentHandler *pHandler, int iLevel) const override;
 private:
 	librevenge::RVNGPropertyList mPropList;
@@ -52,7 +52,7 @@ private:
 class UnorderedListLevelStyle : public ListLevelStyle
 {
 public:
-	UnorderedListLevelStyle(const librevenge::RVNGPropertyList &xPropList);
+	explicit UnorderedListLevelStyle(const librevenge::RVNGPropertyList &xPropList);
 	void write(OdfDocumentHandler *pHandler, int iLevel) const override;
 private:
 	librevenge::RVNGPropertyList mPropList;

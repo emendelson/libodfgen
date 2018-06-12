@@ -42,7 +42,10 @@ class TagElement : public DocumentElement
 {
 public:
 	~TagElement() override {}
-	TagElement(const librevenge::RVNGString &szTagName) : msTagName(szTagName) {}
+	explicit TagElement(const librevenge::RVNGString &szTagName)
+		: msTagName(szTagName)
+	{
+	}
 	const librevenge::RVNGString &getTagName() const
 	{
 		return msTagName;
@@ -52,43 +55,58 @@ private:
 	librevenge::RVNGString msTagName;
 };
 
-class TagOpenElement : public TagElement
+class TagOpenElement final : public TagElement
 {
 public:
-	TagOpenElement(const librevenge::RVNGString &szTagName) : TagElement(szTagName), maAttrList() {}
-	~TagOpenElement() override {}
+	explicit TagOpenElement(const librevenge::RVNGString &szTagName)
+		: TagElement(szTagName)
+		, maAttrList()
+	{
+	}
+	~TagOpenElement() final {}
 	void addAttribute(const librevenge::RVNGString &szAttributeName,
 	                  const librevenge::RVNGString &sAttributeValue, bool forceString=true);
-	void write(OdfDocumentHandler *pHandler) const override;
-	void print() const override;
+	void write(OdfDocumentHandler *pHandler) const final;
+	void print() const final;
 private:
 	librevenge::RVNGPropertyList maAttrList;
 };
 
-class TagCloseElement : public TagElement
+class TagCloseElement final : public TagElement
 {
 public:
-	TagCloseElement(const librevenge::RVNGString &szTagName) : TagElement(szTagName) {}
-	~TagCloseElement() override {}
-	void write(OdfDocumentHandler *pHandler) const override;
+	explicit TagCloseElement(const librevenge::RVNGString &szTagName)
+		: TagElement(szTagName)
+	{
+	}
+	~TagCloseElement() final {}
+	void write(OdfDocumentHandler *pHandler) const final;
 };
 
-class CharDataElement : public DocumentElement
+class CharDataElement final : public DocumentElement
 {
 public:
-	CharDataElement(const librevenge::RVNGString &sData) : DocumentElement(), msData(sData) {}
-	~CharDataElement() override {}
-	void write(OdfDocumentHandler *pHandler) const override;
+	explicit CharDataElement(const librevenge::RVNGString &sData)
+		: DocumentElement()
+		, msData(sData)
+	{
+	}
+	~CharDataElement() final {}
+	void write(OdfDocumentHandler *pHandler) const final;
 private:
 	librevenge::RVNGString msData;
 };
 
-class TextElement : public DocumentElement
+class TextElement final : public DocumentElement
 {
 public:
-	TextElement(const librevenge::RVNGString &sTextBuf) : DocumentElement(), msTextBuf(sTextBuf) {}
-	~TextElement() override {}
-	void write(OdfDocumentHandler *pHandler) const override;
+	explicit TextElement(const librevenge::RVNGString &sTextBuf)
+		: DocumentElement()
+		, msTextBuf(sTextBuf)
+	{
+	}
+	~TextElement() final {}
+	void write(OdfDocumentHandler *pHandler) const final;
 
 private:
 	librevenge::RVNGString msTextBuf;

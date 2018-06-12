@@ -35,7 +35,7 @@
 class InternalHandler : public OdfDocumentHandler
 {
 public:
-	InternalHandler(libodfgen::DocumentElementVector *elements) :mpElements(elements)
+	explicit InternalHandler(libodfgen::DocumentElementVector *elements) :mpElements(elements)
 	{
 	}
 	~InternalHandler() override {};

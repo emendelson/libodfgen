@@ -110,7 +110,11 @@ public:
 	// the odc state
 	struct OdcGeneratorState
 	{
-		OdcGeneratorState(librevenge::RVNGString const &dir) : mDir(dir), mContentElements(), mInternalHandler(&mContentElements), mGenerator()
+		explicit OdcGeneratorState(librevenge::RVNGString const &dir)
+			: mDir(dir)
+			, mContentElements()
+			, mInternalHandler(&mContentElements)
+			, mGenerator()
 		{
 			if (!mDir.empty()) return;
 			mGenerator.addDocumentHandler(&mInternalHandler,ODF_FLAT_XML);
