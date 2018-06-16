@@ -1,12 +1,12 @@
 if COMPILE_TEST
 
-AM_CXXFLAGS = $(REVENGE_CFLAGS) -I../inc/
+AM_CXXFLAGS = $(REVENGE_CFLAGS) -I$(top_srcdir)/inc/
 
 targets=testChart1 testGraphic1 testLayer1 testLink1 testList1 testMasterPage1 testPageSpan1 testPara1 testSpan1 testTable1 testTextbox1
 noinst_PROGRAMS= $(targets)
 
 EXTRA_SRC=StringDocumentHandler.cxx StringDocumentHandler.hxx
-EXTRA_LDD=../src/libodfgen-@LIBODFGEN_MAJOR_VERSION@.@LIBODFGEN_MINOR_VERSION@.la \
+EXTRA_LDD=$(top_builddir)/src/libodfgen-@LIBODFGEN_MAJOR_VERSION@.@LIBODFGEN_MINOR_VERSION@.la \
 	$(REVENGE_LIBS) $(REVENGE_STREAM_LIBS)
 
 testChart1_DEPENDENCIES =
