@@ -36,7 +36,11 @@
 #include <limits>
 #include <string>
 #include <stack>
+#if defined(HAVE_STDCXX_REGEX)
 #include <regex>
+#else
+#include <boost/regex.hpp>
+#endif
 
 #include <librevenge/librevenge.h>
 
@@ -1396,17 +1400,29 @@ void OdfGenerator::insertEquation(const librevenge::RVNGPropertyList &propList)
 
 	try
 	{
+#if defined(HAVE_STDCXX_REGEX)
+		using std::regex;
+		using std::regex_search;
+		using std::sregex_iterator;
+		using std::smatch;
+#else
+		using boost::regex;
+		using boost::regex_search;
+		using boost::sregex_iterator;
+		using boost::smatch;
+#endif
+
 		std::vector<std::shared_ptr<DocumentElement> > elementStack;
 		elementStack.push_back(std::make_shared<TagOpenElement>("draw:object"));
 		std::stack<std::string> nameStack;
 
-		std::regex elementOrDataExpr("\\s*((?:<[^>]+>)|(?:[^<]+))"); // element or data
-		std::regex begElementExpr("<\\s*(/{0,1})\\s*([a-zA-Z]+)"); // <[/]name
-		std::regex attributeExpr("\\s*([a-zA-Z]+)\\s*=\\s*([\"'])([^\"']*)\\2"); // attribName=attribValue
-		std::regex endElementExpr("\\s*(/{0,1})\\s*>\\s*"); // [/]>
+		regex elementOrDataExpr("\\s*((?:<[^>]+>)|(?:[^<]+))"); // element or data
+		regex begElementExpr("<\\s*(/{0,1})\\s*([a-zA-Z]+)"); // <[/]name
+		regex attributeExpr("\\s*([a-zA-Z]+)\\s*=\\s*([\"'])([^\"']*)\\2"); // attribName=attribValue
+		regex endElementExpr("\\s*(/{0,1})\\s*>\\s*"); // [/]>
 
-		std::smatch bm;
-		for (auto i=std::sregex_iterator(data.begin(), data.end(), elementOrDataExpr); i!=std::sregex_iterator(); ++i)
+		smatch bm;
+		for (auto i=sregex_iterator(data.begin(), data.end(), elementOrDataExpr); i!=sregex_iterator(); ++i)
 		{
 			if (i->size()!=2 || !i->prefix().str().empty())
 				throw "find a prefix";
@@ -1419,7 +1435,7 @@ void OdfGenerator::insertEquation(const librevenge::RVNGPropertyList &propList)
 				elementStack.push_back(std::make_shared<CharDataElement>(res));
 				continue;
 			}
-			if (!std::regex_search(element,bm,begElementExpr) || !bm.prefix().str().empty() || bm.size()<3) // an element
+			if (!regex_search(element,bm,begElementExpr) || !bm.prefix().str().empty() || bm.size()<3) // an element
 				throw "can not parse element";
 			auto keyword=bm[2].str();
 			bool closeElement=bm[1].str()=="/";
@@ -1428,7 +1444,7 @@ void OdfGenerator::insertEquation(const librevenge::RVNGPropertyList &propList)
 			if (!closeElement)
 			{
 				elt=std::make_shared<TagOpenElement>(keyword.c_str());
-				for (auto attr=std::sregex_iterator(remain.begin(), remain.end(), attributeExpr); attr!=std::sregex_iterator(); ++attr)
+				for (auto attr=sregex_iterator(remain.begin(), remain.end(), attributeExpr); attr!=sregex_iterator(); ++attr)
 				{
 					if (attr->size()!=4 || !attr->prefix().str().empty())
 						throw "find a prefix when parsing attribute";
@@ -1436,7 +1452,7 @@ void OdfGenerator::insertEquation(const librevenge::RVNGPropertyList &propList)
 					endElement=attr->suffix().str();
 				}
 			}
-			if (!std::regex_search(endElement,bm,endElementExpr) || bm.size()<2 || !bm.prefix().str().empty() || !bm.suffix().str().empty() || (closeElement && !bm[1].str().empty()))
+			if (!regex_search(endElement,bm,endElementExpr) || bm.size()<2 || !bm.prefix().str().empty() || !bm.suffix().str().empty() || (closeElement && !bm[1].str().empty()))
 				throw "can not find end element";
 
 			if (closeElement)
