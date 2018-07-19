@@ -91,10 +91,15 @@ void TableCellStyle::writeStyles(OdfDocumentHandler *pHandler, bool compatibleOd
 		pHandler->endElement("style:graphic-properties");
 
 		// HACK to get visible borders
-		if (mPropList["fo:border"])
+		pList.clear();
+		char const *(borders[])= { "fo:border", "fo:border-bottom",  "fo:border-left",  "fo:border-right",  "fo:border-top" };
+		for (auto bo : borders)
 		{
-			pList.clear();
-			pList.insert("fo:border", mPropList["fo:border"]->getStr());
+			if (mPropList[bo])
+				pList.insert(bo, mPropList[bo]->getStr());
+		}
+		if (!pList.empty())
+		{
 			pHandler->startElement("style:paragraph-properties", pList);
 			pHandler->endElement("style:paragraph-properties");
 		}
