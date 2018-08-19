@@ -180,10 +180,10 @@ void SheetRowStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const 
 	styleOpen.write(pHandler);
 
 	TagOpenElement stylePropertiesOpen("style:table-row-properties");
-	if (mPropList["style:min-row-height"])
-		stylePropertiesOpen.addAttribute("style:min-row-height", mPropList["style:min-row-height"]->getStr());
-	else if (mPropList["style:row-height"])
+	if (mPropList["style:row-height"])
 		stylePropertiesOpen.addAttribute("style:row-height", mPropList["style:row-height"]->getStr());
+	else if (mPropList["style:min-row-height"]) // min-row does not seem to work
+		stylePropertiesOpen.addAttribute("style:row-height", mPropList["style:min-row-height"]->getStr());
 	if (mPropList["style:use-optimal-row-height"])
 		stylePropertiesOpen.addAttribute("style:use-optimal-row-height", mPropList["style:use-optimal-row-height"]->getStr());
 	stylePropertiesOpen.addAttribute("fo:keep-together", "auto");
