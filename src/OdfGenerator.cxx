@@ -592,7 +592,8 @@ void OdfGenerator::addFrameProperties(const librevenge::RVNGPropertyList &propLi
 		"fo:max-width", "fo:max-height",
 		"style:rel-width", "style:rel-height", // checkme
 		"text:anchor-page-number", "text:anchor-type",
-		"table:end-cell-address"
+		"table:end-cell-address",
+		"table:table-background"
 	};
 	for (auto &i : frameAttrib)
 	{
@@ -1275,7 +1276,7 @@ void OdfGenerator::closeTable()
 	mpCurrentStorage->push_back(std::make_shared<TagCloseElement>("table:table"));
 }
 
-bool OdfGenerator::openTableRow(const librevenge::RVNGPropertyList &propList)
+bool OdfGenerator::openTableRow(const librevenge::RVNGPropertyList &propList, bool compatibleOdp)
 {
 	Table *table=mTableManager.getActualTable();
 	if (!table)
@@ -1283,7 +1284,7 @@ bool OdfGenerator::openTableRow(const librevenge::RVNGPropertyList &propList)
 		ODFGEN_DEBUG_MSG(("OdfGenerator::openTableRow called with no table\n"));
 		return false;
 	}
-	librevenge::RVNGString rowName=table->openRow(propList);
+	librevenge::RVNGString rowName=table->openRow(propList, compatibleOdp);
 	if (rowName.empty())
 		return false;
 	bool inHeader=false;

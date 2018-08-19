@@ -273,7 +273,7 @@ public:
 	/// call to close a table
 	void closeTable();
 	/// call to open a table row
-	bool openTableRow(const librevenge::RVNGPropertyList &propList);
+	bool openTableRow(const librevenge::RVNGPropertyList &propList, bool compatibleOdp=false);
 	/// call to close a table row
 	void closeTableRow();
 	/// returns true if a table row is opened

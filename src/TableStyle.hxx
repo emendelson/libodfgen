@@ -67,7 +67,7 @@ public:
 
 	int getNumColumns() const;
 
-	librevenge::RVNGString openRow(const librevenge::RVNGPropertyList &propList);
+	librevenge::RVNGString openRow(const librevenge::RVNGPropertyList &propList, bool compatibleOdp=false);
 	bool closeRow();
 	bool isRowOpened(bool &inHeaderRow) const
 	{

@@ -152,7 +152,7 @@ int Table::getNumColumns() const
 	return 0;
 }
 
-librevenge::RVNGString Table::openRow(const librevenge::RVNGPropertyList &propList)
+librevenge::RVNGString Table::openRow(const librevenge::RVNGPropertyList &propList, bool compatibleOdp)
 {
 	if (mbRowOpened)
 	{
@@ -160,7 +160,7 @@ librevenge::RVNGString Table::openRow(const librevenge::RVNGPropertyList &propLi
 		return "";
 	}
 	mbRowOpened=true;
-	mbRowHeaderOpened=propList["librevenge:is-header-row"] &&
+	mbRowHeaderOpened=!compatibleOdp && propList["librevenge:is-header-row"] &&
 	                  propList["librevenge:is-header-row"]->getInt();
 	// first remove unused data
 	librevenge::RVNGPropertyList pList;

@@ -963,7 +963,7 @@ void OdpGenerator::openTableRow(const librevenge::RVNGPropertyList &propList)
 {
 	if (mpImpl->mState.mInComment)
 		return;
-	mpImpl->openTableRow(propList);
+	mpImpl->openTableRow(propList, true);
 }
 
 void OdpGenerator::closeTableRow()
