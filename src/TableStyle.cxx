@@ -92,7 +92,7 @@ void TableCellStyle::writeStyles(OdfDocumentHandler *pHandler, bool compatibleOd
 
 		// HACK to get visible borders
 		pList.clear();
-		char const *(borders[])= { "fo:border", "fo:border-bottom",  "fo:border-left",  "fo:border-right",  "fo:border-top" };
+		char const *borders[] = { "fo:border", "fo:border-bottom",  "fo:border-left",  "fo:border-right",  "fo:border-top" };
 		for (auto bo : borders)
 		{
 			if (mPropList[bo])
