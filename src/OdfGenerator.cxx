@@ -34,15 +34,13 @@
 
 #include <cctype>
 #include <limits>
+#include <memory>
 #include <string>
 #include <stack>
-#if defined(HAVE_STDCXX_REGEX)
-#include <regex>
-#else
-#include <boost/regex.hpp>
-#endif
 
 #include <librevenge/librevenge.h>
+
+#include <libxml/parser.h>
 
 #include "DocumentElement.hxx"
 #include "GraphicFunctions.hxx"
@@ -51,6 +49,9 @@
 #include "TableStyle.hxx"
 
 using namespace libodfgen;
+
+namespace
+{
 
 static void appendUnicodeTo(unsigned long val, librevenge::RVNGString &buffer)
 {
@@ -94,6 +95,67 @@ static void appendUnicodeTo(unsigned long val, librevenge::RVNGString &buffer)
 	outbuf[0] = char(val | first);
 	outbuf[len] = 0;
 	buffer.append(outbuf);
+}
+
+struct XMLException {};
+
+const char *xmlCast(const xmlChar *const str)
+{
+	return reinterpret_cast<const char *>(str);
+}
+
+void addAttributes(xmlAttributePtr attr, std::shared_ptr<TagOpenElement> &element)
+{
+	for (; attr; attr = xmlAttributePtr(attr->next))
+	{
+		std::string value;
+
+		for (xmlNodePtr node = attr->children; node; node = node->next)
+			if (node->type == XML_TEXT_NODE)
+				value += xmlCast(node->content);
+
+		element->addAttribute(xmlCast(attr->name), value.c_str());
+	}
+}
+
+void appendElements(xmlNodePtr node, DocumentElementVector &out)
+{
+	for (; node; node = node->next)
+	{
+		switch (node->type)
+		{
+		case XML_ELEMENT_NODE:
+		{
+			auto element = xmlElementPtr(node);
+			auto tag = std::make_shared<TagOpenElement>(xmlCast(element->name));
+			out.push_back(tag);
+			addAttributes(element->attributes, tag);
+			appendElements(element->children, out);
+			out.push_back(std::make_shared<TagCloseElement>(xmlCast(element->name)));
+			break;
+		}
+		case XML_TEXT_NODE:
+			out.push_back(std::make_shared<CharDataElement>(xmlCast(node->content)));
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void appendXML(const std::string &data, DocumentElementVector &out)
+{
+	std::unique_ptr<xmlDoc, void(*)(xmlDocPtr)> doc
+	{
+		xmlReadDoc(reinterpret_cast<const xmlChar *>(data.c_str()), "", NULL,
+		           XML_PARSE_RECOVER | XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NONET | XML_PARSE_NOCDATA | XML_PARSE_NSCLEAN),
+		xmlFreeDoc};
+	if (!doc)
+		throw XMLException();
+
+	appendElements(doc->children, out);
+}
+
 }
 
 OdfGenerator::OdfGenerator()
@@ -1390,94 +1452,14 @@ void OdfGenerator::insertEquation(const librevenge::RVNGPropertyList &propList)
 		ODFGEN_DEBUG_MSG(("OdfGenerator::insertEquation: can not find the data\n"));
 		return;
 	}
-	// check quickly for false file, ie. check that the file begins at least with '<'
-	auto p=data.c_str();
-	while (*p && *p==' ') ++p;
-	if (*p!='<')
-	{
-		ODFGEN_DEBUG_MSG(("OdfGenerator::insertEquation: sorry, I do not recognize a mathml file\n"));
-		return;
-	}
 
 	try
 	{
-#if defined(HAVE_STDCXX_REGEX)
-		using std::regex;
-		using std::regex_search;
-		using std::sregex_iterator;
-		using std::smatch;
-#else
-		using boost::regex;
-		using boost::regex_search;
-		using boost::sregex_iterator;
-		using boost::smatch;
-#endif
-
-		std::vector<std::shared_ptr<DocumentElement> > elementStack;
+		std::vector<std::shared_ptr<DocumentElement>> elementStack;
 		elementStack.push_back(std::make_shared<TagOpenElement>("draw:object"));
-		std::stack<std::string> nameStack;
-
-		regex elementOrDataExpr("\\s*((?:<[^>]+>)|(?:[^<]+))"); // element or data
-		regex begElementExpr("<\\s*(/{0,1})\\s*([a-zA-Z]+)"); // <[/]name
-		regex attributeExpr("\\s*([a-zA-Z]+)\\s*=\\s*([\"'])([^\"']*)\\2"); // attribName=attribValue
-		regex endElementExpr("\\s*(/{0,1})\\s*>\\s*"); // [/]>
-
-		smatch bm;
-		for (auto i=sregex_iterator(data.begin(), data.end(), elementOrDataExpr); i!=sregex_iterator(); ++i)
-		{
-			if (i->size()!=2 || !i->prefix().str().empty())
-				throw "find a prefix";
-			auto element=(*i)[1].str();
-			if (element.size()<2 || element[0]!='<') // string data
-			{
-				// the string is xml escaped, we must retrieve the original string
-				librevenge::RVNGString res;
-				unescapeXML(element.c_str(), element.size(), res);
-				elementStack.push_back(std::make_shared<CharDataElement>(res));
-				continue;
-			}
-			if (!regex_search(element,bm,begElementExpr) || !bm.prefix().str().empty() || bm.size()<3) // an element
-				throw "can not parse element";
-			auto keyword=bm[2].str();
-			bool closeElement=bm[1].str()=="/";
-			auto remain=bm.suffix().str(), endElement=remain;
-			std::shared_ptr<TagOpenElement> elt;
-			if (!closeElement)
-			{
-				elt=std::make_shared<TagOpenElement>(keyword.c_str());
-				for (auto attr=sregex_iterator(remain.begin(), remain.end(), attributeExpr); attr!=sregex_iterator(); ++attr)
-				{
-					if (attr->size()!=4 || !attr->prefix().str().empty())
-						throw "find a prefix when parsing attribute";
-					elt->addAttribute((*attr)[1].str().c_str(), (*attr)[3].str().c_str());
-					endElement=attr->suffix().str();
-				}
-			}
-			if (!regex_search(endElement,bm,endElementExpr) || bm.size()<2 || !bm.prefix().str().empty() || !bm.suffix().str().empty() || (closeElement && !bm[1].str().empty()))
-				throw "can not find end element";
-
-			if (closeElement)
-			{
-				if (nameStack.empty() || nameStack.top()!=keyword)
-					throw "bad close element";
-				nameStack.pop();
-				elementStack.push_back(std::make_shared<TagCloseElement>(keyword.c_str()));
-				continue;
-			}
-			elementStack.push_back(elt);
-			if (bm[1].str().empty())
-				nameStack.push(keyword);
-			else
-				elementStack.push_back(std::make_shared<TagCloseElement>(keyword.c_str()));
-		}
-		if (!nameStack.empty())
-			throw "not empty name stack";
+		appendXML(data, elementStack);
 		elementStack.push_back(std::make_shared<TagCloseElement>("draw:object"));
 		mpCurrentStorage->insert(mpCurrentStorage->end(), elementStack.begin(), elementStack.end());
-	}
-	catch (char const *s)
-	{
-		ODFGEN_DEBUG_MSG(("OdfGenerator::insertEquation: ARGHH, catch an exception (%s) when decoding picture!!!\n", s));
 	}
 	catch (...)
 	{

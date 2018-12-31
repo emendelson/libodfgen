@@ -46,6 +46,8 @@ PKG_CHECK_MODULES([REVENGE],[
 AC_SUBST([REVENGE_CFLAGS])
 AC_SUBST([REVENGE_LIGS])
 
+PKG_CHECK_MODULES([XML], [libxml-2.0])
+
 # =================================
 # Libtool/Version Makefile settings
 # =================================
@@ -172,24 +174,6 @@ AS_IF([test "x$native_win32" = "xyes"], [
             CXXFLAGS="$CXXFLAGS -Wvolatile-register-var -Wwrite-strings"
         ])
     ])
-])
-
-AC_LINK_IFELSE([
-    AC_LANG_PROGRAM([
-        #include <regex>
-    ], [
-        std::sregex_iterator it;
-    ])
-], [
-    AC_MSG_CHECKING([for regex implementation])
-    AC_MSG_RESULT([std])
-    AC_DEFINE([HAVE_STDCXX_REGEX], [1], [C++11 std::regex is available and functional])
-], [
-    AX_BOOST_BASE
-    AX_BOOST_REGEX
-    AC_MSG_CHECKING([for regex implementation])
-    AC_MSG_RESULT([boost])
-    AC_DEFINE([HAVE_BOOST_REGEX], [1], [boost::regex is available])
 ])
 
 # ============

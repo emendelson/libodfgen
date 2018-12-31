@@ -7,7 +7,7 @@ noinst_PROGRAMS= $(targets)
 
 EXTRA_SRC=StringDocumentHandler.cxx StringDocumentHandler.hxx
 EXTRA_LDD=$(top_builddir)/src/libodfgen-@LIBODFGEN_MAJOR_VERSION@.@LIBODFGEN_MINOR_VERSION@.la \
-	$(REVENGE_LIBS) $(REVENGE_STREAM_LIBS) $(BOOST_LDFLAGS) $(BOOST_REGEX_LIB)
+	$(REVENGE_LIBS) $(REVENGE_STREAM_LIBS) $(XML_LIBS)
 
 testChart1_DEPENDENCIES =
 testChart1_LDADD =  $(EXTRA_LDD)
