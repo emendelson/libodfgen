@@ -329,7 +329,7 @@ bool getPathBBox(const librevenge::RVNGPropertyListVector &path, double &px, dou
 	double lastPrevY = 0.0;
 	px = py = qx = qy = 0.0;
 
-	for (unsigned k = 0; k < path.count(); ++k)
+	for (unsigned long k = 0; k < path.count(); ++k)
 	{
 		if (!path[k]["librevenge:path-action"])
 			continue;
@@ -430,7 +430,7 @@ bool getPathBBox(const librevenge::RVNGPropertyListVector &path, double &px, dou
 librevenge::RVNGString convertPath(const librevenge::RVNGPropertyListVector &path, double px, double py)
 {
 	librevenge::RVNGString sValue("");
-	for (unsigned i = 0; i < path.count(); ++i)
+	for (unsigned long i = 0; i < path.count(); ++i)
 	{
 		if (!path[i]["librevenge:path-action"])
 			continue;
