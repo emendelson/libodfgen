@@ -374,7 +374,8 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 	// other
 	char const *others[] =
 	{
-		"draw:auto-grow-height",
+		"draw:auto-grow-height", "draw:auto-grow-width",
+		"draw:fit-to-size",
 		"draw:ole-draw-aspect",
 		"draw:show-unit",
 		"fo:background-color",
@@ -383,6 +384,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 		"style:background-transparency",
 		"style:border-line-width","style:border-line-width-top","style:border-line-width-left",
 		"style:border-line-width-bottom","style:border-line-width-right",
+		"style:shrink-to-fit",
 		"style:mirror", "style:parent-style-name",
 		"style:run-through", "style:wrap"
 	};
