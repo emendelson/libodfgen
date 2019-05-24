@@ -55,7 +55,7 @@ librevenge::RVNGString makePreciseStr(const double value)
 {
 	std::ostringstream os;
 	os.imbue(std::locale::classic());
-	os << std::fixed << std::setprecision(8) << value;
+	os << std::setprecision(8) << value;
 	return os.str().c_str();
 }
 
