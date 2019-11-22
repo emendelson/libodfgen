@@ -709,6 +709,7 @@ void OdgGenerator::startTextObject(const librevenge::RVNGPropertyList &propList)
 	}
 	static char const *attrib[]=
 	{
+		"draw:z-index",
 		"fo:min-width", "fo:min-height", "fo:max-width", "fo:max-height", "fo:padding-top", "fo:padding-bottom",
 		"fo:padding-left", "fo:padding-right", "draw:textarea-vertical-align", "draw:fill", "draw:fill-color"
 	};
