@@ -651,6 +651,8 @@ void OdgGenerator::drawGraphicObject(const librevenge::RVNGPropertyList &propLis
 
 	if (propList["draw:display"])
 		pDrawFrameElement->addAttribute("draw:display", propList["draw:display"]->getStr());
+	if (propList["draw:z-index"])
+		pDrawFrameElement->addAttribute("draw:z-index", propList["draw:z-index"]->getStr());
 
 	mpImpl->getCurrentStorage()->push_back(pDrawFrameElement);
 
