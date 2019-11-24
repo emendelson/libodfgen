@@ -243,7 +243,7 @@ bool Table::closeCell()
 	return true;
 }
 
-bool Table::insertCoveredCell(const librevenge::RVNGPropertyList &)
+bool Table::insertCoveredCell(const librevenge::RVNGPropertyList &) const
 {
 	if (!mbRowOpened || mbCellOpened)
 	{

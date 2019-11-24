@@ -76,7 +76,7 @@ public:
 	}
 	librevenge::RVNGString openCell(const librevenge::RVNGPropertyList &propList);
 	bool closeCell();
-	bool insertCoveredCell(const librevenge::RVNGPropertyList &propList);
+	bool insertCoveredCell(const librevenge::RVNGPropertyList &propList) const;
 	bool isCellOpened() const
 	{
 		return mbCellOpened;

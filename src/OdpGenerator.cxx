@@ -101,7 +101,7 @@ public:
 
 	//! returns the document type
 	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType) override;
-	void _writeSettings(OdfDocumentHandler *pHandler);
+	void _writeSettings(OdfDocumentHandler *pHandler) const;
 	void _writeStyles(OdfDocumentHandler *pHandler);
 	void _writeAutomaticStyles(OdfDocumentHandler *pHandler, OdfStreamType streamType);
 
@@ -342,7 +342,7 @@ void OdpGeneratorPrivate::writeNotesStyles(OdfDocumentHandler *pHandler)
 	}
 }
 
-void OdpGeneratorPrivate::_writeSettings(OdfDocumentHandler *pHandler)
+void OdpGeneratorPrivate::_writeSettings(OdfDocumentHandler *pHandler) const
 {
 	TagOpenElement("office:settings").write(pHandler);
 

@@ -65,7 +65,7 @@ public:
 	void updatePageSpanPropertiesToCreatePage(librevenge::RVNGPropertyList &propList);
 
 	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType) override;
-	void _writeSettings(OdfDocumentHandler *pHandler);
+	void _writeSettings(OdfDocumentHandler *pHandler) const;
 	void _writeStyles(OdfDocumentHandler *pHandler);
 	void _writeAutomaticStyles(OdfDocumentHandler *pHandler, OdfStreamType streamType);
 
@@ -185,7 +185,7 @@ void OdgGeneratorPrivate::updatePageSpanPropertiesToCreatePage(librevenge::RVNGP
 	pList.insert("librevenge:footnote", librevenge::RVNGPropertyListVector());
 }
 
-void OdgGeneratorPrivate::_writeSettings(OdfDocumentHandler *pHandler)
+void OdgGeneratorPrivate::_writeSettings(OdfDocumentHandler *pHandler) const
 {
 	TagOpenElement("office:settings").write(pHandler);
 
