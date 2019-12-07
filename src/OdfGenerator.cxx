@@ -616,7 +616,7 @@ void OdfGenerator::openFrame(const librevenge::RVNGPropertyList &propList)
 	// we do not want to add the default solid stroke if there are some double/... borders
 	if (!propList["draw:stroke"])
 		graphic.remove("draw:stroke");
-	mGraphicManager.addFrameProperties(propList, graphic);
+	GraphicStyleManager::addFrameProperties(propList, graphic);
 	graphic.insert("style:parent-style-name", frameStyleName);
 	graphic.insert("draw:ole-draw-aspect", "1");
 	librevenge::RVNGString frameAutomaticStyleName=
@@ -1590,7 +1590,7 @@ librevenge::RVNGString OdfGenerator::getCurrentGraphicStyleName()
 	librevenge::RVNGPropertyList styleList;
 	mGraphicManager.addGraphicProperties(mGraphicStyle,styleList);
 	if (mGraphicStyle["style:display-name"])
-		mGraphicManager.addFrameProperties(mGraphicStyle,styleList);
+		GraphicStyleManager::addFrameProperties(mGraphicStyle,styleList);
 	return mGraphicManager.findOrAdd(styleList, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic);
 }
 

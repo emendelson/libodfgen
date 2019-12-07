@@ -191,7 +191,7 @@ void OdpGeneratorPrivate::openTextBoxFrame(const librevenge::RVNGPropertyList &p
 	if (!propList["draw:fill"])
 		tmpList.insert("draw:fill", "none");
 	mGraphicManager.addGraphicProperties(tmpList, graphicStyle);
-	mGraphicManager.addFrameProperties(propList, graphicStyle);
+	GraphicStyleManager::addFrameProperties(propList, graphicStyle);
 	librevenge::RVNGString sValue=mGraphicManager.findOrAdd
 	                              (graphicStyle, useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic);
 

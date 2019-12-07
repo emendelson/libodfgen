@@ -689,7 +689,7 @@ void OdgGenerator::startTextObject(const librevenge::RVNGPropertyList &propList)
 	if (!propList["draw:fill"])
 		tmpList.insert("draw:fill", "none");
 	mpImpl->getGraphicManager().addGraphicProperties(tmpList, graphicStyle);
-	mpImpl->getGraphicManager().addFrameProperties(propList, graphicStyle);
+	GraphicStyleManager::addFrameProperties(propList, graphicStyle);
 	librevenge::RVNGString sValue=mpImpl->getGraphicManager().findOrAdd
 	                              (graphicStyle, mpImpl->useStyleAutomaticZone() ? Style::Z_StyleAutomatic : Style::Z_ContentAutomatic);
 

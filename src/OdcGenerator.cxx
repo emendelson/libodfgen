@@ -185,7 +185,7 @@ void OdcGeneratorPrivate::writeChartStyle(librevenge::RVNGPropertyList const &st
 	}
 	librevenge::RVNGPropertyList graphProp;
 	mGraphicManager.addGraphicProperties(style,graphProp);
-	mGraphicManager.addFrameProperties(style,graphProp);
+	GraphicStyleManager::addFrameProperties(style,graphProp);
 	if (!style["fo:min-width"] && graphProp["fo:min-width"])
 		graphProp.remove("fo:min-width");
 	if (!graphProp.empty())
