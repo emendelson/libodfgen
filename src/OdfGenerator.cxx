@@ -147,7 +147,7 @@ void appendXML(const std::string &data, DocumentElementVector &out)
 {
 	std::unique_ptr<xmlDoc, void(*)(xmlDocPtr)> doc
 	{
-		xmlReadDoc(reinterpret_cast<const xmlChar *>(data.c_str()), "", NULL,
+		xmlReadDoc(reinterpret_cast<const xmlChar *>(data.c_str()), "", nullptr,
 		           XML_PARSE_RECOVER | XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NONET | XML_PARSE_NOCDATA | XML_PARSE_NSCLEAN),
 		xmlFreeDoc};
 	if (!doc)
