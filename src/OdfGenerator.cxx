@@ -342,13 +342,13 @@ void OdfGenerator::appendFilesInManifest(OdfDocumentHandler *pHandler)
 		file.write(pHandler);
 		TagCloseElement("manifest:file-entry").write(pHandler);
 	}
-	for (auto oIt=mNameObjectMap.begin(); oIt!=mNameObjectMap.end(); ++oIt)
+	for (auto &oIt : mNameObjectMap)
 	{
-		if (!oIt->second) continue;
+		if (!oIt.second) continue;
 
 		TagOpenElement file("manifest:file-entry");
-		file.addAttribute("manifest:media-type",oIt->second->mType);
-		file.addAttribute("manifest:full-path", oIt->first);
+		file.addAttribute("manifest:media-type",oIt.second->mType);
+		file.addAttribute("manifest:full-path", oIt.first);
 		file.write(pHandler);
 		TagCloseElement("manifest:file-entry").write(pHandler);
 	}
@@ -384,10 +384,10 @@ void OdfGenerator::appendBodySettings(const librevenge::RVNGPropertyList &propLi
 			                    "table:use-regular-expressions", "table:use-wildcards"
 			                  };
 			// checkme: had also childs elements: table:iteration, table:null-date
-			for (size_t i=0; i<ODFGEN_N_ELEMENTS(wh); ++i)
+			for (auto &i : wh)
 			{
-				if (child[wh[i]])
-					calcSetting->addAttribute(wh[i], child[wh[i]]->getStr());
+				if (child[i])
+					calcSetting->addAttribute(i, child[i]->getStr());
 			}
 			mpBodyStorage->push_back(calcSetting);
 			mpBodyStorage->push_back(std::make_shared<TagCloseElement>("table:calculation-settings"));
@@ -425,10 +425,10 @@ OdfGenerator::ObjectContainer &OdfGenerator::createObjectFile
 librevenge::RVNGStringVector OdfGenerator::getObjectNames() const
 {
 	librevenge::RVNGStringVector res;
-	for (auto it=mNameObjectMap.begin(); it!=mNameObjectMap.end(); ++it)
+	for (const auto &it : mNameObjectMap)
 	{
-		if (!it->second || it->second->mIsDir) continue;
-		res.append(it->first);
+		if (!it.second || it.second->mIsDir) continue;
+		res.append(it.first);
 	}
 	return res;
 }

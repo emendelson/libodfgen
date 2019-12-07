@@ -176,8 +176,8 @@ void OdpGeneratorPrivate::updatePageSpanPropertiesToCreatePage(librevenge::RVNGP
 		        (strncmp(i.key(), "presentation:", 13) == 0) || (strcmp(i.key(), "style:repeat") == 0))
 			removedKeys.push_back(i.key());
 	}
-	for (std::deque<std::string>::const_iterator it = removedKeys.begin(); it != removedKeys.end(); ++it)
-		pList.remove(it->c_str());
+	for (const auto &removedKey : removedKeys)
+		pList.remove(removedKey.c_str());
 
 	// do not generate footnote separator data
 	pList.insert("librevenge:footnote", librevenge::RVNGPropertyListVector());
