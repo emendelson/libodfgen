@@ -258,7 +258,7 @@ void PageSpan::writeMasterPages(OdfDocumentHandler *pHandler) const
 
 void PageSpan::_writeContent(const char *contentTagName,
                              const libodfgen::DocumentElementVector &content,
-                             OdfDocumentHandler *pHandler) const
+                             OdfDocumentHandler *pHandler)
 {
 	bool hasTagName=contentTagName && strlen(contentTagName);
 	if (hasTagName)

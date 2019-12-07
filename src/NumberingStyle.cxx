@@ -40,7 +40,7 @@ NumberingStyle::NumberingStyle(const librevenge::RVNGPropertyList &xPropList, co
 {
 }
 
-void NumberingStyle::writeCondition(librevenge::RVNGPropertyList const &propList, OdfDocumentHandler *pHandler, NumberingManager const &manager) const
+void NumberingStyle::writeCondition(librevenge::RVNGPropertyList const &propList, OdfDocumentHandler *pHandler, NumberingManager const &manager)
 {
 	librevenge::RVNGString applyName("");
 	librevenge::RVNGPropertyListVector const *formula=propList.child("librevenge:formula");

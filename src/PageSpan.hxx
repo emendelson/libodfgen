@@ -157,8 +157,8 @@ public:
 	static librevenge::RVNGString protectString(librevenge::RVNGString const &orig);
 protected:
 	void storeContent(ContentType type, const std::shared_ptr<libodfgen::DocumentElementVector> &pContent);
-	void _writeContent(const char *contentTagName, const libodfgen::DocumentElementVector &content,
-	                   OdfDocumentHandler *pHandler) const;
+	static void _writeContent(const char *contentTagName, const libodfgen::DocumentElementVector &content,
+	                   OdfDocumentHandler *pHandler);
 private:
 	PageSpan(const PageSpan &);
 	PageSpan &operator=(const PageSpan &);

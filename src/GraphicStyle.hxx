@@ -82,7 +82,7 @@ public:
 	/** append the graphic in the element, ie. the stroke, pattern, bitmap, marker properties */
 	void addGraphicProperties(librevenge::RVNGPropertyList const &style, librevenge::RVNGPropertyList &element);
 	/** append the frame, ... properties in the element, ie. all properties excepted the graphic properties */
-	void addFrameProperties(librevenge::RVNGPropertyList const &propList, librevenge::RVNGPropertyList &element);
+	static void addFrameProperties(librevenge::RVNGPropertyList const &propList, librevenge::RVNGPropertyList &element);
 
 protected:
 	FillManager &mFillManager;

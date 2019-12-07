@@ -52,7 +52,7 @@ public:
 	static librevenge::RVNGString getHashName(const librevenge::RVNGPropertyList &xPropList);
 
 private:
-	void writeCondition(librevenge::RVNGPropertyList const &propList, OdfDocumentHandler *pHandler, NumberingManager const &manager) const;
+	static void writeCondition(librevenge::RVNGPropertyList const &propList, OdfDocumentHandler *pHandler, NumberingManager const &manager);
 
 	librevenge::RVNGPropertyList mPropList;
 };

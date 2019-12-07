@@ -97,7 +97,7 @@ public:
 
 	void updatePageSpanPropertiesToCreatePage(librevenge::RVNGPropertyList &propList);
 
-	void writeNotesStyles(OdfDocumentHandler *pHandler);
+	static void writeNotesStyles(OdfDocumentHandler *pHandler);
 
 	//! returns the document type
 	bool writeTargetDocument(OdfDocumentHandler *pHandler, OdfStreamType streamType) override;

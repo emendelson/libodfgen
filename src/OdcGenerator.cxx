@@ -85,7 +85,7 @@ public:
 
 	librevenge::RVNGString getChartStyleName(int id);
 	void writeChartStyle(librevenge::RVNGPropertyList const &style, OdfDocumentHandler *pHandler);
-	librevenge::RVNGString getAddressString(librevenge::RVNGPropertyListVector const *vector) const;
+	static librevenge::RVNGString getAddressString(librevenge::RVNGPropertyListVector const *vector);
 	std::stack<ChartDocumentState> mChartDocumentStates;
 
 protected:
@@ -197,7 +197,7 @@ void OdcGeneratorPrivate::writeChartStyle(librevenge::RVNGPropertyList const &st
 
 }
 
-librevenge::RVNGString OdcGeneratorPrivate::getAddressString(librevenge::RVNGPropertyListVector const *vector) const
+librevenge::RVNGString OdcGeneratorPrivate::getAddressString(librevenge::RVNGPropertyListVector const *vector)
 {
 	librevenge::RVNGString res("");
 	if (!vector)
