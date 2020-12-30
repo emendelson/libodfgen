@@ -158,7 +158,7 @@ public:
 protected:
 	void storeContent(ContentType type, const std::shared_ptr<libodfgen::DocumentElementVector> &pContent);
 	static void _writeContent(const char *contentTagName, const libodfgen::DocumentElementVector &content,
-	                   OdfDocumentHandler *pHandler);
+	                          OdfDocumentHandler *pHandler);
 private:
 	PageSpan(const PageSpan &);
 	PageSpan &operator=(const PageSpan &);

@@ -66,7 +66,7 @@ public:
 	{
 		State() : mbFirstElement(true),	mbFirstParagraphInPageSpan(false),
 			mbInFakeSection(false), mbListElementOpenedAtCurrentLevel(false),
-			mbTableCellOpened(false),	mbInNote(false),
+			mbTableCellOpened(false), mbInNote(false),
 			mbInTextBox(false), mbInFrame(false)
 		{
 		}
