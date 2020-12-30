@@ -88,8 +88,10 @@ AS_CASE([$host],
 AC_MSG_RESULT([$platform_win32])
 AM_CONDITIONAL([PLATFORM_WIN32], [test "x$platform_win32" = "xyes"])
 
-AS_IF([test $platform_win32 = yes],
-    [],
+AS_IF([test "x$platform_win32" = "xyes"],
+    [
+	AM_CONDITIONAL([HAVE_VISIBILITY], [ test "x" != "x" ] )
+    ],
     [
         AC_MSG_CHECKING([for -fvisibility=hidden compiler flag])
         saved_CXXFLAGS="$CXXFLAGS"
@@ -245,7 +247,6 @@ AC_MSG_NOTICE([
 Build configuration:
     debug:           ${enable_debug}
     docs:            ${build_docs}
-    shared_ptr:      ${with_sharedptr}
     werror:          ${enable_werror}
 ==============================================================================
 ])
