@@ -13,9 +13,9 @@ generate ODF from many sources.
 BUILD DEPENDENCIES:
 
 * librevenge
+* libxml2
 * pkgconfig (for the build system to find librevenge)
 * doxygen (unless you choose to disable building of API documentation)
-* boost (unless you build with C++ shared_ptr)
 
 BUILD AND INSTALLATION:
 

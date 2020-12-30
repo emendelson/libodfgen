@@ -1,3 +1,17 @@
+libodfgen 0.1.8
+- All:
+    + use libxml2 to parse xml's equations...
+    + code modernization:
+        use range-based for loop, use nullptr,
+        fix too small loop variables,
+	don't access static members through instance,
+    + retrieve more border's attributes in tables,
+    + retrieve draw:auto-grow-width,draw:fit-to-size,draw:z-index,
+       style:print-content, style:shrink-to-fit attributes in graphics
+- Spreadsheet:
+    + output numbers with more precision,
+- Other improvements and fixes.
+    
 libodfgen 0.1.7
 - All:
     + switch to C++-11
