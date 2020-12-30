@@ -385,7 +385,7 @@ void GraphicStyleManager::addGraphicProperties(librevenge::RVNGPropertyList cons
 		"style:border-line-width","style:border-line-width-top","style:border-line-width-left",
 		"style:border-line-width-bottom","style:border-line-width-right",
 		"style:shrink-to-fit",
-		"style:mirror", "style:parent-style-name",
+		"style:mirror", "style:parent-style-name", "style:print-content",
 		"style:run-through", "style:wrap"
 	};
 	for (auto &other : others)

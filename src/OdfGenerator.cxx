@@ -930,7 +930,8 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
 	}
-	else if (type == "text:reference-mark" || type == "text:reference-mark-start" || type == "text:reference-mark-end")
+	else if (type == "text:reference-mark" || type == "text:reference-mark-start" || type == "text:reference-mark-end" ||
+	         type == "text:bookmark-start" || type == "text:bookmark-end")
 	{
 		for (int i=0; i<1; ++i)
 		{
