@@ -103,7 +103,7 @@ class SheetManager
 {
 public:
 	//! constructor
-	SheetManager(NumberingManager &numberingManager);
+	explicit SheetManager(NumberingManager &numberingManager);
 	//! destructor
 	virtual ~SheetManager();
 	//! clean all data

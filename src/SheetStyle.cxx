@@ -255,10 +255,10 @@ void SheetStyle::writeStyle(OdfDocumentHandler *pHandler, SheetManager const &ma
 
 	pHandler->endElement("style:style");
 
-	int col=1;
 	if (mColumns)
 	{
 		librevenge::RVNGPropertyListVector::Iter j(*mColumns);
+		int col=1;
 		for (j.rewind(); j.next(); ++col)
 		{
 			TagOpenElement columnStyleOpen("style:style");
