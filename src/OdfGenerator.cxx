@@ -104,7 +104,7 @@ const char *xmlCast(const xmlChar *const str)
 	return reinterpret_cast<const char *>(str);
 }
 
-void addAttributes(xmlAttributePtr attr, std::shared_ptr<TagOpenElement> &element)
+static void addAttributes(xmlAttributePtr attr, std::shared_ptr<TagOpenElement> &element)
 {
 	for (; attr; attr = xmlAttributePtr(attr->next))
 	{
@@ -113,12 +113,23 @@ void addAttributes(xmlAttributePtr attr, std::shared_ptr<TagOpenElement> &elemen
 		for (xmlNodePtr node = attr->children; node; node = node->next)
 			if (node->type == XML_TEXT_NODE)
 				value += xmlCast(node->content);
-
 		element->addAttribute(xmlCast(attr->name), value.c_str());
 	}
 }
 
-void appendElements(xmlNodePtr node, DocumentElementVector &out)
+static void appendNameSpace(xmlNsPtr nSpace, std::shared_ptr<TagOpenElement> &element)
+{
+	if (nSpace->type==XML_NAMESPACE_DECL && nSpace->href)
+	{
+		std::string tag("xmlns");
+		if (nSpace->prefix) tag+=std::string(":")+xmlCast(nSpace->prefix);
+		std::string value(xmlCast(nSpace->href));
+		element->addAttribute(tag.c_str(), value.c_str());
+		// FIXME: look also next to check if there is other namespace
+	}
+}
+
+static void appendElements(xmlNodePtr node, DocumentElementVector &out, bool rootNode=false)
 {
 	for (; node; node = node->next)
 	{
@@ -129,6 +140,7 @@ void appendElements(xmlNodePtr node, DocumentElementVector &out)
 			auto element = xmlElementPtr(node);
 			auto tag = std::make_shared<TagOpenElement>(xmlCast(element->name));
 			out.push_back(tag);
+			if (rootNode && node->nsDef) appendNameSpace(node->nsDef, tag);
 			addAttributes(element->attributes, tag);
 			appendElements(element->children, out);
 			out.push_back(std::make_shared<TagCloseElement>(xmlCast(element->name)));
@@ -147,13 +159,15 @@ void appendXML(const std::string &data, DocumentElementVector &out)
 {
 	std::unique_ptr<xmlDoc, void(*)(xmlDocPtr)> doc
 	{
+		// FIXME: coverity warns that using XML_PARSE_RECOVER is unsafe,
+		// but libstaroffice generates &alpha; , so we must first fix libstaroffice before removing XML_PARSE_RECOVER
 		xmlReadDoc(reinterpret_cast<const xmlChar *>(data.c_str()), "", nullptr,
 		           XML_PARSE_RECOVER | XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NONET | XML_PARSE_NOCDATA | XML_PARSE_NSCLEAN),
 		xmlFreeDoc};
 	if (!doc)
 		throw XMLException();
 
-	appendElements(doc->children, out);
+	appendElements(doc->children, out, true);
 }
 
 }
