@@ -37,7 +37,6 @@
 
 namespace libodfgen
 {
-double getAngle(double bx, double by);
 void getEllipticalArcBBox(double x0, double y0,
                           double rx, double ry, double phi, bool largeArc, bool sweep, double x, double y,
                           double &xmin, double &ymin, double &xmax, double &ymax);
@@ -50,7 +49,7 @@ void getCubicBezierBBox(double x0, double y0, double x1, double y1, double x2, d
                         double &xmin, double &ymin, double &xmax, double &ymax);
 
 
-double getAngle(double bx, double by)
+static double getAngle(double bx, double by)
 {
 	return fmod(2*M_PI + (by > 0.0 ? 1.0 : -1.0) * acos(bx / sqrt(bx * bx + by * by)), 2*M_PI);
 }
@@ -66,7 +65,8 @@ void getEllipticalArcBBox(double x0, double y0,
 		ry *= -1.0;
 
 	double const absError=1e-5;
-	if ((rx>-absError && rx<absError) || (ry>-absError && ry<absError))
+	if (rx<absError || ry<absError ||
+		(x<=x0 && x>=x0 && y<=y0 && y>=y0)) // avoid a division by zero when calculating the radicant
 	{
 		xmin = (x0 < x ? x0 : x);
 		xmax = (x0 > x ? x0 : x);
