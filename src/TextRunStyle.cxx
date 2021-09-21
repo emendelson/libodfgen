@@ -339,9 +339,9 @@ void SpanStyleManager::addSpanProperties(librevenge::RVNGPropertyList const &sty
 			if (!strncmp(i.key(), "style:country", 13) || !strncmp(i.key(), "style:font", 10) ||
 			        !strncmp(i.key(), "style:language", 14) || !strncmp(i.key(), "style:letter", 12) ||
 			        !strncmp(i.key(), "style:rfc-", 10) || !strncmp(i.key(), "style:script", 12) ||
-			        !strncmp(i.key(), "style:text", 10) || !strcmp(i.key(), "style:use-window-font-color"))
+			        !strncmp(i.key(), "style:text", 10) || !strcmp(i.key(), "style:use-window-font-color") ||
+			        !strcmp(i.key(), "style:writing-mode"))
 				element.insert(i.key(),i()->clone());
-			// style:writing-mode is ignored
 			break;
 		case 't':
 			if (!strcmp(i.key(), "text:condition") || !strcmp(i.key(), "text:display"))
