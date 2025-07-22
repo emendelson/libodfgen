@@ -709,7 +709,7 @@ void OdgGenerator::startTextObject(const librevenge::RVNGPropertyList &propList)
 		if (propList["svg:height"])
 			pDrawFrameOpenElement->addAttribute("svg:height", propList["svg:height"]->getStr());
 	}
-	static char const *attrib[]=
+	static char const* const attrib[]=
 	{
 		"draw:z-index",
 		"fo:min-width", "fo:min-height", "fo:max-width", "fo:max-height", "fo:padding-top", "fo:padding-bottom",

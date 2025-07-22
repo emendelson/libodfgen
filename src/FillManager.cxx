@@ -115,7 +115,7 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 	if (!gradient)
 		gradient = style.child("svg:radialGradient");
 	if (gradient) pList.insert("svg:linearGradient", *gradient);
-	char const *wh[] =
+	static char const* const wh[] =
 	{
 		"draw:border", "draw:cx", "draw:cy", "draw:end-color", "draw:end-intensity",
 		"draw:start-color", "draw:start-intensity", "draw:style"
@@ -163,7 +163,7 @@ librevenge::RVNGString FillManager::getStyleNameForGradient(librevenge::RVNGProp
 
 	if (!gradient || !gradient->count())
 	{
-		char const *attrib[] =
+		static char const* const attrib[] =
 		{
 			"draw:start-color", "draw:end-color", "draw:border", "draw:start-intensity", "draw:end-intensity"
 		};
@@ -205,7 +205,7 @@ librevenge::RVNGString FillManager::getStyleNameForHatch(librevenge::RVNGPropert
 	bool isStyle=style["style:display-name"]!=nullptr;
 	bool hasParent=style["librevenge:parent-display-name"]!=nullptr;
 	// basic data
-	char const *wh[] = { "draw:color", "draw:distance", "draw:rotation", "draw:style" };
+	static char const* const wh[] = { "draw:color", "draw:distance", "draw:rotation", "draw:style" };
 	for (auto &i : wh)
 	{
 		if (style[i])
@@ -306,7 +306,7 @@ librevenge::RVNGString FillManager::getStyleNameForOpacity(librevenge::RVNGPrope
 		pList.insert("draw:angle", angleValue);
 	}
 	// basic data
-	char const *wh[] = { "draw:border", "draw:cx", "draw:cy"	};
+	static char const* const wh[] = { "draw:border", "draw:cx", "draw:cy" };
 	for (auto &i : wh)
 	{
 		if (style[i])

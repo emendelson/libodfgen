@@ -211,7 +211,7 @@ void OdpGeneratorPrivate::openTextBoxFrame(const librevenge::RVNGPropertyList &p
 		if (propList["svg:height"])
 			pDrawFrameOpenElement->addAttribute("svg:height", propList["svg:height"]->getStr());
 	}
-	static char const *attrib[]=
+	static char const* const attrib[]=
 	{
 		"fo:min-width", "fo:min-height", "fo:max-width", "fo:max-height", "fo:padding-top", "fo:padding-bottom",
 		"fo:padding-left", "fo:padding-right", "draw:textarea-vertical-align", "draw:fill", "draw:fill-color"
