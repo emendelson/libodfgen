@@ -964,6 +964,15 @@ void OdfGenerator::insertField(const librevenge::RVNGPropertyList &propList)
 				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
 		}
 	}
+	else if (type == "text:note-ref")
+	{
+		for (int i=0; i<3; ++i)
+		{
+			char const* const wh[]= {"text:note-class", "text:reference-format", "text:ref-name"};
+			if (propList[wh[i]])
+				openElement->addAttribute(wh[i], librevenge::RVNGString::escapeXML(propList[wh[i]]->getStr()));
+		}
+	}
 	else if (type == "text:sequence")
 	{
 		for (int i=0; i<3; ++i)
